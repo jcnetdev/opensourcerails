@@ -1,0 +1,12 @@
+OLD PROJECT
+1) Download Screenshots from S3
+2) On the Old Project, move screenshots into public/screenshots
+3) Copy "script/data/old_update_screenshots.rb" to old project
+4) Run script
+5) Move screenshots_new to new project
+
+NEW PROJECT
+1) Run Migration
+2) script/data/update_screenshots.rb
+
+

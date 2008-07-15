@@ -59,9 +59,9 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   config.gem "haml", :version => ">= 2.0.0"
-  config.gem "aws-s3", :lib => "aws/s3"
   config.gem "mime-types", :lib => "mime/types", :version => ">= 1.15"
-  config.gem "mini_magick", :version => ">= 1.2.3"
+
+  config.gem "right_aws"
   
   # exception_notification
   # ------

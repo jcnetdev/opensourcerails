@@ -116,6 +116,11 @@ ActiveRecord::Schema.define do
     t.string   "screenshot_content_type"
     t.integer  "screenshot_file_size"
 
+    # old junk
+    t.string   "filename"
+    t.string   "content_type"
+    t.integer  "size"
+
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -171,6 +176,11 @@ ActiveRecord::Schema.define do
     t.string   "download_file_name"
     t.string   "download_content_type"
     t.integer  "download_file_size"
+
+    # old
+    t.string   "filename"
+    t.string   "content_type"
+    t.integer  "size"
 
     t.datetime "created_at"
     t.datetime "updated_at"

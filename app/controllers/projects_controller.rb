@@ -43,10 +43,11 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(params[:project])
     @project.owner_id = current_or_anon_user.id
-    if params["project"] and params["project"]["is_creator"] == "1"
+    if params[:project] and params[:project][:is_creator] == "1"
       @project.author_id = current_or_anon_user.id 
       @project.author_name = current_or_anon_user.to_s
     end
+
     if @project.save      
       current_or_anon_user.add_bookmark(@project)
 
@@ -251,7 +252,6 @@ class ProjectsController < ApplicationController
     
   end
 
-  
   # verify that the current user owns a project
   def verify_owner(project)
     if project.owned_by?(current_or_anon_user)
