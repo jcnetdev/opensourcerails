@@ -1,0 +1,36 @@
+- tabs do
+  - tab "Upcoming", "upcoming_apps", :class => "scroll-250" do
+    - if @upcoming.size > 0
+      = partial "projects/parts/list", :projects => @upcoming
+    - else
+      %p No upcoming applications. Submit one now!
+
+  - tab "Bookmarked", "projects_add", :class => "scroll-250" do
+    #my_bookmarks= partial "bookmarks/bookmark_list", :projects => @my_projects
+
+- tabs do
+  - tab "Recent Activity", "recent_activity", :class => "scroll-200" do
+    = partial "projects/parts/activity_list", :activities => @latest_activities  
+  
+  - tab "Tag Cloud", "tagcould" do
+    .tags
+      - tag_cloud @tags, %w(level-1 level-2 level-3) do |tag, css_class|
+        %span{:class => css_class, :title => "#{tag.count} projects"}
+          = link_to_if(tag.name != @tag, tag.name, projects_url(:tag => tag.name)) + ((@tags.last != tag) ? "," : "")
+
+  - tab "Top Apps", "top_counts" do
+    %strong Top Downloaded
+    %ul
+      - @top_downloaded.each do |project|
+        %li
+          = link_to project.title, project
+          %span.stat= pluralize(project.downloads, "download")
+
+    %strong Top Bookmarked
+    %ul
+      - @top_bookmarked.each do |project|
+        %li
+          = link_to project.title, project
+          %span.stat== Bookmarked by #{pluralize(project.bookmarks_count, "person")}  
+
+= partial "layouts/credits"

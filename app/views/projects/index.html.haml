@@ -1,7 +1,20 @@
--# Show List View Sidebar
-- content_for :sidebar do
-  = partial "projects/parts/index_sidebar"
-  
+#body
+  #body_left
+    #left_pad
+      -# Display projects
+      = partial "projects/parts/grid", :projects => @projects
+      
+  #body_right
+    = partial "layouts/searchbox"
+    #submit_app
+      = link_to_image "template/submit_app.gif", "#", |
+                      :label => "Submit a New Application", |
+                      :class => "submit toggle", :rel => "#new_project_tab_form" |
+    
+    #new_project_tab_form.hidden= render :partial => "projects/parts/mini_form"
+    = partial "layouts/about_us"
+    = partial "projects/parts/tabs"
+    
+    
+  = clear
 
--# Display projects
-= partial "projects/parts/grid", :projects => @projects

@@ -61,7 +61,7 @@ module ProjectsHelper
     rating_size = options.delete(:rating_size) || ""
     detailed = options.delete(:detailed) || false
     
-    haml_tag :div, :class => "post-ratings" do
+    haml_tag :div, :class => "site_item_rate" do
       voting(project, detailed)
       ratings_control(project, rating_size)
     end

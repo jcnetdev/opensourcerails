@@ -1,16 +1,17 @@
 #project_grid
   - if local_assigns[:projects]
-    .projects
-      = grid_title
-      -# display projects
-      = partials projects
-      - if projects.empty?
-        %p.empty
-          No applications currently 
-          = br
-          exist in the gallery
+    %h2= grid_title
+
+    -# Display projects
+    .projects= partial @projects
+  
+    - if @projects.empty?
+      %p.empty
+        No applications currently 
+        = br
+        exist in the gallery
       
     -# display paging
     = clear
-    .loading= image_tag("loading.gif", :alt => "Loading...")
+    .loading.right{hidden}= image_tag("loading.gif", :alt => "Loading...")
     = paging(projects)

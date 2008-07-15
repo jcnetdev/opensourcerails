@@ -1,0 +1,37 @@
+!!! Strict
+%html{html_attrs}
+  %head
+    %meta{"http-equiv" => "Content-type", "content" => "text/html; charset=utf-8"}
+    = title :site => AppConfig.site_name
+    = meta_tags
+
+    = stylesheet "template/style"
+    = stylesheet "common/paging"
+    = stylesheet "tabs"
+    = stylesheet "util"
+
+    = javascripts
+    = yield :head
+        
+    = auto_discovery_link_tag(:atom, AppConfig.rss_url || formatted_projects_url(:atom), :title => "Latest Projects")
+    
+  %body
+    #page_top
+      #page_end
+        .page
+          = partial "layouts/header"
+          
+          = yield
+          
+          #board
+            #board_left
+              aksdjfajsdf
+            #board_right
+              kasjdflkajdsfk
+            = clear
+
+          #footer
+            #footer_copyrights
+            #footer_ask
+            = clear
+            

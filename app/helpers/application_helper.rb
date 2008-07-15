@@ -58,6 +58,36 @@ module ApplicationHelper
     action == "edit" || action == "update"
   end
   
+  def link_to_image(img_url, link_url, options={})
+    
+    link = []
+    label = options.delete(:label)
+    
+    link << link_to(image_tag(img_url), link_url, options)
+    link << link_to(label, link_url, options) if label
+    
+    link.join(" ");
+  end
+  
+  # adds a "first" class if an index is zero
+  # hook this up to the partial counter
+  def is_first(index)
+    if index.nonzero?
+      return {}
+    else
+      return {:class => "first"}
+    end
+  rescue
+    return {}
+  end
+  
+  def progress(img_path = nil)
+    # set default progress image
+    img_path ||= "progress.gif"
+
+    content_tag :div, image_tag(img_path), :class => "progress hidden"
+  end
+  
   def current_year
     Time.now.strftime('%Y')
   end
