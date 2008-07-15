@@ -1,0 +1,4 @@
+#screenshots { max-height: 150px; overflow: auto; }
+#screenshots .screenshots { padding-top: 10px; padding-bottom: 10px; padding-left: 6px; }
+#screenshots .screenshot { position: relative; float: left; margin: 4px; margin-top: 0px; border: 3px solid #eee; }
+#screenshots .screenshot .delete { display: none; position: absolute; top: 2px; right: 2px; }

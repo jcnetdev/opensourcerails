@@ -1,0 +1,8 @@
+- activities = [] unless local_assigns[:activities]
+
+.activities.scroll-250
+  %h2 Recent Project Activity
+  - if activities.size > 0
+    = partial "projects/parts/activity_list", :activities => activities, :hide_project => true
+  - else
+    %p.empty No recent activity for this project.

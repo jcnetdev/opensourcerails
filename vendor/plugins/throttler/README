@@ -1,0 +1,68 @@
+Throttler
+=========
+
+Throttler allows your app to "throttle" when the server is under a heavy load.
+
+Installation
+============
+
+Simply install the plugin, and follow the example below for instructions on how to use the plugin.
+
+	./script/plugin install http://svn.kabisa.nl/rails/plugins/throttler
+
+Example
+=======
+
+If your server is under a heavy load, you may want to disable certain features until the load has dropped. 
+
+First of all, enable throttler in your ApplicationController. By default throttler has a threshold of 3.00. This means that
+Throttler becomes active if the load of you server is higher than 3.00. 
+
+	class ApplicationController 
+		include Throttler
+	end
+
+You may now protect server-intensive features like this:
+
+	unless throttled?
+		# ... do normal stuff
+	else
+		# ... do stuff to preserve system resources.
+	end
+	
+If you want to set another threshold value, you should define a method named +threshold+ in your ApplicationController. To set a default threshold of 5.00:
+
+	class ApplicationController
+		include Throttler
+		
+		def	threshold
+			5.00
+		end
+	end
+	
+You may also override the threshold when calling +throttled?+. 
+
+	if throttled?(10.00)
+		puts "Your server is getting fried"
+	end
+
+Helpers
+=======
+
+The following helpers are available to you
+
+	throttled?(threshold)		Returns true when throttling. +threshold+ is the threshold to use (default 3.00)
+	current_threshold			Returns the current global threshold used
+	current_load				Returns the current load of the server
+
+Limitations
+===========
+
+This plugin does not work under Windows, since there is no uptime command available. It should work fine with Linux and BSD. 
+
+Bugs
+====
+
+If you find any bugs, have patches or feature requests, please report them to http://trac.kabisa.nl
+
+Copyright (c) 2008 Ariejan de Vroom, released under the MIT license

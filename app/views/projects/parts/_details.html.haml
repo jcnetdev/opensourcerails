@@ -1,0 +1,40 @@
+- hidden = false unless local_assigns[:hidden]
+
+- if local_assigns[:project]
+  .reload
+    #project_details.highlight-box{hidden(hidden)}
+      - if project.owned_by?(current_or_anon_user)
+        .top-actions= link_to "Edit...", edit_project_url(project), :class => "edit"
+      %h2== #{project.title} Details
+      .display
+        .description
+          - if project.description.blank?
+            %p.empty No project description has been entered.
+          - else
+            = simple_format h(project.description)
+      
+        %p
+          - unless project.license.blank?
+            %strong License: 
+            =h project.license
+
+          - unless project.author_name.blank?
+            = br
+            %strong Author:
+            = link_to_if project.author_contact, h(project.author_name), project.author_contact
+
+          - unless project.homepage_url.blank?
+            = br
+            %strong Home Page:
+            = br
+            = link_to h(project.homepage_url), project.homepage_url
+
+          - unless project.source_url.blank?
+            = br
+            %strong Source Code:
+            = br
+            = link_to h(project.source_url), project.source_url
+
+        
+      .form-container.hidden
+        

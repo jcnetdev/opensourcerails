@@ -1,0 +1,9 @@
+#about_us.highlight-box{hidden_unless(current_or_anon_user.show_welcome!)}
+  .top-actions= link_to "Hide", "#", :class => "hide-about"
+  %h2 
+    About Open Source Rails
+  .description
+    %p.about-text
+      Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications. 
+      
+      = link_to "Read More...", about_url

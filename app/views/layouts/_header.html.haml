@@ -1,0 +1,11 @@
+#header
+  - if action_path == "projects/index"
+    .back= link_to_image "rss-reflection-sm.png", AppConfig.rss_url || formatted_projects_url(:atom), :title => "Use this RSS feed to see when new projects get uploaded."
+  - else
+    .back= link_to_image "back-arrow-sm.png", projects_url(:page => session[:page]), :label => "Back to Gallery..."
+  
+  = link_to image_tag("logo.png", :class => "logo"), root_url, :title => "Open Source Rails"
+  -# %span.version= AppConfig.version
+  %span.about= link_to "about", about_url
+
+  = clear

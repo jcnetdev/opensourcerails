@@ -1,0 +1,12 @@
+- hosted_applications = [] unless local_assigns[:hosted_applications]
+
+-# Project Links
+- tabs do
+  - tab "Demo Links", "hosted_instances" do
+    = partial hosted_applications
+    - check_empty(hosted_applications, "hosted versions") do
+      = br
+      = link_to "Add One Now...", "#", :class => "switch-to-last"
+
+  - tab "add link...", "hosted_instances_add" do
+    = partial "hosted_instances/form"

@@ -1,0 +1,6 @@
+.debug-info.container{hidden}
+  - if session[:comments].is_a? Array
+    %h4 COMMENT QUEUE
+    %ul
+      - session[:comments].each do |comment_id|
+        %li= comment_id

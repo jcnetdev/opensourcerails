@@ -1,0 +1,9 @@
+- if local_assigns[:project]
+  .submit-actions.details.rounded
+    %h2 This Project Has Not Yet Been Submitted
+
+    = link_to image_tag("big-submit-button.png"), |
+              submit_project_url(project), :method => :put, |
+              :confirm => "This will submit the application for other people to see. Press OK to Continue." |
+
+    = delete_link image_tag("big-delete-button.png"), project_url(project), :confirm => "This will delete the application and all associated files, screenshots, and links. Press OK to Continue."

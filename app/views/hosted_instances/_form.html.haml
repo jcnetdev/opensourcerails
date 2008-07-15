@@ -1,0 +1,16 @@
+- hosted_instance = HostedInstance.new unless local_assigns[:hosted_instance]
+
+- build_form_for [@project, hosted_instance] do |f|
+  = f.text_field :title, :label => "Link Name"
+  = f.text_field :url, :label => "Link URL"
+  = f.text_area :description, :label => "Notes, demo logins, etc.. (optional)", :separator => ""
+  = f.text_field :antispam, :label => "What is 1 plus 3?", :separator => ""
+  
+  .actions
+    - if hosted_instance.new_record?
+      = f.submit "Add Link"
+    - else
+      = f.submit "Update Link"
+    or
+    = link_to "cancel", @project, :class => "switch-to-first"
+    = progress

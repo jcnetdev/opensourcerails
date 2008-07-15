@@ -1,0 +1,12 @@
+- unless @login.error_message.blank?
+  .error= @login.error_message
+
+.main.details
+  %h2.form Log In
+  - build_form_for @login, :url => session_url do |f|
+    = f.text_field :username
+    = f.password_field :password
+    = f.check_box :remember_me
+  
+    .actions
+      = f.submit

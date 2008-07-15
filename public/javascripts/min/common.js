@@ -1,0 +1,1 @@
+$j(document).ready(function(){$j("div.flash").click(function(){Effect.Fade($(this));});if($j("div.flash").is(":visible")){setTimeout(function(){$j("div.flash").slideUp();},6000);}});$j(document).ready(function(){shortcut.add("ESC",function(){$j(".container.debug").toggleClass("showgrid");$j(".debug-info.container").toggle();});});

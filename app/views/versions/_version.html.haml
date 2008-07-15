@@ -1,0 +1,25 @@
+- if local_assigns[:version]
+
+  -# hide for nonspammers
+  - if spam_shield?(version)
+    .version
+      = link_to image_tag("download.png"), project_version_url(@project, version), :title => "Click here to Download"
+  
+      -# display bold if download_url matches project default
+      = link_to version.title, project_version_url(@project, version), :class => (version.is_default? ? "bold" : ""), :title => "Click here to Download"
+      = link_to "more info", "#", :class => "project-action toggle", :rel => "##{dom_id(version)}"
+  
+      .version-about{:id => dom_id(version)}
+        - if version.notes.blank?
+          [No Description Entered]
+        - else
+          = simple_format h(version.notes)
+        %span.actions
+          - if version.owned_by?(current_or_anon_user)
+            = link_to "edit", edit_project_version_url(version.project, version)
+            |
+            = link_to "delete", project_version_url(version.project, version), :method => :delete, :confirm => "Are you sure you want to delete this version?"
+            - unless version.is_default?
+              |
+              = link_to "set as default", set_project_version_url(version.project, version), :method => :put, :confirm => "Are you sure you want to set this version as the default download for this application?"
+    

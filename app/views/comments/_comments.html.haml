@@ -1,0 +1,24 @@
+-# default comments to empty
+- comments = [] unless local_assigns[:comments]
+
+= anchor("comments")
+.comments
+  
+  - if comments.size > 0
+    %h2 
+      = image_tag("comments.png")
+      = pluralize(comments.size, "Comment")
+  - comments.each_with_index do |comment, index|
+    - if spam_shield?(comment)
+      = anchor("comment-#{comment.id}")
+      - div_for comment do
+        .details
+          %p.comment-meta
+            %span.comment-num
+              = link_to "##{index+1}", project_comment_url(comment.project, comment)
+            %strong= comment.author_name
+            %span.comment-time{:title => comment.created_at.to_s(:comment)}
+              == posted #{time_ago_in_words(comment.created_at)}
+              ago.
+          %p=simple_format(h(comment.body))
+          = comment_actions(comment)

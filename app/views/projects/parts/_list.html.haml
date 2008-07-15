@@ -1,0 +1,13 @@
+- projects = [] unless local_assigns[:projects]
+
+%ul.project-list
+  - projects.each_with_index do |project, index|
+    %li{is_first(index)}
+      = link_to_image project.thumb_url, project
+      = link_to(project.title, project, :class => "project-title")
+
+      - if project.last_changed
+        %em 
+          Last modified 
+          = time_ago_in_words(project.last_changed) 
+          ago.

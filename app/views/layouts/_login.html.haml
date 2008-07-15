@@ -1,0 +1,10 @@
+#login_panel
+
+  - if logged_in?
+    == #{current_user.login} 
+    |
+    = link_to "logout", session_url, :method => :delete
+  - else  
+    = link_to "Login", new_session_url
+    |
+    = link_to "Create Account", new_user_url

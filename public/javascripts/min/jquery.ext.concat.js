@@ -1,0 +1,2382 @@
+// JRC (jquery-round-corners)
+// www.meerbox.nl
+		
+(function($){
+	
+	var Num = function(i) { return parseInt(i,10) || 0; };
+		
+	// get lowest number from array
+	var asNum = function(a, b) { return a-b; };
+	var getMin = function(a) {
+		var b = a.concat();
+		return b.sort(asNum)[0];
+	};
+	
+	// get CSS value as integer
+	var getBorderWidth = function(elm,p) {
+		var w = elm.css('border'+p+'Width');
+		if ($.browser.msie) {
+			if (w == 'thin') w = 2;
+			if (w == 'medium' && !(elm.css('border'+p+'Style') == 'none')) w = 4;
+			if (w == 'thick') w = 6;
+		}
+		return Num(w);
+	};
+	
+	var rotationSteps = function(r_type,a,b,c,d) {
+		if (r_type == 'tl') return a;
+		if (r_type == 'tr') return b;
+		if (r_type == 'bl') return c;
+		if (r_type == 'br') return d;
+	};
+	
+	// draw the round corner in Canvas object
+	var drawCorner = function(canvas,radius,r_type,bg_color,border_width,border_color,corner_effect) {
+		
+		var steps,curve_to;
+		
+		// change rgba(1,2,3,0.9) to rgb(1,2,3)
+		var reg = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/;   
+		var bits = reg.exec(bg_color);
+		if (bits) {
+			var channels = [Num(bits[1]),Num(bits[2]),Num(bits[3])];
+			bg_color = 'rgb('+channels[0]+', '+channels[1]+', '+channels[2]+')';
+		} 
+	
+		border_width = Num(border_width);
+		
+		var ctx = canvas.getContext('2d');
+		
+		if (radius == 1 || corner_effect == 'notch') {
+			
+			if (border_width > 0 && radius > 1) {
+				ctx.fillStyle = border_color;
+				ctx.fillRect(0,0,radius,radius);
+				ctx.fillStyle = bg_color;
+				steps = rotationSteps(r_type,[0-border_width,0-border_width],[border_width,0-border_width],[0-border_width,border_width],[border_width,border_width]);
+				ctx.fillRect(steps[0],steps[1],radius,radius);
+			} else {
+				ctx.fillStyle = bg_color;
+				ctx.fillRect(0,0,radius,radius);
+			}
+			return canvas;
+		} else if (corner_effect == 'bevel') {
+			steps = rotationSteps(r_type,[0,0,0,radius,radius,0,0,0],[0,0,radius,radius,radius,0,0,0],[0,0,radius,radius,0,radius,0,0],[radius,radius,radius,0,0,radius,radius,radius]);
+			ctx.fillStyle = bg_color;
+			ctx.beginPath();
+			ctx.moveTo(steps[0],steps[1]);
+			ctx.lineTo(steps[2], steps[3]);
+			ctx.lineTo(steps[4], steps[5]);
+			ctx.lineTo(steps[6], steps[7]);
+			ctx.fill(); 
+			if (border_width > 0 && border_width < radius) {
+				ctx.strokeStyle = border_color;
+	        	ctx.lineWidth = border_width;
+    			ctx.beginPath();
+				steps = rotationSteps(r_type,[0,radius,radius,0],[0,0,radius,radius],[radius,radius,0,0],[0,radius,radius,0]);
+    			ctx.moveTo(steps[0],steps[1]);
+				ctx.lineTo(steps[2],steps[3]);
+    			ctx.stroke();
+			}
+			return canvas;
+		}
+
+		steps = rotationSteps(r_type,
+					[0,0,radius,0,radius,0,0,radius,0,0],
+					[radius,0,radius,radius,radius,0,0,0,0,0],
+					[0,radius,radius,radius,0,radius,0,0,0,radius],
+					[radius,radius,radius,0,radius,0,0,radius,radius,radius]);
+         
+		ctx.fillStyle = bg_color;
+    	ctx.beginPath();
+     	ctx.moveTo(steps[0],steps[1]); 
+     	ctx.lineTo(steps[2], steps[3]);
+    	if(r_type == 'br') ctx.bezierCurveTo(steps[4], steps[5], radius, radius, steps[6], steps[7]);
+    	else ctx.bezierCurveTo(steps[4], steps[5], 0, 0, steps[6], steps[7]);
+		ctx.lineTo(steps[8], steps[9]);
+        ctx.fill(); 
+         
+        // draw border
+        if (border_width > 0 && border_width < radius) {
+	        
+	        // offset caused by border
+	        var offset = border_width/2; 
+	        
+			steps = rotationSteps(r_type,
+				[radius-offset,offset,radius-offset,offset,offset,radius-offset],
+				[radius-offset,radius-offset,radius-offset,offset,offset,offset],
+				[radius-offset,radius-offset,offset,radius-offset,offset,offset,offset,radius-offset],
+				[radius-offset,offset,radius-offset,offset,offset,radius-offset,radius-offset,radius-offset]	
+			);
+
+			curve_to = rotationSteps(r_type,[0,0],[0,0],[0,0],[radius, radius]);
+
+	        ctx.strokeStyle = border_color;
+	        ctx.lineWidth = border_width;
+    		ctx.beginPath();
+    		// go to corner to begin curve
+     		ctx.moveTo(steps[0], steps[1]); 
+     		// curve from righttop to leftbottom (for the tl canvas)
+    		ctx.bezierCurveTo(steps[2], steps[3], curve_to[0], curve_to[1], steps[4], steps[5]); 
+			ctx.stroke();
+	        
+	    }
+	    
+	    return canvas;
+	    
+	};
+	
+	// create and append canvas element to parent
+	var createCanvas = function(p,radius) {
+		
+		var elm = document.createElement('canvas');
+		elm.setAttribute("height", radius);
+		elm.setAttribute("width", radius); 
+	    elm.style.display = "block";
+		elm.style.position = "absolute";
+		elm.className = "jrCorner";
+		
+		appendToParent(p,elm);
+		
+		if (!can_sp) { // no native canvas support
+			if (typeof G_vmlCanvasManager == "object") { // use excanvas
+				elm = G_vmlCanvasManager.initElement(elm);
+			} else if (typeof G_vmlCMjrc == "object") { // use the stipped down version of excanvas
+				elm = G_vmlCMjrc.i(elm);
+			} else {
+				 throw Error('Could not find excanvas');
+			}
+		}
+		return elm;
+	};
+	
+	var appendToParent = function(p,elm) {
+		if (p.is("table")) {
+			p.children("tbody").children("tr:first").children("td:first").append(elm); 
+			p.css('display','block'); // only firefox seems to need this
+		} else if(p.is("td")) {
+			if (p.children(".JrcTdContainer").length === 0) {
+				// only is msie you can absolute position a element inside a table cell, so we need a wrapper
+				p.html('<div class="JrcTdContainer" style="padding:0px;position:relative;margin:-1px;zoom:1;">'+p.html()+'</div>');
+				p.css('zoom','1');
+				if ($.browser.msie && typeof document.body.style.maxHeight == "undefined") { //  msie6 only
+					p.children(".JrcTdContainer").get(0).style.setExpression("height","this.parentNode.offsetHeight"); 
+				}
+				
+			} 
+			p.children(".JrcTdContainer").append(elm); 
+			
+		} else {
+			p.append(elm); 
+		}
+
+	};
+	
+	var can_sp = typeof document.createElement('canvas').getContext == "function";
+	
+	var _corner = function(options) {
+		
+		if (options == "destroy") {
+			return this.each(function() {
+				var p, elm = $(this);
+				if (elm.is(".jrcRounded")) {
+					if (elm.is("table")) p = elm.children("tbody").children("tr:first").children("td:first");
+					else if (elm.is("td")) p = elm.children(".JrcTdContainer");
+					else p = elm;
+					p.children(".jrCorner").remove();
+					elm.unbind('mouseleave.jrc').unbind('mouseenter.jrc').removeClass('jrcRounded');
+					if (elm.is("td")) elm.html(elm.children(".JrcTdContainer").html());
+				}
+			});
+		}
+	
+		// nothing to do, so return || no msie or native canvas support
+		if (this.length==0 || !(can_sp || $.browser.msie)) {
+			return this;
+		}
+			
+		// interpret the (string) argument
+   		var o = (options || "").toLowerCase();
+   		var radius = Num((o.match(/(\d+)px/)||[])[1]) || "auto"; // corner width
+   		var bg_arg = ((o.match(/(#[0-9a-f]+)/)||[])[1]) || "auto";  // strip color
+   		var re = /round|bevel|notch|bite|cool|sharp|slide|jut|curl|tear|fray|wicked|sculpt|long|dog3|dog2|dog/; // Corner Effects
+    	var fx = ((o.match(re)||['round'])[0]);
+    	var hover = /hover/.test(o);
+    	var hiddenparent_arg = o.match("hiddenparent");
+    	
+   		var edges = { T:0, B:1 };
+    	var opts = {
+        	tl:  /top|tl/.test(o),       
+        	tr:  /top|tr/.test(o),
+        	bl:  /bottom|bl/.test(o),    
+        	br:  /bottom|br/.test(o)
+    	};
+    	
+    	if ( !opts.tl && !opts.tr && !opts.bl && !opts.br) opts = { tl:1, tr:1, bl:1, br:1 };
+    	
+    	// some stuff needed for the callback function
+       	var arl = this.length;
+       	var argl = arguments.length;
+       	var cb = arguments[1];
+       	var al = this;
+       	
+		return this.each(function(ll) {
+
+			var elm = $(this),rbg=null,bg,s,b,pr;
+					
+			// no background color of the parent is set ...
+			if (bg_arg == "auto") { 
+				s = elm.siblings(".jrcRounded:eq(0)");
+				if (s.length > 0) { // sibling already has the real background color stored?
+					b = s.data("rbg.jrc");
+					if (typeof b == "string") {
+						rbg = b;
+					}
+				}
+			}
+			
+			if (hiddenparent_arg || rbg === null) {
+				
+				// temporary show hidden parent (wm.morgun) + search for background color
+				var current_p = elm.parent(), hidden_parents = new Array(),a = 0;
+				while( (typeof current_p == 'object') && !current_p.is("html")) {
+					
+					if (hiddenparent_arg && current_p.css('display') == 'none') {
+						hidden_parents.push({
+							originalcss: {display: current_p.css('display'), visibility: current_p.css('visibility')},
+							elm: current_p
+						});
+						current_p.css({display: 'block', visibility: 'hidden'});
+					}
+					
+					if (rbg === null && current_p.css('background-color') != "transparent" && current_p.css('background-color') != "rgba(0, 0, 0, 0)") {
+						rbg = current_p.css('background-color');
+					}
+					
+					current_p = current_p.parent();
+	
+				}
+				
+				if (rbg === null) rbg = "#ffffff";
+			}
+			
+			// store the parent background color
+			if (bg_arg == "auto") {
+				bg = rbg;
+				elm.data("rbg.jrc",rbg);
+			} else {
+				bg = bg_arg;
+			}
+			
+			// hover (optional argument - for a alterative to #roundedelement:hover)
+			if (hover) {
+				
+				var new_options = options.replace(/hover/i, "");
+				
+				elm.bind("mouseenter.jrc", function(){
+					elm.addClass('jrcHover');
+					elm.corner(new_options);
+				});
+				elm.bind("mouseleave.jrc", function(){
+					elm.removeClass('jrcHover');
+					elm.corner(new_options);
+				});
+				
+			}
+			
+	   		// msie6 rendering bugs :(
+			if ($.browser.msie && typeof document.body.style.maxHeight == "undefined") {
+				if (elm.css('display') == 'inline') { elm.css('zoom','1'); }
+				if (elm.css('height') == 'auto') {elm.height(elm.height());}
+			 	if (elm.width()%2 != 0) { elm.width(elm.width()+1); }
+			 	if (elm.height()%2 != 0) { elm.height(elm.height()+1); }
+			 	if (elm.css('lineHeight') != 'normal' && elm.height() < elm.css('lineHeight')) {
+				 	elm.css('lineHeight', elm.height());
+				}
+				if (elm.css('lineHeight') == 'normal' && elm.css('display') != 'inline') elm.css('lineHeight','1'); // dont ask
+			}
+			
+			// if element is hidden we cant get the size..
+			if (elm.css('display') == 'none') {
+				var originalvisibility = elm.css('visibility');
+				elm.css({display: 'block', visibility: 'hidden'});
+				var ishidden = true;
+			} else {
+				var ishiddden = false;
+			}
+			
+			// get height/width
+			var arr = [elm.get(0).offsetHeight,elm.get(0).offsetWidth];
+			if (elm.height() != 0) arr[arr.length] = elm.height();
+			if (elm.width() != 0) arr[arr.length] = elm.width();
+			var widthheight_smallest = getMin(arr);
+
+			// restore css
+			if (ishidden) elm.css({display:'none',visibility:originalvisibility});
+			
+			//  restore css of hidden parents
+			if (typeof hidden_parents != "undefined") {
+				for (var i = 0; i < hidden_parents.length; i++) {
+					hidden_parents[i].elm.css(hidden_parents[i].originalcss);
+				}
+			}
+			
+			// the size of the corner is not defined...
+			if (radius == "auto") {
+				radius = widthheight_smallest/2;
+				if (radius > 10) radius = 10; 
+			}
+
+			// the size of the corner can't be to high
+			if (radius > widthheight_smallest/2) radius = widthheight_smallest/2;
+			
+			radius = Math.floor(radius);
+			
+			// some css thats required in order to position the canvas elements
+			if (elm.css('position') == 'static' && !elm.is("td")) { 
+				elm.css('position','relative'); 
+			// only needed for ie6 and (ie7 in Quirks mode) , CSS1Compat == Strict mode
+			} else if (elm.css('position') == 'fixed' && $.browser.msie && !(document.compatMode == 'CSS1Compat' && typeof document.body.style.maxHeight != "undefined")) { 
+				elm.css('position','absolute');
+			}
+			elm.css('overflow','visible'); // not always need (for example when rounded element has no border, but also in some other cases)
+			
+			// get border width
+			var border_t = getBorderWidth(elm, 'Top');
+			var border_r = getBorderWidth(elm, 'Right');
+			var border_b = getBorderWidth(elm, 'Bottom');
+			var border_l = getBorderWidth(elm, 'Left');
+			
+			// get the lowest borderwidth of the corners in use
+			var bordersWidth = new Array();
+			if (opts.tl || opts.tr) bordersWidth.push(border_t);
+			if (opts.br || opts.tr) bordersWidth.push(border_r);
+			if (opts.br || opts.bl) bordersWidth.push(border_b);
+			if (opts.bl || opts.tl) bordersWidth.push(border_l);
+			
+			var borderswidth_smallest = getMin(bordersWidth);
+			
+			var p_top = 0-border_t;
+			var p_right = 0-border_r;
+			var p_bottom = 0-border_b;
+			var p_left = 0-border_l;
+			
+			// pr is the parent of where the canvas elements are placed
+			if (elm.is("table")) pr = elm.children("tbody").children("tr:first").children("td:first");
+			else if (elm.is("td")) pr = elm.children(".JrcTdContainer");
+			else pr = elm;
+	
+			// draw Corners in canvas elements (createCanvas also appends it to parent)
+			if (opts.tl) { 
+				pr.children(".jrcTL").remove();
+				var tl = drawCorner(createCanvas(elm,radius),radius,'tl',bg,borderswidth_smallest,elm.css('borderTopColor'),fx); 
+				$(tl).css({left:p_left,top:p_top}).addClass('jrcTL');
+			}
+			if (opts.tr) { 
+				pr.children(".jrcTR").remove();
+				var tr = drawCorner(createCanvas(elm,radius),radius,'tr',bg,borderswidth_smallest,elm.css('borderTopColor'),fx); 
+				$(tr).css({right:p_right,top:p_top}).addClass('jrcTR'); 
+			}
+			if (opts.bl) { 
+				pr.children(".jrcBL").remove();
+				var bl = drawCorner(createCanvas(elm,radius),radius,'bl',bg,borderswidth_smallest,elm.css('borderBottomColor'),fx);
+				$(bl).css({left:p_left,bottom:p_bottom}).addClass('jrcBL');  
+			}
+			if (opts.br) { 
+				pr.children(".jrcBR").remove();
+				var br = drawCorner(createCanvas(elm,radius),radius,'br',bg,borderswidth_smallest,elm.css('borderBottomColor'),fx); 
+				$(br).css({right:p_right,bottom:p_bottom}).addClass('jrcBR');
+			}
+			
+			elm.addClass('jrcRounded');
+			
+			// callback function (is called when the last element is rounded)
+			if (ll === arl-1 && argl == 2 && typeof cb == "function") cb(al); 
+				
+   		});  
+	};
+	
+	$.fn.corner = _corner;
+	
+})(jQuery);
+
+// Including this script will find all matching divs with class=equal-heights
+// and make them the same height
+jQuery(document).ready(function() {  
+  refreshHeights();
+});
+
+function refreshHeights() {
+  // Find Max Height
+  var max_height = 0
+  
+  // reset heights
+  jQuery(".equal-heights").css("height", "");
+  
+  // Elements to match height on
+  jQuery(".equal-heights").each(function() {
+    height = jQuery(this).height();
+    if(height > max_height)
+    {
+      max_height = height;
+    }    
+  });
+    
+  jQuery(".equal-heights").each(function() {
+    jQuery(this).height(max_height);
+  });
+}
+/*
+ * jQuery Example Plugin 1.3.2
+ * Populate form inputs with example text that disappears on focus.
+ *
+ * e.g.
+ *  $('input#name').example('Bob Smith');
+ *  $('input[@title]').example(function() {
+ *    return $(this).attr('title');
+ *  });
+ *  $('textarea#message').example('Type your message here', {
+ *    class_name: 'example_text',
+ *    hide_label: true
+ *  });
+ *
+ * Copyright (c) Paul Mucur (http://mucur.name), 2007-2008.
+ * Dual-licensed under the BSD (BSD-LICENSE.txt) and GPL (GPL-LICENSE.txt)
+ * licenses.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+(function($) {
+      
+  $.fn.example = function(text, args) {
+    
+    /* Merge the default options with the given arguments. */
+    var options = $.extend({}, $.fn.example.defaults, args);
+    
+    /* Only calculate once whether a callback has been used. */
+    var callback = $.isFunction(text);
+    
+    /* The following event handlers only need to be bound once
+     * per class name. In order to do this, an array of used
+     * class names is stored and checked on each use of the plugin. 
+     * If the class name is in the array then this whole section 
+     * is skipped. If not, the events are bound and the class name 
+     * added to the array.
+     *
+     * As of 1.3.2, the class names are stored as keys in the
+     * array, rather than as elements. This removes the need for
+     * $.inArray().
+     */
+    if (!$.fn.example.bound_class_names[options.class_name]) {
+      
+      /* Because Gecko-based browsers "helpfully" cache form values
+       * but ignore all other attributes such as class, all example
+       * values must be cleared on page unload to prevent them from
+       * being saved.
+       */
+      $(window).unload(function() {
+        $('.' + options.class_name).val('');
+      });
+      
+      /* Clear fields that are still examples before any form is submitted
+       * otherwise those examples will be sent along as well.
+       * 
+       * Prior to 1.3, this would only be bound to forms that were
+       * parents of example fields but this meant that a page with
+       * multiple forms would not work correctly.
+       */
+      $('form').submit(function() {
+        
+        /* Clear only the fields inside this particular form. */
+        $(this).find('.' + options.class_name).val('');
+      });
+      
+      /* Add the class name to the array. */
+      $.fn.example.bound_class_names[options.class_name] = true;      
+    }
+    
+    return this.each(function() {
+      
+      /* Reduce method calls by saving the current jQuery object. */
+      var $this = $(this);
+      
+      /* Initially place the example text in the field if it is empty. */
+      if ($this.val() == '') {
+        $this.addClass(options.class_name);
+        
+        /* The text argument can now be a function; if this is the case,
+         * call it, passing the current element as `this`.
+         */
+        $this.val(callback ? text.call(this) : text);
+      }
+    
+      /* DEPRECATION WARNING: I am considering removing this option.
+       *
+       * If the option is set, hide the associated label (and its line-break
+       * if it has one).
+       */
+      if (options.hide_label) {
+        var label = $('label[@for=' + $this.attr('id') + ']');
+        
+        /* The label and its line break must be hidden separately as
+         * jQuery 1.1 does not support andSelf().
+         */
+        label.next('br').hide();
+        label.hide();
+      }
+    
+      /* Make the example text disappear when someone focuses.
+       *
+       * To determine whether the value of the field is an example or not,
+       * check for the example class name only; comparing the actual value
+       * seems wasteful and can stop people from using example values as real 
+       * input.
+       */
+      $this.focus(function() {
+        
+        /* jQuery 1.1 has no hasClass(), so is() must be used instead. */
+        if ($(this).is('.' + options.class_name)) {
+          $(this).val('');
+          $(this).removeClass(options.class_name);
+        }
+      });
+    
+      /* Make the example text reappear if the input is blank on blurring. */
+      $this.blur(function() {
+        if ($(this).val() == '') {
+          $(this).addClass(options.class_name);
+          
+          /* Re-evaluate the callback function every time the user
+           * blurs the field without entering anything. While this
+           * is not as efficient as caching the value, it allows for
+           * more dynamic applications of the plugin.
+           */
+          $(this).val(callback ? text.call(this) : text);
+        }
+      });
+    });
+  };
+  
+  /* Users can override the defaults for the plugin like so:
+   *
+   *   $.fn.example.defaults.class_name = 'not_example';
+   *   $.fn.example.defaults.hide_label = true;
+   */
+  $.fn.example.defaults = {
+    class_name: 'hint',
+    
+    /* DEPRECATION WARNING: I am considering removing this option. */    
+    hide_label: false
+  };
+  
+  /* All the class names used are stored as keys in the following array. */
+  $.fn.example.bound_class_names = [];
+  
+})(jQuery);
+/*
+ * jQuery Form Plugin
+ * version: 2.07 (03/04/2008)
+ * @requires jQuery v1.2.2 or later
+ *
+ * Examples at: http://malsup.com/jquery/form/
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ *
+ * Revision: $Id$
+ */
+ (function($) {
+/**
+ * ajaxSubmit() provides a mechanism for submitting an HTML form using AJAX.
+ *
+ * ajaxSubmit accepts a single argument which can be either a success callback function
+ * or an options Object.  If a function is provided it will be invoked upon successful
+ * completion of the submit and will be passed the response from the server.
+ * If an options Object is provided, the following attributes are supported:
+ *
+ *  target:   Identifies the element(s) in the page to be updated with the server response.
+ *            This value may be specified as a jQuery selection string, a jQuery object,
+ *            or a DOM element.
+ *            default value: null
+ *
+ *  url:      URL to which the form data will be submitted.
+ *            default value: value of form's 'action' attribute
+ *
+ *  type:     The method in which the form data should be submitted, 'GET' or 'POST'.
+ *            default value: value of form's 'method' attribute (or 'GET' if none found)
+ *
+ *  data:     Additional data to add to the request, specified as key/value pairs (see $.ajax).
+ *
+ *  beforeSubmit:  Callback method to be invoked before the form is submitted.
+ *            default value: null
+ *
+ *  success:  Callback method to be invoked after the form has been successfully submitted
+ *            and the response has been returned from the server
+ *            default value: null
+ *
+ *  dataType: Expected dataType of the response.  One of: null, 'xml', 'script', or 'json'
+ *            default value: null
+ *
+ *  semantic: Boolean flag indicating whether data must be submitted in semantic order (slower).
+ *            default value: false
+ *
+ *  resetForm: Boolean flag indicating whether the form should be reset if the submit is successful
+ *
+ *  clearForm: Boolean flag indicating whether the form should be cleared if the submit is successful
+ *
+ *
+ * The 'beforeSubmit' callback can be provided as a hook for running pre-submit logic or for
+ * validating the form data.  If the 'beforeSubmit' callback returns false then the form will
+ * not be submitted. The 'beforeSubmit' callback is invoked with three arguments: the form data
+ * in array format, the jQuery object, and the options object passed into ajaxSubmit.
+ * The form data array takes the following form:
+ *
+ *     [ { name: 'username', value: 'jresig' }, { name: 'password', value: 'secret' } ]
+ *
+ * If a 'success' callback method is provided it is invoked after the response has been returned
+ * from the server.  It is passed the responseText or responseXML value (depending on dataType).
+ * See jQuery.ajax for further details.
+ *
+ *
+ * The dataType option provides a means for specifying how the server response should be handled.
+ * This maps directly to the jQuery.httpData method.  The following values are supported:
+ *
+ *      'xml':    if dataType == 'xml' the server response is treated as XML and the 'success'
+ *                   callback method, if specified, will be passed the responseXML value
+ *      'json':   if dataType == 'json' the server response will be evaluted and passed to
+ *                   the 'success' callback, if specified
+ *      'script': if dataType == 'script' the server response is evaluated in the global context
+ *
+ *
+ * Note that it does not make sense to use both the 'target' and 'dataType' options.  If both
+ * are provided the target will be ignored.
+ *
+ * The semantic argument can be used to force form serialization in semantic order.
+ * This is normally true anyway, unless the form contains input elements of type='image'.
+ * If your form must be submitted with name/value pairs in semantic order and your form
+ * contains an input of type='image" then pass true for this arg, otherwise pass false
+ * (or nothing) to avoid the overhead for this logic.
+ *
+ *
+ * When used on its own, ajaxSubmit() is typically bound to a form's submit event like this:
+ *
+ * $("#form-id").submit(function() {
+ *     $(this).ajaxSubmit(options);
+ *     return false; // cancel conventional submit
+ * });
+ *
+ * When using ajaxForm(), however, this is done for you.
+ *
+ * @example
+ * $('#myForm').ajaxSubmit(function(data) {
+ *     alert('Form submit succeeded! Server returned: ' + data);
+ * });
+ * @desc Submit form and alert server response
+ *
+ *
+ * @example
+ * var options = {
+ *     target: '#myTargetDiv'
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc Submit form and update page element with server response
+ *
+ *
+ * @example
+ * var options = {
+ *     success: function(responseText) {
+ *         alert(responseText);
+ *     }
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc Submit form and alert the server response
+ *
+ *
+ * @example
+ * var options = {
+ *     beforeSubmit: function(formArray, jqForm) {
+ *         if (formArray.length == 0) {
+ *             alert('Please enter data.');
+ *             return false;
+ *         }
+ *     }
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc Pre-submit validation which aborts the submit operation if form data is empty
+ *
+ *
+ * @example
+ * var options = {
+ *     url: myJsonUrl.php,
+ *     dataType: 'json',
+ *     success: function(data) {
+ *        // 'data' is an object representing the the evaluated json data
+ *     }
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc json data returned and evaluated
+ *
+ *
+ * @example
+ * var options = {
+ *     url: myXmlUrl.php,
+ *     dataType: 'xml',
+ *     success: function(responseXML) {
+ *        // responseXML is XML document object
+ *        var data = $('myElement', responseXML).text();
+ *     }
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc XML data returned from server
+ *
+ *
+ * @example
+ * var options = {
+ *     resetForm: true
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc submit form and reset it if successful
+ *
+ * @example
+ * $('#myForm).submit(function() {
+ *    $(this).ajaxSubmit();
+ *    return false;
+ * });
+ * @desc Bind form's submit event to use ajaxSubmit
+ *
+ *
+ * @name ajaxSubmit
+ * @type jQuery
+ * @param options  object literal containing options which control the form submission process
+ * @cat Plugins/Form
+ * @return jQuery
+ */
+$.fn.ajaxSubmit = function(options) {
+    if (typeof options == 'function')
+        options = { success: options };
+
+    options = $.extend({
+        url:  this.attr('action') || window.location.toString(),
+        type: this.attr('method') || 'GET'
+    }, options || {});
+
+    // hook for manipulating the form data before it is extracted;
+    // convenient for use with rich editors like tinyMCE or FCKEditor
+    var veto = {};
+    this.trigger('form-pre-serialize', [this, options, veto]);
+    if (veto.veto) return this;
+
+    var a = this.formToArray(options.semantic);
+    if (options.data) {
+        options.extraData = options.data;
+        for (var n in options.data)
+            a.push( { name: n, value: options.data[n] } );
+    }
+
+    // give pre-submit callback an opportunity to abort the submit
+    if (options.beforeSubmit && options.beforeSubmit(a, this, options) === false) return this;
+
+    // fire vetoable 'validate' event
+    this.trigger('form-submit-validate', [a, this, options, veto]);
+    if (veto.veto) return this;
+
+    var q = $.param(a);
+
+    if (options.type.toUpperCase() == 'GET') {
+        options.url += (options.url.indexOf('?') >= 0 ? '&' : '?') + q;
+        options.data = null;  // data is null for 'get'
+    }
+    else
+        options.data = q; // data is the query string for 'post'
+
+    var $form = this, callbacks = [];
+    if (options.resetForm) callbacks.push(function() { $form.resetForm(); });
+    if (options.clearForm) callbacks.push(function() { $form.clearForm(); });
+
+    // perform a load on the target only if dataType is not provided
+    if (!options.dataType && options.target) {
+        var oldSuccess = options.success || function(){};
+        callbacks.push(function(data) {
+            $(options.target).html(data).each(oldSuccess, arguments);
+        });
+    }
+    else if (options.success)
+        callbacks.push(options.success);
+
+    options.success = function(data, status) {
+        for (var i=0, max=callbacks.length; i < max; i++)
+            callbacks[i](data, status, $form);
+    };
+
+    // are there files to upload?
+    var files = $('input:file', this).fieldValue();
+    var found = false;
+    for (var j=0; j < files.length; j++)
+        if (files[j])
+            found = true;
+
+    // options.iframe allows user to force iframe mode
+   if (options.iframe || found) { 
+       // hack to fix Safari hang (thanks to Tim Molendijk for this)
+       // see:  http://groups.google.com/group/jquery-dev/browse_thread/thread/36395b7ab510dd5d
+       if ($.browser.safari && options.closeKeepAlive)
+           $.get(options.closeKeepAlive, fileUpload);
+       else
+           fileUpload();
+       }
+   else
+       $.ajax(options);
+
+    // fire 'notify' event
+    this.trigger('form-submit-notify', [this, options]);
+    return this;
+
+
+    // private function for handling file uploads (hat tip to YAHOO!)
+    function fileUpload() {
+        var form = $form[0];
+        var opts = $.extend({}, $.ajaxSettings, options);
+
+        var id = 'jqFormIO' + (new Date().getTime());
+        var $io = $('<iframe id="' + id + '" name="' + id + '" />');
+        var io = $io[0];
+        var op8 = $.browser.opera && window.opera.version() < 9;
+        if ($.browser.msie || op8) io.src = 'javascript:false;document.write("");';
+        $io.css({ position: 'absolute', top: '-1000px', left: '-1000px' });
+
+        var xhr = { // mock object
+            responseText: null,
+            responseXML: null,
+            status: 0,
+            statusText: 'n/a',
+            getAllResponseHeaders: function() {},
+            getResponseHeader: function() {},
+            setRequestHeader: function() {}
+        };
+
+        var g = opts.global;
+        // trigger ajax global events so that activity/block indicators work like normal
+        if (g && ! $.active++) $.event.trigger("ajaxStart");
+        if (g) $.event.trigger("ajaxSend", [xhr, opts]);
+
+        var cbInvoked = 0;
+        var timedOut = 0;
+
+        // take a breath so that pending repaints get some cpu time before the upload starts
+        setTimeout(function() {
+            // make sure form attrs are set
+            var t = $form.attr('target'), a = $form.attr('action');
+            $form.attr({
+                target:   id,
+                encoding: 'multipart/form-data',
+                enctype:  'multipart/form-data',
+                method:   'POST',
+                action:   opts.url
+            });
+
+            // support timout
+            if (opts.timeout)
+                setTimeout(function() { timedOut = true; cb(); }, opts.timeout);
+
+            // add "extra" data to form if provided in options
+            var extraInputs = [];
+            try {
+                if (options.extraData)
+                    for (var n in options.extraData)
+                        extraInputs.push(
+                            $('<input type="hidden" name="'+n+'" value="'+options.extraData[n]+'" />')
+                                .appendTo(form)[0]);
+            
+                // add iframe to doc and submit the form
+                $io.appendTo('body');
+                io.attachEvent ? io.attachEvent('onload', cb) : io.addEventListener('load', cb, false);
+                form.submit();
+            }
+            finally {
+                // reset attrs and remove "extra" input elements
+                $form.attr('action', a);
+                t ? $form.attr('target', t) : $form.removeAttr('target');
+                $(extraInputs).remove();
+            }
+        }, 10);
+
+        function cb() {
+            if (cbInvoked++) return;
+
+            io.detachEvent ? io.detachEvent('onload', cb) : io.removeEventListener('load', cb, false);
+
+            var ok = true;
+            try {
+                if (timedOut) throw 'timeout';
+                // extract the server response from the iframe
+                var data, doc;
+                doc = io.contentWindow ? io.contentWindow.document : io.contentDocument ? io.contentDocument : io.document;
+                xhr.responseText = doc.body ? doc.body.innerHTML : null;
+                xhr.responseXML = doc.XMLDocument ? doc.XMLDocument : doc;
+                xhr.getResponseHeader = function(header){
+                    var headers = {'content-type': opts.dataType};
+                    return headers[header];
+                };
+
+                if (opts.dataType == 'json' || opts.dataType == 'script') {
+                    var ta = doc.getElementsByTagName('textarea')[0];
+                    xhr.responseText = ta ? ta.value : xhr.responseText;
+                }
+                else if (opts.dataType == 'xml' && !xhr.responseXML && xhr.responseText != null) {
+                    xhr.responseXML = toXml(xhr.responseText);
+                }
+                data = $.httpData(xhr, opts.dataType);
+            }
+            catch(e){
+                ok = false;
+                $.handleError(opts, xhr, 'error', e);
+            }
+
+            // ordering of these callbacks/triggers is odd, but that's how $.ajax does it
+            if (ok) {
+                opts.success(data, 'success');
+                if (g) $.event.trigger("ajaxSuccess", [xhr, opts]);
+            }
+            if (g) $.event.trigger("ajaxComplete", [xhr, opts]);
+            if (g && ! --$.active) $.event.trigger("ajaxStop");
+            if (opts.complete) opts.complete(xhr, ok ? 'success' : 'error');
+
+            // clean up
+            setTimeout(function() {
+                $io.remove();
+                xhr.responseXML = null;
+            }, 100);
+        };
+
+        function toXml(s, doc) {
+            if (window.ActiveXObject) {
+                doc = new ActiveXObject('Microsoft.XMLDOM');
+                doc.async = 'false';
+                doc.loadXML(s);
+            }
+            else
+                doc = (new DOMParser()).parseFromString(s, 'text/xml');
+            return (doc && doc.documentElement && doc.documentElement.tagName != 'parsererror') ? doc : null;
+        };
+    };
+};
+
+/**
+ * ajaxForm() provides a mechanism for fully automating form submission.
+ *
+ * The advantages of using this method instead of ajaxSubmit() are:
+ *
+ * 1: This method will include coordinates for <input type="image" /> elements (if the element
+ *    is used to submit the form).
+ * 2. This method will include the submit element's name/value data (for the element that was
+ *    used to submit the form).
+ * 3. This method binds the submit() method to the form for you.
+ *
+ * Note that for accurate x/y coordinates of image submit elements in all browsers
+ * you need to also use the "dimensions" plugin (this method will auto-detect its presence).
+ *
+ * The options argument for ajaxForm works exactly as it does for ajaxSubmit.  ajaxForm merely
+ * passes the options argument along after properly binding events for submit elements and
+ * the form itself.  See ajaxSubmit for a full description of the options argument.
+ *
+ *
+ * @example
+ * var options = {
+ *     target: '#myTargetDiv'
+ * };
+ * $('#myForm').ajaxSForm(options);
+ * @desc Bind form's submit event so that 'myTargetDiv' is updated with the server response
+ *       when the form is submitted.
+ *
+ *
+ * @example
+ * var options = {
+ *     success: function(responseText) {
+ *         alert(responseText);
+ *     }
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc Bind form's submit event so that server response is alerted after the form is submitted.
+ *
+ *
+ * @example
+ * var options = {
+ *     beforeSubmit: function(formArray, jqForm) {
+ *         if (formArray.length == 0) {
+ *             alert('Please enter data.');
+ *             return false;
+ *         }
+ *     }
+ * };
+ * $('#myForm').ajaxSubmit(options);
+ * @desc Bind form's submit event so that pre-submit callback is invoked before the form
+ *       is submitted.
+ *
+ *
+ * @name   ajaxForm
+ * @param  options  object literal containing options which control the form submission process
+ * @return jQuery
+ * @cat    Plugins/Form
+ * @type   jQuery
+ */
+$.fn.ajaxForm = function(options) {
+    return this.ajaxFormUnbind().bind('submit.form-plugin',function() {
+        $(this).ajaxSubmit(options);
+        return false;
+    }).each(function() {
+        // store options in hash
+        $(":submit,input:image", this).bind('click.form-plugin',function(e) {
+            var $form = this.form;
+            $form.clk = this;
+            if (this.type == 'image') {
+                if (e.offsetX != undefined) {
+                    $form.clk_x = e.offsetX;
+                    $form.clk_y = e.offsetY;
+                } else if (typeof $.fn.offset == 'function') { // try to use dimensions plugin
+                    var offset = $(this).offset();
+                    $form.clk_x = e.pageX - offset.left;
+                    $form.clk_y = e.pageY - offset.top;
+                } else {
+                    $form.clk_x = e.pageX - this.offsetLeft;
+                    $form.clk_y = e.pageY - this.offsetTop;
+                }
+            }
+            // clear form vars
+            setTimeout(function() { $form.clk = $form.clk_x = $form.clk_y = null; }, 10);
+        });
+    });
+};
+
+
+/**
+ * ajaxFormUnbind unbinds the event handlers that were bound by ajaxForm
+ *
+ * @name   ajaxFormUnbind
+ * @return jQuery
+ * @cat    Plugins/Form
+ * @type   jQuery
+ */
+$.fn.ajaxFormUnbind = function() {
+    this.unbind('submit.form-plugin');
+    return this.each(function() {
+        $(":submit,input:image", this).unbind('click.form-plugin');
+    });
+
+};
+
+/**
+ * formToArray() gathers form element data into an array of objects that can
+ * be passed to any of the following ajax functions: $.get, $.post, or load.
+ * Each object in the array has both a 'name' and 'value' property.  An example of
+ * an array for a simple login form might be:
+ *
+ * [ { name: 'username', value: 'jresig' }, { name: 'password', value: 'secret' } ]
+ *
+ * It is this array that is passed to pre-submit callback functions provided to the
+ * ajaxSubmit() and ajaxForm() methods.
+ *
+ * The semantic argument can be used to force form serialization in semantic order.
+ * This is normally true anyway, unless the form contains input elements of type='image'.
+ * If your form must be submitted with name/value pairs in semantic order and your form
+ * contains an input of type='image" then pass true for this arg, otherwise pass false
+ * (or nothing) to avoid the overhead for this logic.
+ *
+ * @example var data = $("#myForm").formToArray();
+ * $.post( "myscript.cgi", data );
+ * @desc Collect all the data from a form and submit it to the server.
+ *
+ * @name formToArray
+ * @param semantic true if serialization must maintain strict semantic ordering of elements (slower)
+ * @type Array<Object>
+ * @cat Plugins/Form
+ */
+$.fn.formToArray = function(semantic) {
+    var a = [];
+    if (this.length == 0) return a;
+
+    var form = this[0];
+    var els = semantic ? form.getElementsByTagName('*') : form.elements;
+    if (!els) return a;
+    for(var i=0, max=els.length; i < max; i++) {
+        var el = els[i];
+        var n = el.name;
+        if (!n) continue;
+
+        if (semantic && form.clk && el.type == "image") {
+            // handle image inputs on the fly when semantic == true
+            if(!el.disabled && form.clk == el)
+                a.push({name: n+'.x', value: form.clk_x}, {name: n+'.y', value: form.clk_y});
+            continue;
+        }
+
+        var v = $.fieldValue(el, true);
+        if (v && v.constructor == Array) {
+            for(var j=0, jmax=v.length; j < jmax; j++)
+                a.push({name: n, value: v[j]});
+        }
+        else if (v !== null && typeof v != 'undefined')
+            a.push({name: n, value: v});
+    }
+
+    if (!semantic && form.clk) {
+        // input type=='image' are not found in elements array! handle them here
+        var inputs = form.getElementsByTagName("input");
+        for(var i=0, max=inputs.length; i < max; i++) {
+            var input = inputs[i];
+            var n = input.name;
+            if(n && !input.disabled && input.type == "image" && form.clk == input)
+                a.push({name: n+'.x', value: form.clk_x}, {name: n+'.y', value: form.clk_y});
+        }
+    }
+    return a;
+};
+
+
+/**
+ * Serializes form data into a 'submittable' string. This method will return a string
+ * in the format: name1=value1&amp;name2=value2
+ *
+ * The semantic argument can be used to force form serialization in semantic order.
+ * If your form must be submitted with name/value pairs in semantic order then pass
+ * true for this arg, otherwise pass false (or nothing) to avoid the overhead for
+ * this logic (which can be significant for very large forms).
+ *
+ * @example var data = $("#myForm").formSerialize();
+ * $.ajax('POST', "myscript.cgi", data);
+ * @desc Collect all the data from a form into a single string
+ *
+ * @name formSerialize
+ * @param semantic true if serialization must maintain strict semantic ordering of elements (slower)
+ * @type String
+ * @cat Plugins/Form
+ */
+$.fn.formSerialize = function(semantic) {
+    //hand off to jQuery.param for proper encoding
+    return $.param(this.formToArray(semantic));
+};
+
+
+/**
+ * Serializes all field elements in the jQuery object into a query string.
+ * This method will return a string in the format: name1=value1&amp;name2=value2
+ *
+ * The successful argument controls whether or not serialization is limited to
+ * 'successful' controls (per http://www.w3.org/TR/html4/interact/forms.html#successful-controls).
+ * The default value of the successful argument is true.
+ *
+ * @example var data = $("input").fieldSerialize();
+ * @desc Collect the data from all successful input elements into a query string
+ *
+ * @example var data = $(":radio").fieldSerialize();
+ * @desc Collect the data from all successful radio input elements into a query string
+ *
+ * @example var data = $("#myForm :checkbox").fieldSerialize();
+ * @desc Collect the data from all successful checkbox input elements in myForm into a query string
+ *
+ * @example var data = $("#myForm :checkbox").fieldSerialize(false);
+ * @desc Collect the data from all checkbox elements in myForm (even the unchecked ones) into a query string
+ *
+ * @example var data = $(":input").fieldSerialize();
+ * @desc Collect the data from all successful input, select, textarea and button elements into a query string
+ *
+ * @name fieldSerialize
+ * @param successful true if only successful controls should be serialized (default is true)
+ * @type String
+ * @cat Plugins/Form
+ */
+$.fn.fieldSerialize = function(successful) {
+    var a = [];
+    this.each(function() {
+        var n = this.name;
+        if (!n) return;
+        var v = $.fieldValue(this, successful);
+        if (v && v.constructor == Array) {
+            for (var i=0,max=v.length; i < max; i++)
+                a.push({name: n, value: v[i]});
+        }
+        else if (v !== null && typeof v != 'undefined')
+            a.push({name: this.name, value: v});
+    });
+    //hand off to jQuery.param for proper encoding
+    return $.param(a);
+};
+
+
+/**
+ * Returns the value(s) of the element in the matched set.  For example, consider the following form:
+ *
+ *  <form><fieldset>
+ *      <input name="A" type="text" />
+ *      <input name="A" type="text" />
+ *      <input name="B" type="checkbox" value="B1" />
+ *      <input name="B" type="checkbox" value="B2"/>
+ *      <input name="C" type="radio" value="C1" />
+ *      <input name="C" type="radio" value="C2" />
+ *  </fieldset></form>
+ *
+ *  var v = $(':text').fieldValue();
+ *  // if no values are entered into the text inputs
+ *  v == ['','']
+ *  // if values entered into the text inputs are 'foo' and 'bar'
+ *  v == ['foo','bar']
+ *
+ *  var v = $(':checkbox').fieldValue();
+ *  // if neither checkbox is checked
+ *  v === undefined
+ *  // if both checkboxes are checked
+ *  v == ['B1', 'B2']
+ *
+ *  var v = $(':radio').fieldValue();
+ *  // if neither radio is checked
+ *  v === undefined
+ *  // if first radio is checked
+ *  v == ['C1']
+ *
+ * The successful argument controls whether or not the field element must be 'successful'
+ * (per http://www.w3.org/TR/html4/interact/forms.html#successful-controls).
+ * The default value of the successful argument is true.  If this value is false the value(s)
+ * for each element is returned.
+ *
+ * Note: This method *always* returns an array.  If no valid value can be determined the
+ *       array will be empty, otherwise it will contain one or more values.
+ *
+ * @example var data = $("#myPasswordElement").fieldValue();
+ * alert(data[0]);
+ * @desc Alerts the current value of the myPasswordElement element
+ *
+ * @example var data = $("#myForm :input").fieldValue();
+ * @desc Get the value(s) of the form elements in myForm
+ *
+ * @example var data = $("#myForm :checkbox").fieldValue();
+ * @desc Get the value(s) for the successful checkbox element(s) in the jQuery object.
+ *
+ * @example var data = $("#mySingleSelect").fieldValue();
+ * @desc Get the value(s) of the select control
+ *
+ * @example var data = $(':text').fieldValue();
+ * @desc Get the value(s) of the text input or textarea elements
+ *
+ * @example var data = $("#myMultiSelect").fieldValue();
+ * @desc Get the values for the select-multiple control
+ *
+ * @name fieldValue
+ * @param Boolean successful true if only the values for successful controls should be returned (default is true)
+ * @type Array<String>
+ * @cat Plugins/Form
+ */
+$.fn.fieldValue = function(successful) {
+    for (var val=[], i=0, max=this.length; i < max; i++) {
+        var el = this[i];
+        var v = $.fieldValue(el, successful);
+        if (v === null || typeof v == 'undefined' || (v.constructor == Array && !v.length))
+            continue;
+        v.constructor == Array ? $.merge(val, v) : val.push(v);
+    }
+    return val;
+};
+
+/**
+ * Returns the value of the field element.
+ *
+ * The successful argument controls whether or not the field element must be 'successful'
+ * (per http://www.w3.org/TR/html4/interact/forms.html#successful-controls).
+ * The default value of the successful argument is true.  If the given element is not
+ * successful and the successful arg is not false then the returned value will be null.
+ *
+ * Note: If the successful flag is true (default) but the element is not successful, the return will be null
+ * Note: The value returned for a successful select-multiple element will always be an array.
+ * Note: If the element has no value the return value will be undefined.
+ *
+ * @example var data = jQuery.fieldValue($("#myPasswordElement")[0]);
+ * @desc Gets the current value of the myPasswordElement element
+ *
+ * @name fieldValue
+ * @param Element el The DOM element for which the value will be returned
+ * @param Boolean successful true if value returned must be for a successful controls (default is true)
+ * @type String or Array<String> or null or undefined
+ * @cat Plugins/Form
+ */
+$.fieldValue = function(el, successful) {
+    var n = el.name, t = el.type, tag = el.tagName.toLowerCase();
+    if (typeof successful == 'undefined') successful = true;
+
+    if (successful && (!n || el.disabled || t == 'reset' || t == 'button' ||
+        (t == 'checkbox' || t == 'radio') && !el.checked ||
+        (t == 'submit' || t == 'image') && el.form && el.form.clk != el ||
+        tag == 'select' && el.selectedIndex == -1))
+            return null;
+
+    if (tag == 'select') {
+        var index = el.selectedIndex;
+        if (index < 0) return null;
+        var a = [], ops = el.options;
+        var one = (t == 'select-one');
+        var max = (one ? index+1 : ops.length);
+        for(var i=(one ? index : 0); i < max; i++) {
+            var op = ops[i];
+            if (op.selected) {
+                // extra pain for IE...
+                var v = $.browser.msie && !(op.attributes['value'].specified) ? op.text : op.value;
+                if (one) return v;
+                a.push(v);
+            }
+        }
+        return a;
+    }
+    return el.value;
+};
+
+
+/**
+ * Clears the form data.  Takes the following actions on the form's input fields:
+ *  - input text fields will have their 'value' property set to the empty string
+ *  - select elements will have their 'selectedIndex' property set to -1
+ *  - checkbox and radio inputs will have their 'checked' property set to false
+ *  - inputs of type submit, button, reset, and hidden will *not* be effected
+ *  - button elements will *not* be effected
+ *
+ * @example $('form').clearForm();
+ * @desc Clears all forms on the page.
+ *
+ * @name clearForm
+ * @type jQuery
+ * @cat Plugins/Form
+ */
+$.fn.clearForm = function() {
+    return this.each(function() {
+        $('input,select,textarea', this).clearFields();
+    });
+};
+
+/**
+ * Clears the selected form elements.  Takes the following actions on the matched elements:
+ *  - input text fields will have their 'value' property set to the empty string
+ *  - select elements will have their 'selectedIndex' property set to -1
+ *  - checkbox and radio inputs will have their 'checked' property set to false
+ *  - inputs of type submit, button, reset, and hidden will *not* be effected
+ *  - button elements will *not* be effected
+ *
+ * @example $('.myInputs').clearFields();
+ * @desc Clears all inputs with class myInputs
+ *
+ * @name clearFields
+ * @type jQuery
+ * @cat Plugins/Form
+ */
+$.fn.clearFields = $.fn.clearInputs = function() {
+    return this.each(function() {
+        var t = this.type, tag = this.tagName.toLowerCase();
+        if (t == 'text' || t == 'password' || tag == 'textarea')
+            this.value = '';
+        else if (t == 'checkbox' || t == 'radio')
+            this.checked = false;
+        else if (tag == 'select')
+            this.selectedIndex = -1;
+    });
+};
+
+
+/**
+ * Resets the form data.  Causes all form elements to be reset to their original value.
+ *
+ * @example $('form').resetForm();
+ * @desc Resets all forms on the page.
+ *
+ * @name resetForm
+ * @type jQuery
+ * @cat Plugins/Form
+ */
+$.fn.resetForm = function() {
+    return this.each(function() {
+        // guard against an input with the name of 'reset'
+        // note that IE reports the reset function as an 'object'
+        if (typeof this.reset == 'function' || (typeof this.reset == 'object' && !this.reset.nodeType))
+            this.reset();
+    });
+};
+
+
+/**
+ * Enables or disables any matching elements.
+ *
+ * @example $(':radio').enabled(false);
+ * @desc Disables all radio buttons
+ *
+ * @name select
+ * @type jQuery
+ * @cat Plugins/Form
+ */
+$.fn.enable = function(b) { 
+    if (b == undefined) b = true;
+    return this.each(function() { 
+        this.disabled = !b 
+    });
+};
+
+/**
+ * Checks/unchecks any matching checkboxes or radio buttons and
+ * selects/deselects and matching option elements.
+ *
+ * @example $(':checkbox').select();
+ * @desc Checks all checkboxes
+ *
+ * @name select
+ * @type jQuery
+ * @cat Plugins/Form
+ */
+$.fn.select = function(select) {
+    if (select == undefined) select = true;
+    return this.each(function() { 
+        var t = this.type;
+        if (t == 'checkbox' || t == 'radio')
+            this.checked = select;
+        else if (this.tagName.toLowerCase() == 'option') {
+            var $sel = $(this).parent('select');
+            if (select && $sel[0] && $sel[0].type == 'select-one') {
+                // deselect all other options
+                $sel.find('option').select(false);
+            }
+            this.selected = select;
+        }
+    });
+};
+
+})(jQuery);
+/**
+* hoverIntent is similar to jQuery's built-in "hover" function except that
+* instead of firing the onMouseOver event immediately, hoverIntent checks
+* to see if the user's mouse has slowed down (beneath the sensitivity
+* threshold) before firing the onMouseOver event.
+* 
+* hoverIntent r5 // 2007.03.27 // jQuery 1.1.2
+* <http://cherne.net/brian/resources/jquery.hoverIntent.html>
+* 
+* hoverIntent is currently available for use in all personal or commercial 
+* projects under both MIT and GPL licenses. This means that you can choose 
+* the license that best suits your project, and use it accordingly.
+* 
+* // basic usage (just like .hover) receives onMouseOver and onMouseOut functions
+* $("ul li").hoverIntent( showNav , hideNav );
+* 
+* // advanced usage receives configuration object only
+* $("ul li").hoverIntent({
+* sensitivity: 2, // number = sensitivity threshold (must be 1 or higher)
+* interval: 50,   // number = milliseconds of polling interval
+* over: showNav,  // function = onMouseOver callback (required)
+* timeout: 100,   // number = milliseconds delay before onMouseOut function call
+* out: hideNav    // function = onMouseOut callback (required)
+* });
+* 
+* @param  f  onMouseOver function || An object with configuration options
+* @param  g  onMouseOut function  || Nothing (use configuration options object)
+* @return    The object (aka "this") that called hoverIntent, and the event object
+* @author    Brian Cherne <brian@cherne.net>
+*/
+(function($){
+  $.fn.hoverIntent = function(f,g) {
+    // default configuration options
+    var cfg = {
+      sensitivity: 7,
+      interval: 100,
+      timeout: 0
+    };
+    // override configuration options with user supplied object
+    cfg = $.extend(cfg, g ? { over: f, out: g } : f );
+
+    // instantiate variables
+    // cX, cY = current X and Y position of mouse, updated by mousemove event
+    // pX, pY = previous X and Y position of mouse, set by mouseover and polling interval
+    var cX, cY, pX, pY;
+
+    // A private function for getting mouse position
+    var track = function(ev) {
+      cX = ev.pageX;
+      cY = ev.pageY;
+    };
+
+    // A private function for comparing current and previous mouse position
+    var compare = function(ev,ob) {
+      ob.hoverIntent_t = clearTimeout(ob.hoverIntent_t);
+      // compare mouse positions to see if they've crossed the threshold
+      if ( ( Math.abs(pX-cX) + Math.abs(pY-cY) ) < cfg.sensitivity ) {
+        $(ob).unbind("mousemove",track);
+        // set hoverIntent state to true (so mouseOut can be called)
+        ob.hoverIntent_s = 1;
+        return cfg.over.apply(ob,[ev]);
+      } else {
+        // set previous coordinates for next time
+        pX = cX; pY = cY;
+        // use self-calling timeout, guarantees intervals are spaced out properly (avoids JavaScript timer bugs)
+        ob.hoverIntent_t = setTimeout( function(){compare(ev, ob);} , cfg.interval );
+      }
+    };
+
+    // A private function for delaying the mouseOut function
+    var delay = function(ev,ob) {
+      ob.hoverIntent_t = clearTimeout(ob.hoverIntent_t);
+      ob.hoverIntent_s = 0;
+      return cfg.out.apply(ob,[ev]);
+    };
+
+    // A private function for handling mouse 'hovering'
+    var handleHover = function(e) {
+      // next three lines copied from jQuery.hover, ignore children onMouseOver/onMouseOut
+      var p = (e.type == "mouseover" ? e.fromElement : e.toElement) || e.relatedTarget;
+      while ( p && p != this ) { try { p = p.parentNode; } catch(e) { p = this; } }
+      if ( p == this ) { return false; }
+
+      // copy objects to be passed into t (required for event object to be passed in IE)
+      var ev = jQuery.extend({},e);
+      var ob = this;
+
+      // cancel hoverIntent timer if it exists
+      if (ob.hoverIntent_t) { ob.hoverIntent_t = clearTimeout(ob.hoverIntent_t); }
+
+      // else e.type == "onmouseover"
+      if (e.type == "mouseover") {
+        // set "previous" X and Y position based on initial entry point
+        pX = ev.pageX; pY = ev.pageY;
+        // update "current" X and Y position based on mousemove
+        $(ob).bind("mousemove",track);
+        // start polling interval (self-calling timeout) to compare mouse coordinates over time
+        if (ob.hoverIntent_s != 1) { ob.hoverIntent_t = setTimeout( function(){compare(ev,ob);} , cfg.interval );}
+
+      // else e.type == "onmouseout"
+      } else {
+        // unbind expensive mousemove event
+        $(ob).unbind("mousemove",track);
+        // if hoverIntent state is true, then call the mouseOut function after the specified delay
+        if (ob.hoverIntent_s == 1) { ob.hoverIntent_t = setTimeout( function(){delay(ev,ob);} , cfg.timeout );}
+      }
+    };
+
+    // bind the function to the two event listeners
+    return this.mouseover(handleHover).mouseout(handleHover);
+  };
+})(jQuery);/* Copyright (c) 2007 Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
+ * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
+ * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+ *
+ * Version: 1.0.2
+ * Requires jQuery 1.1.3+
+ * Docs: http://docs.jquery.com/Plugins/livequery
+ */
+
+(function($) {
+	
+$.extend($.fn, {
+	livequery: function(type, fn, fn2) {
+		var self = this, q;
+		
+		// Handle different call patterns
+		if ($.isFunction(type))
+			fn2 = fn, fn = type, type = undefined;
+			
+		// See if Live Query already exists
+		$.each( $.livequery.queries, function(i, query) {
+			if ( self.selector == query.selector && self.context == query.context &&
+				type == query.type && (!fn || fn.$lqguid == query.fn.$lqguid) && (!fn2 || fn2.$lqguid == query.fn2.$lqguid) )
+					// Found the query, exit the each loop
+					return (q = query) && false;
+		});
+		
+		// Create new Live Query if it wasn't found
+		q = q || new $.livequery(this.selector, this.context, type, fn, fn2);
+		
+		// Make sure it is running
+		q.stopped = false;
+		
+		// Run it
+		$.livequery.run( q.id );
+		
+		// Contnue the chain
+		return this;
+	},
+	
+	expire: function(type, fn, fn2) {
+		var self = this;
+		
+		// Handle different call patterns
+		if ($.isFunction(type))
+			fn2 = fn, fn = type, type = undefined;
+			
+		// Find the Live Query based on arguments and stop it
+		$.each( $.livequery.queries, function(i, query) {
+			if ( self.selector == query.selector && self.context == query.context && 
+				(!type || type == query.type) && (!fn || fn.$lqguid == query.fn.$lqguid) && (!fn2 || fn2.$lqguid == query.fn2.$lqguid) && !this.stopped )
+					$.livequery.stop(query.id);
+		});
+		
+		// Continue the chain
+		return this;
+	}
+});
+
+$.livequery = function(selector, context, type, fn, fn2) {
+	this.selector = selector;
+	this.context  = context || document;
+	this.type     = type;
+	this.fn       = fn;
+	this.fn2      = fn2;
+	this.elements = [];
+	this.stopped  = false;
+	
+	// The id is the index of the Live Query in $.livequery.queries
+	this.id = $.livequery.queries.push(this)-1;
+	
+	// Mark the functions for matching later on
+	fn.$lqguid = fn.$lqguid || $.livequery.guid++;
+	if (fn2) fn2.$lqguid = fn2.$lqguid || $.livequery.guid++;
+	
+	// Return the Live Query
+	return this;
+};
+
+$.livequery.prototype = {
+	stop: function() {
+		var query = this;
+		
+		if ( this.type )
+			// Unbind all bound events
+			this.elements.unbind(this.type, this.fn);
+		else if (this.fn2)
+			// Call the second function for all matched elements
+			this.elements.each(function(i, el) {
+				query.fn2.apply(el);
+			});
+			
+		// Clear out matched elements
+		this.elements = [];
+		
+		// Stop the Live Query from running until restarted
+		this.stopped = true;
+	},
+	
+	run: function() {
+		// Short-circuit if stopped
+		if ( this.stopped ) return;
+		var query = this;
+		
+		var oEls = this.elements,
+			els  = $(this.selector, this.context),
+			nEls = els.not(oEls);
+		
+		// Set elements to the latest set of matched elements
+		this.elements = els;
+		
+		if (this.type) {
+			// Bind events to newly matched elements
+			nEls.bind(this.type, this.fn);
+			
+			// Unbind events to elements no longer matched
+			if (oEls.length > 0)
+				$.each(oEls, function(i, el) {
+					if ( $.inArray(el, els) < 0 )
+						$.event.remove(el, query.type, query.fn);
+				});
+		}
+		else {
+			// Call the first function for newly matched elements
+			nEls.each(function() {
+				query.fn.apply(this);
+			});
+			
+			// Call the second function for elements no longer matched
+			if ( this.fn2 && oEls.length > 0 )
+				$.each(oEls, function(i, el) {
+					if ( $.inArray(el, els) < 0 )
+						query.fn2.apply(el);
+				});
+		}
+	}
+};
+
+$.extend($.livequery, {
+	guid: 0,
+	queries: [],
+	queue: [],
+	running: false,
+	timeout: null,
+	
+	checkQueue: function() {
+		if ( $.livequery.running && $.livequery.queue.length ) {
+			var length = $.livequery.queue.length;
+			// Run each Live Query currently in the queue
+			while ( length-- )
+				$.livequery.queries[ $.livequery.queue.shift() ].run();
+		}
+	},
+	
+	pause: function() {
+		// Don't run anymore Live Queries until restarted
+		$.livequery.running = false;
+	},
+	
+	play: function() {
+		// Restart Live Queries
+		$.livequery.running = true;
+		// Request a run of the Live Queries
+		$.livequery.run();
+	},
+	
+	registerPlugin: function() {
+		$.each( arguments, function(i,n) {
+			// Short-circuit if the method doesn't exist
+			if (!$.fn[n]) return;
+			
+			// Save a reference to the original method
+			var old = $.fn[n];
+			
+			// Create a new method
+			$.fn[n] = function() {
+				// Call the original method
+				var r = old.apply(this, arguments);
+				
+				// Request a run of the Live Queries
+				$.livequery.run();
+				
+				// Return the original methods result
+				return r;
+			}
+		});
+	},
+	
+	run: function(id) {
+		if (id != undefined) {
+			// Put the particular Live Query in the queue if it doesn't already exist
+			if ( $.inArray(id, $.livequery.queue) < 0 )
+				$.livequery.queue.push( id );
+		}
+		else
+			// Put each Live Query in the queue if it doesn't already exist
+			$.each( $.livequery.queries, function(id) {
+				if ( $.inArray(id, $.livequery.queue) < 0 )
+					$.livequery.queue.push( id );
+			});
+		
+		// Clear timeout if it already exists
+		if ($.livequery.timeout) clearTimeout($.livequery.timeout);
+		// Create a timeout to check the queue and actually run the Live Queries
+		$.livequery.timeout = setTimeout($.livequery.checkQueue, 20);
+	},
+	
+	stop: function(id) {
+		if (id != undefined)
+			// Stop are particular Live Query
+			$.livequery.queries[ id ].stop();
+		else
+			// Stop all Live Queries
+			$.each( $.livequery.queries, function(id) {
+				$.livequery.queries[ id ].stop();
+			});
+	}
+});
+
+// Register core DOM manipulation methods
+$.livequery.registerPlugin('append', 'prepend', 'after', 'before', 'wrap', 'attr', 'removeAttr', 'addClass', 'removeClass', 'toggleClass', 'empty', 'remove');
+
+// Run Live Queries when the Document is ready
+$(function() { $.livequery.play(); });
+
+
+// Save a reference to the original init method
+var init = $.prototype.init;
+
+// Create a new init method that exposes two new properties: selector and context
+$.prototype.init = function(a,c) {
+	// Call the original init and save the result
+	var r = init.apply(this, arguments);
+	
+	// Copy over properties if they exist already
+	if (a && a.selector)
+		r.context = a.context, r.selector = a.selector;
+		
+	// Set properties
+	if ( typeof a == 'string' )
+		r.context = c || document, r.selector = a;
+	
+	// Return the result
+	return r;
+};
+
+// Give the init function the jQuery prototype for later instantiation (needed after Rev 4091)
+$.prototype.init.prototype = $.prototype;
+	
+})(jQuery);
+// Returns whether or not a result set has results in it
+jQuery.fn.onPage = function() { 
+  return this.size() > 0;
+} 
+
+jQuery.fn.notOnPage = function() { 
+  return !this.onPage();
+} 
+
+jQuery.ajaxSetup({ 
+  beforeSend: function(xhr) {xhr.setRequestHeader("Accept", "text/javascript")}
+});
+/*
+ * Tabs 3 - New Wave Tabs
+ *
+ * Copyright (c) 2007 Klaus Hartl (stilbuero.de)
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ *
+ * http://docs.jquery.com/UI/Tabs
+ */
+
+(function($) {
+
+    // if the UI scope is not availalable, add it
+    $.ui = $.ui || {};
+
+    // tabs API methods
+    $.fn.tabs = function() {
+        var method = typeof arguments[0] == 'string' && arguments[0];
+        var args = method && Array.prototype.slice.call(arguments, 1) || arguments;
+
+        return method == 'length' ?
+            $.data(this[0], 'tabs').$tabs.length :
+            this.each(function() {
+                if (method) {
+                    var tabs = $.data(this, 'tabs');
+                    if (tabs) tabs[method].apply(tabs, args);
+                } else
+                    new $.ui.tabs(this, args[0] || {});
+            });
+    };
+
+    // tabs class
+    $.ui.tabs = function(el, options) {
+        var self = this;
+        
+        this.options = $.extend({}, $.ui.tabs.defaults, options);
+        this.element = el;
+
+        // doesn't extend with null
+        if (options.selected === null)
+            this.options.selected = null;
+
+        this.options.event += '.tabs'; // namespace event
+
+        $(el).bind('setData.tabs', function(event, key, value) {
+            if ((/^selected/).test(key))
+                self.select(value);
+            else {
+                self.options[key] = value;
+                self.tabify();
+            }
+        }).bind('getData.tabs', function(event, key) {
+            return self.options[key];
+        });
+
+        // save instance for later
+        $.data(el, 'tabs', this);
+
+        // create tabs
+        this.tabify(true);
+    };
+    
+    $.ui.tabs.defaults = {
+        // basic setup
+        selected: 0,
+        unselect: false,
+        event: 'click',
+        disabled: [],
+        cookie: null, // e.g. { expires: 7, path: '/', domain: 'jquery.com', secure: true }
+        // TODO history: false,
+
+        // Ajax
+        spinner: 'Loading&#8230;',
+        cache: false,
+        idPrefix: 'ui-tabs-',
+        ajaxOptions: {},
+
+        // animations
+        fx: null, // e.g. { height: 'toggle', opacity: 'toggle', duration: 200 }
+
+        // templates
+        tabTemplate: '<li><a href="#{href}"><span>#{label}</span></a></li>',
+        panelTemplate: '<div></div>',
+
+        // CSS classes
+        navClass: 'ui-tabs-nav',
+        selectedClass: 'ui-tabs-selected',
+        unselectClass: 'ui-tabs-unselect',
+        disabledClass: 'ui-tabs-disabled',
+        panelClass: 'ui-tabs-panel',
+        hideClass: 'ui-tabs-hide',
+        loadingClass: 'ui-tabs-loading'
+    };
+
+    // instance methods
+    $.extend($.ui.tabs.prototype, {
+        tabId: function(a) {
+            return a.title && a.title.replace(/\s/g, '_').replace(/[^A-Za-z0-9\-_:\.]/g, '')
+                || this.options.idPrefix + $.data(a);
+        },
+        ui: function(tab, panel) {
+            return {
+                instance: this,
+                options: this.options,
+                tab: tab,
+                panel: panel
+            };
+        },
+        tabify: function(init) {
+
+            this.$lis = $('li:has(a[href])', this.element);
+            this.$tabs = this.$lis.map(function() { return $('a', this)[0]; });
+            this.$panels = $([]);
+
+            var self = this, o = this.options;
+
+            this.$tabs.each(function(i, a) {
+                // inline tab
+                if (a.hash && a.hash.replace('#', '')) // Safari 2 reports '#' for an empty hash
+                    self.$panels = self.$panels.add(a.hash);
+                // remote tab
+                else if ($(a).attr('href') != '#') { // prevent loading the page itself if href is just "#"
+                    $.data(a, 'href.tabs', a.href); // required for restore on destroy
+                    $.data(a, 'load.tabs', a.href); // mutable
+                    var id = self.tabId(a);
+                    a.href = '#' + id;
+                    var $panel = $('#' + id);
+                    if (!$panel.length) {
+                        $panel = $(o.panelTemplate).attr('id', id).addClass(o.panelClass)
+                            .insertAfter( self.$panels[i - 1] || self.element );
+                        $panel.data('destroy.tabs', true);
+                    }
+                    self.$panels = self.$panels.add( $panel );
+                }
+                // invalid tab href
+                else
+                    o.disabled.push(i + 1);
+            });
+
+            if (init) {
+
+                // attach necessary classes for styling if not present
+                $(this.element).hasClass(o.navClass) || $(this.element).addClass(o.navClass);
+                this.$panels.each(function() {
+                    var $this = $(this);
+                    $this.hasClass(o.panelClass) || $this.addClass(o.panelClass);
+                });
+
+                // Try to retrieve selected tab:
+                // 1. from fragment identifier in url if present
+                // 2. from cookie
+                // 3. from selected class attribute on <li>
+                // 4. otherwise use given "selected" option
+                // 5. check if tab is disabled
+                this.$tabs.each(function(i, a) {
+                    if (location.hash) {
+                        if (a.hash == location.hash) {
+                            o.selected = i;
+                            // prevent page scroll to fragment
+                            //if (($.browser.msie || $.browser.opera) && !o.remote) {
+                            if ($.browser.msie || $.browser.opera) {
+                                var $toShow = $(location.hash), toShowId = $toShow.attr('id');
+                                $toShow.attr('id', '');
+                                setTimeout(function() {
+                                    $toShow.attr('id', toShowId); // restore id
+                                }, 500);
+                            }
+                            scrollTo(0, 0);
+                            return false; // break
+                        }
+                    } else if (o.cookie) {
+                        var index = parseInt($.cookie('ui-tabs' + $.data(self.element)),10);
+                        if (index && self.$tabs[index]) {
+                            o.selected = index;
+                            return false; // break
+                        }
+                    } else if ( self.$lis.eq(i).hasClass(o.selectedClass) ) {
+                        o.selected = i;
+                        return false; // break
+                    }
+                });
+
+                // highlight selected tab
+                this.$panels.addClass(o.hideClass);
+                this.$lis.removeClass(o.selectedClass);
+                if (o.selected !== null) {
+                    this.$panels.eq(o.selected).show().removeClass(o.hideClass); // use show and remove class to show in any case no matter how it has been hidden before
+                    this.$lis.eq(o.selected).addClass(o.selectedClass);
+                }
+
+                // load if remote tab
+                var href = o.selected !== null && $.data(this.$tabs[o.selected], 'load.tabs');
+                if (href)
+                    this.load(o.selected);
+
+                // Take disabling tabs via class attribute from HTML
+                // into account and update option properly...
+                o.disabled = $.unique(o.disabled.concat(
+                    $.map(this.$lis.filter('.' + o.disabledClass),
+                        function(n, i) { return self.$lis.index(n); } )
+                )).sort();
+                
+                // clean up to avoid memory leaks in certain versions of IE 6
+                $(window).bind('unload', function() {
+                    self.$tabs.unbind('.tabs');
+                    self.$lis = self.$tabs = self.$panels = null;
+                });
+
+            }
+
+            // disable tabs
+            for (var i = 0, li; li = this.$lis[i]; i++)
+                $(li)[$.inArray(i, o.disabled) != -1 && !$(li).hasClass(o.selectedClass) ? 'addClass' : 'removeClass'](o.disabledClass);
+
+            // reset cache if switching from cached to not cached
+            if (o.cache === false)
+                this.$tabs.removeData('cache.tabs');
+            
+            // set up animations
+            var hideFx, showFx, baseFx = { 'min-width': 0, duration: 1 }, baseDuration = 'normal';
+            if (o.fx && o.fx.constructor == Array)
+                hideFx = o.fx[0] || baseFx, showFx = o.fx[1] || baseFx;
+            else
+                hideFx = showFx = o.fx || baseFx;
+
+            // reset some styles to maintain print style sheets etc.
+            var resetCSS = { display: '', overflow: '', height: '' };
+            if (!$.browser.msie) // not in IE to prevent ClearType font issue
+                resetCSS.opacity = '';
+
+            // Hide a tab, animation prevents browser scrolling to fragment,
+            // $show is optional.
+            function hideTab(clicked, $hide, $show) {
+                $hide.animate(hideFx, hideFx.duration || baseDuration, function() { //
+                    $hide.addClass(o.hideClass).css(resetCSS); // maintain flexible height and accessibility in print etc.
+                    if ($.browser.msie && hideFx.opacity)
+                        $hide[0].style.filter = '';
+                    if ($show)
+                        showTab(clicked, $show, $hide);
+                });
+            }
+
+            // Show a tab, animation prevents browser scrolling to fragment,
+            // $hide is optional.
+            function showTab(clicked, $show, $hide) {
+                if (showFx === baseFx)
+                    $show.css('display', 'block'); // prevent occasionally occuring flicker in Firefox cause by gap between showing and hiding the tab panels
+                $show.animate(showFx, showFx.duration || baseDuration, function() {
+                    $show.removeClass(o.hideClass).css(resetCSS); // maintain flexible height and accessibility in print etc.
+                    if ($.browser.msie && showFx.opacity)
+                        $show[0].style.filter = '';
+
+                    // callback
+                    $(self.element).triggerHandler('tabsshow', [self.ui(clicked, $show[0])], o.show);
+
+                });
+            }
+
+            // switch a tab
+            function switchTab(clicked, $li, $hide, $show) {
+                /*if (o.bookmarkable && trueClick) { // add to history only if true click occured, not a triggered click
+                    $.ajaxHistory.update(clicked.hash);
+                }*/
+                $li.addClass(o.selectedClass)
+                    .siblings().removeClass(o.selectedClass);
+                hideTab(clicked, $hide, $show);
+            }
+
+            // attach tab event handler, unbind to avoid duplicates from former tabifying...
+            this.$tabs.unbind('.tabs').bind(o.event, function() {
+
+                //var trueClick = e.clientX; // add to history only if true click occured, not a triggered click
+                var $li = $(this).parents('li:eq(0)'),
+                    $hide = self.$panels.filter(':visible'),
+                    $show = $(this.hash);
+
+                // If tab is already selected and not unselectable or tab disabled or 
+                // or is already loading or click callback returns false stop here.
+                // Check if click handler returns false last so that it is not executed
+                // for a disabled or loading tab!
+                if (($li.hasClass(o.selectedClass) && !o.unselect)
+                    || $li.hasClass(o.disabledClass) 
+                    || $(this).hasClass(o.loadingClass)
+                    || $(self.element).triggerHandler('tabsselect', [self.ui(this, $show[0])], o.select) === false
+                    ) {
+                    this.blur();
+                    return false;
+                }
+
+                self.options.selected = self.$tabs.index(this);
+
+                // if tab may be closed
+                if (o.unselect) {
+                    if ($li.hasClass(o.selectedClass)) {
+                        self.options.selected = null;
+                        $li.removeClass(o.selectedClass);
+                        self.$panels.stop();
+                        hideTab(this, $hide);
+                        this.blur();
+                        return false;
+                    } else if (!$hide.length) {
+                        self.$panels.stop();
+                        var a = this;
+                        self.load(self.$tabs.index(this), function() {
+                            $li.addClass(o.selectedClass).addClass(o.unselectClass);
+                            showTab(a, $show);
+                        });
+                        this.blur();
+                        return false;
+                    }
+                }
+
+                if (o.cookie)
+                    $.cookie('ui-tabs' + $.data(self.element), self.options.selected, o.cookie);
+
+                // stop possibly running animations
+                self.$panels.stop();
+
+                // show new tab
+                if ($show.length) {
+
+                    // prevent scrollbar scrolling to 0 and than back in IE7, happens only if bookmarking/history is enabled
+                    /*if ($.browser.msie && o.bookmarkable) {
+                        var showId = this.hash.replace('#', '');
+                        $show.attr('id', '');
+                        setTimeout(function() {
+                            $show.attr('id', showId); // restore id
+                        }, 0);
+                    }*/
+
+                    var a = this;
+                    self.load(self.$tabs.index(this), $hide.length ? 
+                        function() {
+                            switchTab(a, $li, $hide, $show);
+                        } :
+                        function() {
+                            $li.addClass(o.selectedClass);
+                            showTab(a, $show);
+                        }
+                    );
+
+                    // Set scrollbar to saved position - need to use timeout with 0 to prevent browser scroll to target of hash
+                    /*var scrollX = window.pageXOffset || document.documentElement && document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+                    var scrollY = window.pageYOffset || document.documentElement && document.documentElement.scrollTop || document.body.scrollTop || 0;
+                    setTimeout(function() {
+                        scrollTo(scrollX, scrollY);
+                    }, 0);*/
+
+                } else
+                    throw 'jQuery UI Tabs: Mismatching fragment identifier.';
+
+                // Prevent IE from keeping other link focussed when using the back button
+                // and remove dotted border from clicked link. This is controlled in modern
+                // browsers via CSS, also blur removes focus from address bar in Firefox
+                // which can become a usability and annoying problem with tabsRotate.
+                if ($.browser.msie)
+                    this.blur();
+
+                //return o.bookmarkable && !!trueClick; // convert trueClick == undefined to Boolean required in IE
+                return false;
+
+            });
+
+            // disable click if event is configured to something else
+            if (!(/^click/).test(o.event))
+                this.$tabs.bind('click.tabs', function() { return false; });
+
+        },
+        add: function(url, label, index) {
+            if (index == undefined) 
+                index = this.$tabs.length; // append by default
+
+            var o = this.options;
+            var $li = $(o.tabTemplate.replace(/#\{href\}/, url).replace(/#\{label\}/, label));
+            $li.data('destroy.tabs', true);
+
+            var id = url.indexOf('#') == 0 ? url.replace('#', '') : this.tabId( $('a:first-child', $li)[0] );
+
+            // try to find an existing element before creating a new one
+            var $panel = $('#' + id);
+            if (!$panel.length) {
+                $panel = $(o.panelTemplate).attr('id', id)
+                    .addClass(o.panelClass).addClass(o.hideClass);
+                $panel.data('destroy.tabs', true);
+            }
+            if (index >= this.$lis.length) {
+                $li.appendTo(this.element);
+                $panel.appendTo(this.element.parentNode);
+            } else {
+                $li.insertBefore(this.$lis[index]);
+                $panel.insertBefore(this.$panels[index]);
+            }
+            
+            o.disabled = $.map(o.disabled,
+                function(n, i) { return n >= index ? ++n : n });
+                
+            this.tabify();
+
+            if (this.$tabs.length == 1) {
+                 $li.addClass(o.selectedClass);
+                 $panel.removeClass(o.hideClass);
+                 var href = $.data(this.$tabs[0], 'load.tabs');
+                 if (href)
+                     this.load(index, href);
+            }
+
+            // callback
+            $(this.element).triggerHandler('tabsadd',
+                [this.ui(this.$tabs[index], this.$panels[index])], o.add
+            );
+        },
+        remove: function(index) {
+            var o = this.options, $li = this.$lis.eq(index).remove(),
+                $panel = this.$panels.eq(index).remove();
+
+            // If selected tab was removed focus tab to the right or
+            // in case the last tab was removed the tab to the left.
+            if ($li.hasClass(o.selectedClass) && this.$tabs.length > 1)
+                this.select(index + (index + 1 < this.$tabs.length ? 1 : -1));
+
+            o.disabled = $.map($.grep(o.disabled, function(n, i) { return n != index; }),
+                function(n, i) { return n >= index ? --n : n });
+
+            this.tabify();
+
+            // callback
+            $(this.element).triggerHandler('tabsremove',
+                [this.ui($li.find('a')[0], $panel[0])], o.remove
+            );
+        },
+        enable: function(index) {
+            var o = this.options;
+            if ($.inArray(index, o.disabled) == -1)
+                return;
+                
+            var $li = this.$lis.eq(index).removeClass(o.disabledClass);
+            if ($.browser.safari) { // fix disappearing tab (that used opacity indicating disabling) after enabling in Safari 2...
+                $li.css('display', 'inline-block');
+                setTimeout(function() {
+                    $li.css('display', 'block');
+                }, 0);
+            }
+
+            o.disabled = $.grep(o.disabled, function(n, i) { return n != index; });
+
+            // callback
+            $(this.element).triggerHandler('tabsenable',
+                [this.ui(this.$tabs[index], this.$panels[index])], o.enable
+            );
+
+        },
+        disable: function(index) {
+            var self = this, o = this.options;
+            if (index != o.selected) { // cannot disable already selected tab
+                this.$lis.eq(index).addClass(o.disabledClass);
+
+                o.disabled.push(index);
+                o.disabled.sort();
+
+                // callback
+                $(this.element).triggerHandler('tabsdisable',
+                    [this.ui(this.$tabs[index], this.$panels[index])], o.disable
+                );
+            }
+        },
+        select: function(index) {
+            if (typeof index == 'string')
+                index = this.$tabs.index( this.$tabs.filter('[href$=' + index + ']')[0] );
+            this.$tabs.eq(index).trigger(this.options.event);
+        },
+        load: function(index, callback) { // callback is for internal usage only
+            
+            var self = this, o = this.options, $a = this.$tabs.eq(index), a = $a[0],
+                    bypassCache = callback == undefined || callback === false, url = $a.data('load.tabs');
+
+            callback = callback || function() {};
+            
+            // no remote or from cache - just finish with callback
+            if (!url || ($.data(a, 'cache.tabs') && !bypassCache)) {
+                callback();
+                return;
+            }
+
+            // load remote from here on
+            if (o.spinner) {
+                var $span = $('span', a);
+                $span.data('label.tabs', $span.html()).html('<em>' + o.spinner + '</em>');
+            }
+            var finish = function() {
+                self.$tabs.filter('.' + o.loadingClass).each(function() {
+                    $(this).removeClass(o.loadingClass);
+                    if (o.spinner) {
+                        var $span = $('span', this);
+                        $span.html($span.data('label.tabs')).removeData('label.tabs');
+                    }
+                });
+                self.xhr = null;
+            };
+            var ajaxOptions = $.extend({}, o.ajaxOptions, {
+                url: url,
+                success: function(r, s) {
+                    $(a.hash).html(r);
+                    finish();
+                    
+                    // This callback is required because the switch has to take
+                    // place after loading has completed.
+                    callback();
+
+                    if (o.cache)
+                        $.data(a, 'cache.tabs', true); // if loaded once do not load them again
+
+                    // callback
+                    $(self.element).triggerHandler('tabsload',
+                        [self.ui(self.$tabs[index], self.$panels[index])], o.load
+                    );
+
+                    o.ajaxOptions.success && o.ajaxOptions.success(r, s);
+                }
+            });
+            if (this.xhr) {
+                // terminate pending requests from other tabs and restore tab label
+                this.xhr.abort();
+                finish();
+            }
+            $a.addClass(o.loadingClass);
+            setTimeout(function() { // timeout is again required in IE, "wait" for id being restored
+                self.xhr = $.ajax(ajaxOptions);
+            }, 0);
+
+        },
+        url: function(index, url) {
+            this.$tabs.eq(index).removeData('cache.tabs').data('load.tabs', url);
+        },
+        destroy: function() {
+            var o = this.options;
+            $(this.element).unbind('.tabs')
+                .removeClass(o.navClass).removeData('tabs');
+            this.$tabs.each(function() {
+                var href = $.data(this, 'href.tabs');
+                if (href)
+                    this.href = href;
+                var $this = $(this).unbind('.tabs');
+                $.each(['href', 'load', 'cache'], function(i, prefix) {
+                      $this.removeData(prefix + '.tabs');
+                });
+            });
+            this.$lis.add(this.$panels).each(function() {
+                if ($.data(this, 'destroy.tabs'))
+                    $(this).remove();
+                else
+                    $(this).removeClass([o.selectedClass, o.unselectClass,
+                        o.disabledClass, o.panelClass, o.hideClass].join(' '));
+            });
+        }
+    });
+
+})(jQuery);

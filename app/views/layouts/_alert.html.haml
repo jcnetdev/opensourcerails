@@ -1,0 +1,6 @@
+- if current_or_anon_user.show_alert!
+  #alert_box.highlight-box
+    .top-actions= link_to "Hide", "#", :class => "hide-panel", :rel => "#alert_box"
+    %h2 Test Alert
+    %p
+      New Version!

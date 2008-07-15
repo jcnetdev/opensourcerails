@@ -1,0 +1,52 @@
+ActsAsResource
+==============
+
+acts_as_resource lets you handle nested resource controllers neatly without
+having to modify every single call to a named route to include the full list of
+resources used to reach the target resource.
+
+Consider a routing table like
+
+    map.resources :albums do |album|
+      album.resources :songs
+    end
+
+By configuring your models like
+
+    class Album < ActiveRecord::Base
+      has_many :songs
+      acts_as_resource
+    end
+
+and
+
+    class Song < ActiveRecord::Base
+      belongs_to :album
+      acts_as_resource :parent => :album
+    end
+
+You get a bunch of handy stuff. In your Song views, for instance, where before
+you had to do +song_path @song.album, @song+, you can now do: +song_path @song+
+and the named route will use the 'parent' info to work out what objects are
+needed to build the path.
+
+In your controllers meanwhile, you get a generic +fetch_resources+ which
+automagically fetches the appropriate resources for the request, checking that
+they are properly accessible from the 'base' resource and assigns them
+to appropriately named instance variables (following the conventions used by
+the resource_scaffolding that comes with Rails 1.2.1).
+
+You also get a new controller method, +resource_chain+, that you can use for
+writing generic actions. We don't *quite* have enough support to replace the
+scaffold generated controller with simple inheritance, but we're getting there.
+
+Bug Reports
+===========
+
+This is very much beta software with a distinct lack of either documentation or
+tests. I have (at least) worked out how to address the lack of tests, so expect
+more tests in the next release.
+
+In the mean time, if you have issues, drop me mail at <pdcawley@bofh.org.uk>,
+or, for the time being, post a ticket on the typo trac
+http://www.typosphere.org/, but tag the ticket [acts_as_plugin]

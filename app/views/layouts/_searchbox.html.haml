@@ -1,0 +1,5 @@
+.searchbox
+  - form_tag projects_url, :method => :get do
+    = text_field_tag :q, @search_term || "", :class => "search example", :title => "Search for Applications..."
+    = submit_tag "", :class => "find", :id => "searchsubmit"
+  = clear

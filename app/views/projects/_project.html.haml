@@ -1,0 +1,8 @@
+- if local_assigns[:project]
+  - div_for(project, cycle("", "alt")) do
+    %h2= link_to h(project.title), project_url(project), :rel => "bookmark", :title => h(project.short_description)
+    .screen-holder
+      = link_to image_tag(project.preview_url, :alt => "#{h(project.title)}"), project_url(project), :title => "#{h(project.short_description)}"
+      = clear_tag(:br)
+
+    = ratings(project, :rating_size => "small")

@@ -1,0 +1,26 @@
+- if local_assigns[:hosted_instance]
+  
+  -# hide for nonspammers
+  - if spam_shield?(hosted_instance)
+
+    .hosted-instance
+      = link_to image_tag("link.png"), hosted_instance.url
+      = link_to hosted_instance.title, hosted_instance.url
+      = link_to "more info", "#", :class => "project-action toggle", :rel => "#"+dom_id(hosted_instance)
+    
+    
+      .hosted-instance-about{:id => dom_id(hosted_instance)}
+        - if hosted_instance.description.blank?
+          [No Description Entered]
+        - else
+          = simple_format h(hosted_instance.description)
+      
+        - if hosted_instance.owned_by?(current_or_anon_user)
+          %span.actions
+            = link_to "edit", edit_project_hosted_instance_url(hosted_instance.project, hosted_instance)
+            |
+            = link_to "delete", project_hosted_instance_url(hosted_instance.project, hosted_instance), :method => :delete, :confirm => "Are you sure you want to delete this link?"
+            - if admin?
+              |
+              = link_to "spam!", spammer_user_url(hosted_instance.owner), :method => :put, :confirm => "Are you sure you want to mark this person as a spammer?"
+                

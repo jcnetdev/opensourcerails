@@ -1,0 +1,40 @@
+.field {
+  margin: 0pt 0pt 1.5em; }
+.field label {
+  display: block; }
+
+.field.text_field input, .field.text_field input.title, .field.password_field input, .field.password_field input.title {
+  background-color: #fff;
+  width: 300px;
+  margin: 0.5em 0.5em 0.5em 0;
+  border: 1px solid #bbb;
+  padding: 5px; }
+.field.text_field input:focus, .field.password_field input:focus {
+  border: 1px solid #999; }
+.field.text_field input.title, .field.password_field input.title {
+  font-size: 1.5em; }
+
+.field.time select, .field.date select {
+  width: none; }
+
+.field.radio_buttons .option-label {
+  display: inline;
+  font-weight: normal; }
+
+.field.radio-group .radio-option {
+  display: inline;
+  font-weight: normal; }
+
+.field.check_box label {
+  display: inline;
+  vertical-align: 2px; }
+
+.field.withErrors input, .field.withErrors textarea, .field.withErrors select {
+  border: 2px solid red !important;
+  margin-bottom: 0; }
+
+.error-message {
+  display: block;
+  color: red;
+  font-weight: bold;
+  margin-bottom: 15px; }

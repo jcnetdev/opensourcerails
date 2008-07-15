@@ -1,0 +1,6 @@
+- activities = [] unless local_assigns[:activities]
+- hide_project = false unless local_assigns[:hide_project]
+
+%ul.activities
+  - activities.each do |activity|
+    %li= activity_display(activity, :hide_project => hide_project)

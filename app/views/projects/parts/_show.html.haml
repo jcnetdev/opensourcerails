@@ -1,0 +1,23 @@
+- if local_assigns[:project]
+  .details.main
+    %h2
+      .image-loading= image_tag("loading.gif", :size => "20x20")
+      .screenshot-actions.right
+        - if project.owned_by?(current_or_anon_user)
+          %span#current_screenshot_switch.hidden= link_to_image("switch.png", "#", :label => "Make Default", :class => "current-screenshot-action", :method => :put, :confirm => "Do you want to make this the featured screenshot for the project?")
+      
+        = link_to_image("popup.png", project.screenshot_url, :label => "View Slideshow", :class => "lightview current-screenshot-action", :rel => "gallery[screens]", :id => "current_screenshot_link")
+        
+      =h project.title
+      %em=h project.short_description
+    %p.dragscroll
+      = image_tag(project.screenshot_url, :id => "current_screenshot")
+      = clear_tag(:br)
+    
+    = ratings(project, :detailed => true)
+    
+    - unless throttled? or project.tag_list.empty?
+      %p.tags
+        %strong Tags:
+        = project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")
+    = clear

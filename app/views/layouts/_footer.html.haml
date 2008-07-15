@@ -1,0 +1,10 @@
+= clear
+#footer
+  %p
+    == © #{current_year}
+    Open Source Rails by <a href="http://www.railsjedi.com">RailsJedi</a>. 
+    = link_to "View Credits", about_url
+    -# Source code available <a href="/projects/opensrcrails">here</a>.
+  
+  - unless production?
+    = partial("layouts/debug")

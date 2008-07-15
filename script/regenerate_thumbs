@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/environment'
+
+# Fill klasses with the Class names that has_attachment set or add more
+# e.g: klasses = [Avatar, Logo]
+klasses = []
+
+# Regenerate Thumbnails for Each Class
+klasses.each do |klass|
+  klass.find(:all, :conditions => "parent_id IS NULL").each do |a|
+    puts "Regenerating Thumbnails for #{klass} - #{a.id}" 
+    begin
+      temp_file = a.create_temp_file
+      a.attachment_options[:thumbnails].each do |suffix, size|
+        a.create_or_update_thumbnail(temp_file, suffix, *size)
+      end
+    rescue Exception => e
+      puts "Failed for #{klass} - #{a.id} #{e.to_s}"
+    end
+  
+    if klass.attachment_options[:storage] == :s3
+      sleep 5
+    end
+  end
+end

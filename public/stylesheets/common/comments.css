@@ -1,0 +1,17 @@
+.comments { margin-top: 15px; }
+.comments h2 { color: #474848; margin-bottom: 0; font-family: Arial,Helvetica,sans-serif; font-size: 20px; font-weight: bold; }
+.comments h2 img { vertical-align: middle; margin-right: 5px; }
+.comments .comment .details { margin-top: 5px; }
+.comments .comment .comment-meta { margin: 0 0px 5px 0; font-size: 11px; }
+.comments .comment .comment-meta strong { font-size: 1.2em; }
+.comments .comment .trackback .comment-num { padding: 0 0 0 20px; }
+.comments .comment .comment-num { padding: 0; font-weight: bold; font-size: 1.3em; float: right; }
+.comments .comment .comment-num a, .comments .comment .comment-num a:visited { color: #888; text-decoration: none; }
+.comments .comment .comment-num a:hover { color: #303030; text-decoration: none; }
+.comments .comment .comment-time { font-size: 1em; color: #888; }
+
+#comment_form { padding: 10px; padding-left: 6px; }
+#comment_form .field.text_field input { width: 207px; }
+#comment_form .field.text_field input.title { width: 457px; }
+#comment_form .field.text_area textarea { width: 448px; height: 150px; }
+#comment_form .actions { clear: both; }

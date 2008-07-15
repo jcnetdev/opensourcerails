@@ -1,0 +1,25 @@
+- comment = Comment.initialize_from_user(current_or_anon_user) unless local_assigns[:comment]
+- build_form_for [@project, comment], :html => {:id => "comment_form"} do |f|
+  
+  - if logged_in?
+    .right
+      == Logged in as #{current_user.login}
+      = f.hidden_field :author_name, :value => current_user.to_s, :label => "Display Name"
+      = f.hidden_field :author_email, :value => current_user.email, :label => "Email (not displayed)"
+
+  - else
+    .author
+      .span-6.first= f.text_field :author_name, :label => "Display Name"
+      .span-5= f.text_field :author_email, :label => "Email (not displayed)"
+      = clear
+  = f.text_area :body, :label => "Comment"
+
+  .actions.text-right
+    - if is_edit?
+      .left= link_to "Delete Comment", project_comment_url, :method => :delete, :confirm => "Are you sure you want to delete this comment?"
+
+    = submit_tag new_or_edit("Post Comment", "Edit Comment", "Post Comment")
+    or 
+    = link_to "cancel", project_comments_url(@project), :class => "switch-to-first"
+  
+  

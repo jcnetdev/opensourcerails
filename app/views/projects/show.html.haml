@@ -1,0 +1,31 @@
+- title @project.title
+- meta_keywords "#{h(@project.meta_keywords)} #{AppConfig.default_meta_keywords}"
+- meta_description "#{h(@project.short_description)}"
+
+
+- content_for :sidebar do
+  #project_info
+    = partial "projects/parts/details", :project => @project
+  
+    = partial "projects/tabs/screenshots", :object => @project.screenshots
+    = partial "projects/tabs/versions", :object => @project.versions
+    = partial "projects/tabs/hosted_applications", :object => @project.hosted_instances
+    - if @project.is_submitted?
+      = partial "projects/tabs/recent_activity", :activities => @latest_activities
+        
+    
+    = approve_button(@project)
+-# show project details
+= partial "projects/parts/show", :project => @project
+
+- if @project.is_submitted?
+  -# show comments list
+  = partial "comments/comments", :comments => @project.comments
+
+  -# show comment form
+  .details.rounded
+    %h2= "Share your thoughts about this application: "
+    = partial "comments/form", :comment => @comment
+
+- else
+  = partial "projects/parts/submit_panel", :project => @project

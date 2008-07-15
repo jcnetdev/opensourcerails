@@ -1,0 +1,31 @@
+.stripViewer { /* This is the viewing window */
+	position: relative;
+  /*overflow: hidden; */
+	margin: auto;
+	width: 514px; /* Also specified in  .stripViewer .panelContainer .panel  below */
+	clear: both;
+}
+
+.stripViewer .panelContainer { /* This is the big long container used to house your end-to-end divs. Width is calculated and specified by the JS  */
+	position: relative;
+	left: 0; top: 0;
+	width: 100%;
+	list-style-type: none;
+	/* -moz-user-select: none; // This breaks CSS validation but stops accidental (and intentional - beware) panel highlighting in Firefox. Some people might find this useful, crazy fools. */
+}
+
+.stripViewer .panelContainer .panel { /* Each panel is arranged end-to-end */
+	float:left;
+	height: 100%;
+	position: relative;
+	width: 514px; /* Also specified in  .stripViewer  above */
+}
+
+.stripViewer .panelContainer .panel .wrapper { /* Wrapper to give some padding in the panels, without messing with existing panel width */
+}
+
+.stripNav, .stripNavL, .stripNavR { /* This is the div to hold your nav (the UL generated at run time) */
+	margin: auto;
+	display: none;
+}
+

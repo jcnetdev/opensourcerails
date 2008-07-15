@@ -1,0 +1,7 @@
+-# Set flash[:notice] to display a notice panel
+- if flash[:notice]
+  .flash.notice=h flash[:notice]
+- elsif flash[:success]
+  .flash.success=h flash[:success]
+- elsif flash[:error]
+  .flash.error=h flash[:error]

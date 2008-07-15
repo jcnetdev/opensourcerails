@@ -1,0 +1,10 @@
+.DS_Store
+config/amazon_s3.yml
+tmp/**/*
+log/*.log
+doc/api
+doc/app
+doc/plugins
+public/avatars
+public/screenshots
+public/images/screenshots

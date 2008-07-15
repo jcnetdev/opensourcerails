@@ -1,0 +1,8 @@
+- projects = [] unless local_assigns[:projects]
+
+- if projects.empty?
+  %p You haven't bookmarked any applications.
+- else
+  -# list my projects
+  = partial "projects/parts/list", :projects => projects
+  

@@ -1,0 +1,13 @@
+/**
+ * IE CSS Stylesheet
+ */
+
+#app_item_links_left{
+	float:left;
+	padding:8px 0 8px 0;
+}
+
+#app_item_links_right{
+	float:right;
+	padding:8px 0 8px 0;
+}

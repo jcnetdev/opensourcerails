@@ -1,0 +1,32 @@
+!!!
+%html{html_attrs}
+  %head
+    %meta{"http-equiv" => "Content-type", "content" => "text/html; charset=utf-8"}
+    = title :site => AppConfig.site_name
+    = meta_tags
+
+    = stylesheets
+    = javascripts
+    = yield :head
+        
+    = auto_discovery_link_tag(:atom, AppConfig.rss_url || formatted_projects_url(:atom), :title => "Latest Projects")
+    
+  %body
+    #wrapper{:class => body_class}
+      .top-logo= link_to image_tag("package.png"), root_url
+      = partial "layouts/login"
+      = partial "layouts/header"
+      
+      .page
+        .sidebar
+          = partial "layouts/searchbox"
+          = yield :sidebar
+        #content
+          = flash_boxes
+          = yield
+      
+      = clear
+      = partial "layouts/footer"
+
+    - if production?
+      = partial "layouts/tracking"

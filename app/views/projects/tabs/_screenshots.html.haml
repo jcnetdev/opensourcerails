@@ -1,0 +1,16 @@
+- add_javascript "lightview"
+- add_stylesheet "lightview"
+
+- screenshots = [] unless local_assigns[:screenshots]
+
+-# Project Screenshots
+- tabs do
+  - tab "Screenshots", "screenshots" do
+    - unless screenshots.blank?
+      .screenshots= partial screenshots
+    - check_empty(screenshots, "screenshots") do
+      = br
+      = link_to "Upload One Now...", "#", :class => "switch-to-last"        
+
+  - tab "upload a screenshot...", "screenshots_add" do
+    = partial "screenshots/form"

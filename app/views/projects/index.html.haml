@@ -1,0 +1,7 @@
+-# Show List View Sidebar
+- content_for :sidebar do
+  = partial "projects/parts/index_sidebar"
+  
+
+-# Display projects
+= partial "projects/parts/grid", :projects => @projects

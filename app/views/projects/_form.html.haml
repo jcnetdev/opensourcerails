@@ -1,0 +1,26 @@
+- project = @project unless local_assigns[:project]
+
+-# pick the correct form id
+- if local_assigns[:ajax]
+  - html_options = {:id => "project_form_ajax", :class => "ajax-form"}
+- else
+  - html_options = {:id => "project_form"}
+
+- build_form_for project, :html => html_options do |f|
+  = f.error_messages
+  = f.text_field :title
+  = f.text_field :short_description
+  = f.text_area :description, :label => "About this Application"
+  = f.text_field :tag_list, :label => "Tags (comma separated)"
+  = f.text_field :license
+  = f.text_field :homepage_url, :label => "Home Page URL"
+  = f.text_field :source_url, :label => "Source Code URL"
+  = f.text_field :author_name, :label => "Author's Name"
+  = f.text_field :author_contact, :label => "Author's URL"
+  
+  
+  .actions
+    = f.submit "Update Information"
+    or
+    = link_to "cancel", @project, :class => "cancel"
+    = progress

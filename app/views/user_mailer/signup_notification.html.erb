@@ -1,0 +1,9 @@
+Welcome to Open Source Rails. Here is your login information.
+
+  Username: <%= @user.login %>
+  Password: <%= @user.password %>
+
+<% if AppConfig.require_email_activation -%>
+In order to log in, you'll need to first activate your account:
+  <%= @url %>
+<% end -%>

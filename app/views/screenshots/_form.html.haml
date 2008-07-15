@@ -1,0 +1,11 @@
+- build_form_for [@project, Screenshot.new], :html => {:multipart => true} do |f|
+  %div.field.file_field
+    = link_to_image "add-sm.png", "#", :class => "add-screenshot-field"
+    = f.label "Upload Screenshots"
+    = file_field_tag "screenshots[][uploaded_data]", :size => "25"
+    
+  .actions
+    = f.submit "Upload"
+    or 
+    = link_to "cancel", "#", :class => "switch-to-first"
+    = progress

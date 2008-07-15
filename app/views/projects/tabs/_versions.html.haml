@@ -1,0 +1,12 @@
+- versions = [] unless local_assigns[:versions]
+
+-# Project Versions
+- tabs do
+  - tab "Downloads", "versions" do
+    = partial versions
+    - check_empty(versions, "downloads") do
+      = br
+      = link_to "Upload One Now...", "#", :class => "switch-to-last"      
+
+  - tab "upload a new version...", "versions_add" do
+    = partial "versions/form"
