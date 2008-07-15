@@ -56,9 +56,9 @@ class Project < ActiveRecord::Base
   def set_default_screenshot(screen)
     return unless screen
     
-    self.thumb_url = screen.public_filename(:thumb)
-    self.preview_url = screen.public_filename(:list)
-    self.screenshot_url = screen.public_filename
+    self.thumb_url = screen.screenshot.url(:thumb)
+    self.preview_url = screen.screenshot.url(:list)
+    self.screenshot_url = screen.screenshot.url
     self.save
   end
 
@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
   def set_default_version(version)
     return unless version
     
-    self.download_url = version.public_filename
+    self.download_url = version.download.url
     self.save
   end
 

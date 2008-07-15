@@ -1,7 +1,7 @@
 - version = Version.new unless local_assigns[:version]
 
 - build_form_for [@project, version], :html => {:multipart => true} do |f|
-  = f.file_field :uploaded_data, :label => "Upload Tarball", :size => "25"
+  = f.file_field :download, :label => "Upload Tarball", :size => "25"
   = f.text_field :title, :label => "Version Name"
   = f.text_area :notes, :label => "Update Notes (optional)"
   = f.text_field :antispam, :label => "What is 1 plus 3?", :separator => ""

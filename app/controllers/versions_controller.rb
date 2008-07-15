@@ -40,10 +40,10 @@ class VersionsController < Base::ProjectSubpage
     return unless version_exists?(@version)
     
     # increment download count if its the default url
-    if @version.public_filename == @project.download_url
+    if @version.download.url == @project.download_url
       @project.increment_downloads
     end
-    redirect_to @version.public_filename
+    redirect_to @version.download.url
   end
   
   def edit

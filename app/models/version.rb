@@ -1,18 +1,18 @@
 class Version < ActiveRecord::Base
   include Mixins::ProjectItem
   
-  # allow attachments
-  has_attachment :max_size => 10.megabytes,
-                 :storage => :s3
-
+  has_attached_file :download
+  
   validates_presence_of :title
-  validates_as_attachment
+  validates_attachment_size :download, :less_than => 10.megabytes
+  validates_attachment_presence :download
+  
   
   after_save :set_project_download_url
   
   # check if a version is the project's default
   def is_default?
-    if self.project and self.project.download_url == self.public_filename
+    if self.project and self.project.download_url == self.download.url
       return true
     else
       return false
@@ -22,7 +22,7 @@ class Version < ActiveRecord::Base
   protected
   def set_project_download_url
     if self.project and self.project.owner == self.owner
-      self.project.update_attribute("download_url", self.public_filename) 
+      self.project.update_attribute("download_url", self.download.url) 
     end
   end
 end

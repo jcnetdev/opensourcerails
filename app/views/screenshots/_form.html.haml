@@ -2,7 +2,7 @@
   %div.field.file_field
     = link_to_image "add-sm.png", "#", :class => "add-screenshot-field"
     = f.label "Upload Screenshots"
-    = file_field_tag "screenshots[][uploaded_data]", :size => "25"
+    = file_field_tag "screenshots[][screenshot]", :size => "25"
     
   .actions
     = f.submit "Upload"

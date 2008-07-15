@@ -1,6 +1,8 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
   
+  named_scope :active, :conditions => {:state => "active"}
+  
   has_many :bookmarks
   has_many :projects, :through => :bookmarks, :order => "last_changed DESC"
 
@@ -64,17 +66,17 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = find_in_state :first, :active, :conditions => {:login => login} # need to get the salt
+    u = first :conditions => {:login => login}
     u && u.authenticated?(password) ? u : nil
   end
   
   def self.login_with(login)
     if login.valid?
       u = self.authenticate(login.username, login.password)
-      if u
+      if u and u.active?
         return u
       else
-        if User.find_by_login(login)
+        if u
           login.error_message = "Please confirm your email address before logging in."
         else
           login.error_message = "Invalid username and password."
@@ -214,7 +216,7 @@ class User < ActiveRecord::Base
   protected
     # before filter 
     def encrypt_password
-      return if password.blank? or signed_up?
+      return if password.blank? or !signed_up?
       self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
       self.crypted_password = encrypt(password)
     end

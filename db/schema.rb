@@ -64,19 +64,6 @@ ActiveRecord::Schema.define do
     t.integer  "owner_id",   :limit => 11
   end
 
-  create_table "mail_incoming", :force => true do |t|
-    t.text     "mail"
-    t.datetime "created_on"
-  end
-
-  create_table "mail_outgoing", :force => true do |t|
-    t.string   "from"
-    t.string   "to"
-    t.integer  "last_send_attempt", :limit => 11, :default => 0
-    t.text     "mail"
-    t.datetime "created_on"
-  end
-
   create_table "projects", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -87,9 +74,9 @@ ActiveRecord::Schema.define do
     t.string   "license"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "thumb_url",                                                           :default => "/images/default_thumb.png"
-    t.string   "preview_url",                                                         :default => "/images/default_preview.png"
-    t.string   "screenshot_url",                                                      :default => "/images/default_screenshot.png"
+    t.string   "thumb_url",                                                           :default => "/images/default_screenshots/thumb.png"
+    t.string   "preview_url",                                                         :default => "/images/default_screenshots/medium.png"
+    t.string   "screenshot_url",                                                      :default => "/images/default_screenshots/original.png"
     t.string   "download_url"
     t.boolean  "in_gallery",                                                          :default => false
     t.boolean  "is_submitted",                                                        :default => false
@@ -123,16 +110,14 @@ ActiveRecord::Schema.define do
 
   create_table "screenshots", :force => true do |t|
     t.integer  "project_id",   :limit => 11
-    t.integer  "parent_id",    :limit => 11
-    t.string   "content_type"
-    t.string   "filename"
-    t.string   "thumbnail"
-    t.integer  "size",         :limit => 11
-    t.integer  "width",        :limit => 11
-    t.integer  "height",       :limit => 11
+    t.integer  "owner_id",     :limit => 11
+
+    t.string   "screenshot_file_name"
+    t.string   "screenshot_content_type"
+    t.integer  "screenshot_file_size"
+
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "owner_id",     :limit => 11
   end
 
   create_table "taggings", :force => true do |t|
@@ -179,17 +164,16 @@ ActiveRecord::Schema.define do
   create_table "versions", :force => true do |t|
     t.integer  "project_id",   :limit => 11
     t.integer  "uploader_id",  :limit => 11
+
+    t.string   "title"
     t.text     "notes"
-    t.integer  "parent_id",    :limit => 11
-    t.string   "content_type"
-    t.string   "filename"
-    t.string   "thumbnail"
-    t.integer  "size",         :limit => 11
-    t.integer  "width",        :limit => 11
-    t.integer  "height",       :limit => 11
+
+    t.string   "download_file_name"
+    t.string   "download_content_type"
+    t.integer  "download_file_size"
+
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "title"
     t.integer  "owner_id",     :limit => 11
   end
 

@@ -4,9 +4,9 @@
   - if spam_shield?(screenshot)
 
     .screenshot
-      = link_to image_tag(screenshot.public_filename(:thumb)), screenshot.public_filename, :class => "show-screen", :rel => "gallery[screens]", :target => "_blank"
+      = link_to image_tag(screenshot.screenshot.url(:thumb)), screenshot.screenshot.url, :class => "show-screen", :rel => "gallery[screens]", :target => "_blank"
       = link_to "change default", set_project_screenshot_url(screenshot.project, screenshot), :class => "switch-default hidden"
-      = link_to "slideshow", screenshot.public_filename, :class => "lightview hidden", :rel => "gallery[screens]"
+      = link_to "slideshow", screenshot.screenshot.url, :class => "lightview hidden", :rel => "gallery[screens]"
   
       - if screenshot.owned_by?(current_or_anon_user)
         .delete= delete_link image_tag("delete_thumbnail.png"), |

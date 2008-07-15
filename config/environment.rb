@@ -141,7 +141,7 @@ Rails::Initializer.run do |config|
   # ------
   # Allows easy uploading of files
   # ------
-  # config.github_gem 'jcnetdev-paperclip', :version => '>= 1.0'
+  config.github_gem 'jcnetdev-paperclip', :version => '>= 1.0'
   
   # subdomain-fu
   # ------

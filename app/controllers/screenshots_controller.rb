@@ -2,7 +2,7 @@ class ScreenshotsController < Base::ProjectSubpage
   def show
     @screenshot = get_screenshot
     if @screenshot
-      redirect_to @screenshot.public_filename
+      redirect_to @screenshot.screenshot.url
     else
       flash[:notice] = "That screenshot no longer exists."
       back_to_project
