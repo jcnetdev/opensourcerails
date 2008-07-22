@@ -1,10 +1,11 @@
 .tabs {
   padding: 0;
-  margin: 20px 0 10px 0; }
+  width: 303px;
+  margin-bottom: 10px;
+  background: url(/images/template/right_tab_bg.gif) repeat-y; }
 .tabs ul.ui-tabs-nav {
   margin: 0;
-  padding: 0;
-  border-bottom: 1px solid orange; }
+  padding: 0; }
 .tabs ul.ui-tabs-nav li {
   list-style: none;
   margin: 0;
@@ -19,27 +20,15 @@
 .tabs ul.ui-tabs-nav li a:hover {
   color: #CC0000; }
 .tabs ul.ui-tabs-nav li.ui-tabs-selected a {
-  background: #fdf9eb;
   color: #474848;
-  border: 1px solid orange;
-  border-bottom: 1px solid #fdf9eb;
   text-decoration: none;
   font-weight: bold; }
 .tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
-  color: #474848;
-  background: #fdf9eb;
-  border-left: 1px solid orange;
-  border-right: 1px solid orange;
-  border-top: 1px solid orange; }
+  color: #474848; }
 .tabs .ui-tabs-hide {
   display: none; }
 .tabs .ui-tabs-panel {
-  background: #fdf9eb;
-  padding: 5px 10px 10px 10px;
-  border-top: 0px;
-  border-left: 1px solid orange;
-  border-right: 1px solid orange;
-  border-bottom: 1px solid orange; }
+  padding: 5px 10px 10px 10px; }
 .tabs .ui-tabs-panel h2 {
   display: none;
   color: #313062; }
@@ -53,8 +42,7 @@
   list-style-type: none; }
 .tabs .ui-tabs-panel ul li {
   margin: 0;
-  padding: 3px 0 3px 0;
-  list-style-type: square; }
+  padding: 3px 0 3px 0; }
 .tabs .ui-tabs-panel ul li .stat {
   font-size: 9px;
   color: #666; }

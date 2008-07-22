@@ -12,7 +12,8 @@ ul.project-list li img {
   width: 45px;
   float: left;
   border: 2px solid #d6d6d6;
-  margin-right: 10px; }
+  margin-right: 10px;
+  margin-bottom: 5px; }
 ul.project-list li a {
   font-size: 12px;
   font-weight: bold; }
