@@ -1,7 +1,0 @@
-#hosted_instances .hosted-instance { margin-top: 5px; margin-bottom: 5px; }
-#hosted_instances .hosted-instance img { vertical-align: middle; }
-#hosted_instances .hosted-instance a { font-weight: bold; }
-#hosted_instances .hosted-instance a.project-action { color: green; font-size: 10px; font-weight: normal; }
-#hosted_instances .hosted-instance .hosted-instance-about { display: none; padding: 5px 10px; margin: 0px 5px; border: 2px solid silver; background-color: #fff; }
-#hosted_instances .hosted-instance .hosted-instance-about .actions { font-size: 10px; }
-#hosted_instances .hosted-instance .hosted-instance-about .actions a { color: red; }
