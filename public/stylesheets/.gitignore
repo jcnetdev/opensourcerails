@@ -7,3 +7,4 @@ util.css
 common/*.css
 components/*.css
 v2/*.css
+v2/**/*.css

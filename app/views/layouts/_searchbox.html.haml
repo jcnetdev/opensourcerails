@@ -2,5 +2,5 @@
   - form_tag projects_url, :method => :get do
     %fieldset
       = text_field_tag :q, @search_term || "", :class => "search_input example", :title => "Search for Applications..."
-      = image_submit_tag "go.gif", :class => "search_sub find", :id => "searchsubmit"
+      = image_submit_tag "find.png", :class => "search_sub find", :id => "searchsubmit"
     = clear
