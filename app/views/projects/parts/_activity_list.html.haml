@@ -3,4 +3,5 @@
 
 %ul.activities
   - activities.each do |activity|
-    %li= activity_display(activity, :hide_project => hide_project)
+    %li
+      %p= activity_display(activity, :hide_project => hide_project)

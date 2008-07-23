@@ -1,5 +1,4 @@
 #app_item
-
   -# show app item header
   #app_item_top
     #app_item_top_left
@@ -13,16 +12,19 @@
   #app_item_image
     = image_tag(project.screenshot_url, :id => "current_screenshot")
   
+  -# show ratings and bookmarks
   #app_item_links
     #app_item_links_left
       = partial "projects/parts/ratings", :project => project
     #app_item_links_right
       %ul
-        %li
-          = bookmark_control(project)
+        %li= bookmark_control(project)
     = clear
   
-  #app_item_tags
-    %strong Tags:
-    = project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")
-
+  -# show tags
+  - if project.tag_list.size > 0
+    #app_item_tags
+      %strong Tags:
+      = project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")
+  - else
+    = br
