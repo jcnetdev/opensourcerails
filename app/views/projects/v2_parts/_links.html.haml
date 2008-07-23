@@ -1,5 +1,5 @@
 - if local_assigns[:project]  
-  .site_item_links
+  .links
     %ul
       %li= link_to_image("comments-mini.png", project_comments_url(project), :title => pluralize(project.comments.size, "comment"))
       %li= bookmark_mini(project)

@@ -1,9 +1,10 @@
 - if local_assigns[:project]  
-  - div_for(project, :class => cycle("site_item", "site_item site_item_last")) do
-    %h2
-      %span= link_to h(project.title), project_url(project), :rel => "bookmark", :title => h(project.short_description)
+  - div_for(project, :class => cycle("start-row", "")) do
+    %h2= link_to h(project.title), project_url(project), :rel => "bookmark", :title => h(project.short_description)
     %p= project.short_description
-    .site_item_image= link_to image_tag(project.preview_url), project_url(project)
+    
+    -# show default screenshot
+    .screen= link_to image_tag(project.preview_url), project_url(project)
     
     -# show ratings
     = partial "projects/v2_parts/ratings", :project => project, :rating_size => "small"
