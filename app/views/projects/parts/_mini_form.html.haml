@@ -1,7 +1,7 @@
 -# default project
 - project = Project.new(:is_creator => true) unless local_assigns[:project]
 
-#new_project_tab_form
+#new_project_tab_form.hidden
   - right_box "add" do
     %h3.add Submit a New Application
     - build_form_for project, :html => {:class => "mini-form"} do |f|

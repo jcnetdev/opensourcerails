@@ -1,7 +1,7 @@
 # Set Site Details
 site_name: "Open Source Rails"
 site_url: "http://www.opensourcerails.com"
-version: "v0.3"
+version: "v0.5"
 require_email_activation: true
 
 # SEO Stuff

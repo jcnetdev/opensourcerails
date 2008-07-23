@@ -6,8 +6,8 @@
 
   #menu
     %ul
-      %li= menu_item("Home", "#home", true)
-      %li= menu_item("About", "#about")
-      %li= menu_item("Login", "#login")
-      %li= menu_item("Create Account", "#create_account")
+      %li= menu_item("Home", root_url, current_page?(root_url))
+      %li= menu_item("About", about_url, current_page?(about_url))
+      %li= menu_item("Login", new_session_url, current_page?(new_session_url))
+      %li= menu_item("Create Account", new_user_url, current_page?(new_user_url))
     = clear

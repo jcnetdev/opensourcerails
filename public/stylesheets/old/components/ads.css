@@ -1,0 +1,14 @@
+#ads {
+  border: 1px solid #cdcdcd;
+  clear: both;
+  width: 280px;
+  padding: 9px; }
+#ads ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none; }
+#ads ul li {
+  float: left;
+  margin: 0;
+  padding: 3px 8px 3px 7px;
+  list-style-type: none; }

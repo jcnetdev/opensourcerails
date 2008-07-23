@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   validates_length_of       :password, :within => 4..40,              :if => :password_required?
   validates_confirmation_of :password,                                :if => :password_required?
   before_save               :encrypt_password
-      
+
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :signup

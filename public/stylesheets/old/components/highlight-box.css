@@ -1,0 +1,28 @@
+.highlight-box {
+  margin-top: 15px;
+  background-color: #fff;
+  border: 1px solid orange;
+  padding: 5px 10px; }
+.highlight-box .top-actions {
+  float: right;
+  padding-top: 3px; }
+.highlight-box h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #0066cb;
+  margin: 0 0 3px 0; }
+.highlight-box p {
+  margin-bottom: 15px;
+  margin-top: 0px; }
+.highlight-box .display .description {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  max-height: 150px;
+  overflow: auto; }
+.highlight-box .display p {
+  margin-bottom: 5px; }
+.highlight-box .display p.empty {
+  margin-bottom: 15px;
+  padding: 5px;
+  color: #999;
+  font-weight: bold; }

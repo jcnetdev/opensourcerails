@@ -1,36 +1,13 @@
 module StylesheetHelper
   
-  def v2_stylesheets(options = {})
+  def stylesheets(options = {})
     [
-      stylesheet("blueprint"),
-      stylesheet("util"),
-      stylesheet("forms"),
-
+      stylesheet("blueprint", "util", "forms", "application", :cache => "base-cache"),
       stylesheet(include_css("v2")),
 
-      stylesheet("application"),
       page_stylesheets(options)
     ].join("\n")
     
-  end
-  
-  # include stylesheets
-  def stylesheets(options = {})
-    [
-      stylesheet("blueprint"),
-      stylesheet("forms"),
-      stylesheet(sass_files),
-      page_stylesheets(options)
-    ].join("\n")
-  end
-
-  # List of Sass FIles
-  def sass_files
-    if AppConfig.minimize
-      ["min/application", "min/common", "min/components"]
-    else
-      ["application", include_css("common"), include_css("components")]
-    end
   end
   
   # returns a recursive list of *css file paths* for a sass directory

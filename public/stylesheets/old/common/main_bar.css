@@ -1,0 +1,22 @@
+#main_bar {
+  padding: 0;
+  height: 25px;
+  background: #e43b05;
+  color: #ffffff; }
+#main_bar h3 {
+  margin: 0;
+  float: left;
+  padding: 3px 0 0 20px;
+  font-size: 1.0em;
+  background: url(/images/corner.gif) no-repeat;
+  height: 22px; }
+#main_bar p {
+  margin: 0;
+  float: right;
+  padding: 3px 10px 0 0;
+  background: url(/images/corner.gif) no-repeat right -25px; }
+#main_bar a {
+  color: #ffffff;
+  text-decoration: none; }
+#main_bar a:hover {
+  text-decoration: underline; }

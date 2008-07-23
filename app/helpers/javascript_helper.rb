@@ -28,7 +28,7 @@ module JavascriptHelper
   
   # Include JQuery
   def jquery
-    if AppConfig.minimize
+    if use_cache?
       javascript("jquery.min.js")
     else
       javascript("jquery")
@@ -37,7 +37,7 @@ module JavascriptHelper
   
   # returns a list of *css file paths* for a sass directory
   def include_javascripts(path)
-    if AppConfig.minimize
+    if use_cache?
       "min/#{path}.js"
     else
       # Good for debugging
