@@ -4,10 +4,10 @@
 - if local_assigns[:project]
   .ratings
     .ratings-control{:class => rating_size, :title => rating_explain(project)}
-      = link_to(project.rating_in_halves.to_s, |
+      = link_to project.rating_in_halves.to_s, |
                   rate_project_url(project),   |
                   :class => "rate-init",       |
-                  :rel => project.id.to_s)     |
+                  :rel => project.id.to_s     |
     
     
 

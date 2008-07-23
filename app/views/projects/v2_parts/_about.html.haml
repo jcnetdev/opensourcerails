@@ -3,9 +3,10 @@
 - if local_assigns[:project]
   .reload
     #project_details.highlight-box{hide_if(hidden)}
-      - if project.owned_by?(current_or_anon_user)
+      - if true or project.owned_by?(current_or_anon_user)
         .top-actions= link_to "Edit...", edit_project_url(project), :class => "edit"
-      %h2== #{project.title} Details
+
+      %h3== #{project.title} Details
       .display
         .description
           - if project.description.blank?

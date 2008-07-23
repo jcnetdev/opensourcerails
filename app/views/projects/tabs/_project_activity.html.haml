@@ -1,0 +1,15 @@
+- activities = [] unless local_assigns[:activities]
+
+- tabs(:class => "size-2") do
+  - tab("Recent", "recent_activity") do
+    - if activities.size > 0
+      = partial "projects/parts/activity_list", :activities => activities, :hide_project => true
+    - else
+      %p.empty No recent activity for this project.
+  
+  - tab("All Activity", "all_activity") do
+    - if activities.size > 0
+      = partial "projects/parts/activity_list", :activities => activities, :hide_project => true
+    - else
+      %p.empty No recent activity for this project.
+  

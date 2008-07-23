@@ -18,7 +18,7 @@ $j(document).ready(function() {
     $j("#current_screenshot").fadeOut();
 
     // replace the view photo link
-    $j("#current_screenshot_link").attr("href", $this.attr("href"));
+    $j("#view_slideshow_link").attr("href", $this.attr("href"));
 
     // set up the switch screenshot action
     $j("#current_screenshot_switch").show()

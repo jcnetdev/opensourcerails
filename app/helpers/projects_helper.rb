@@ -59,13 +59,13 @@ module ProjectsHelper
     
     haml_tag :span, :class => "bookmark-control" do
       if current_or_anon_user.bookmarked?(project)
-        puts link_to("unbookmark it", project_bookmark_url(project), :method => :delete)
         puts link_to_image("favorite.png", project_bookmark_url(project), :method => :delete, :title => "Click to Remove Bookmark")
+        puts link_to("Unbookmark it...", project_bookmark_url(project), :method => :delete)
       else
-        puts link_to("bookmark it", project_bookmark_url(project), :method => :post)
         puts link_to_image("favorite-off.png", project_bookmark_url(project), :method => :post, :title => "Click to Add Bookmark")
+        puts link_to("Bookmark It", project_bookmark_url(project), :method => :post)
       end
-      puts br
+      puts " | "
       puts "Bookmarked by "+pluralize(project.bookmarks.size, "person")
     end    
   end
@@ -117,17 +117,21 @@ module ProjectsHelper
     end
   end
   
-  
   def grid_title
     if @tag
-      title = pluralize(@tag.taggings.size, 'project')+" tagged with \"<strong>#{@tag.name}</strong>\""
+      label = pluralize(@tag.taggings.size, 'project')
+      title = "Found #{label} tagged with \"<strong>#{@tag.name}</strong>\""
     elsif @search_term and @projects.respond_to?(:total_entries)
-      title = pluralize(@projects.total_entries, "search result")+" found for \"<strong>#{@search_term}</strong>\""
+      label = pluralize(@projects.total_entries, "search result")
+      title = "Found #{label} for \"<strong>#{@search_term}</strong>\""
     end
     
     # format the title with an h3
     unless title.blank?
-      return content_tag(:h3, title)
+      return content_tag(:h3) do 
+        link_to("Clear Results", {:q => ""}) + 
+        title
+      end
     end
   end
   
@@ -144,6 +148,22 @@ module ProjectsHelper
                         :confirm => "This will promote the application to the gallery.")
       end
     end
+  end
+
+
+  def view_slideshow_link(project)
+    link_to "<span>&nbsp;</span>View Slideshow", project.screenshot_url,
+              :class => "replace lightview current-screenshot-action",
+              :rel => "gallery[screens]", 
+              :id => "view_slideshow_link"
+  end
+
+  def switch_screenshot_link(project)
+    link_to "<span>&nbsp;</span>Make Default", "#",
+                :class => "current-screenshot-action",
+                :confirm => "Do you want to make this the featured screenshot for the project?",
+                :method => :put
+    
   end
 
   # Allow showing an article IF:

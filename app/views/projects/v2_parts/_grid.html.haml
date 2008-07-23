@@ -7,9 +7,10 @@
   
     - if @projects.empty?
       %p.empty
-        No applications currently 
-        = br
-        exist in the gallery
+        - if params[:q].blank?
+          No applications currently <br />
+          exist in the gallery
+        
       
     -# display paging
     = clear

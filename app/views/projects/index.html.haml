@@ -2,7 +2,7 @@
   #body_left
     #left_pad
       -# Display projects
-      = partial "projects/parts/grid", :projects => @projects
+      = partial "projects/v2_parts/grid", :projects => @projects
       
   #body_right
     = partial "layouts/searchbox"
@@ -11,10 +11,10 @@
                       :label => "Submit a New Application", |
                       :class => "submit toggle", :rel => "#new_project_tab_form" |
     
-    = render :partial => "projects/parts/mini_form"
+    = render :partial => "projects/v2_parts/mini_form"
 
     = partial "layouts/about_us"
-    = partial "projects/parts/tabs"
+    = partial "projects/v2_parts/tabs"
     
     
   = clear
