@@ -21,58 +21,57 @@
           
   #body_right
     = partial "layouts/about_us", :force_show => true
-    
-    - tabs do
-      - tab "Credits", "credits_tab" do
-        %p{:style => "margin-bottom: 0px"} Open Source Rails uses the following freely available design components.
-        %ul
-          %li
-            Vector Icons by
-            = link_to "LiquidCity", "http://www.gosquared.com/liquidicity"
-          %li
-            Crystal Icons by
-            = link_to "Everaldo", "http://www.everaldo.com/crystal/"
-          %li
-            Initial Theme Template
-            = br+"by"
-            = link_to "Shabu Anower", "http://www.osdesigner.net/about/"          
-          %li
-            Javascript Lightbox Effect 
-            = br+"by"
-            = link_to "Nick Stakenburg", "http://www.nickstakenburg.com"
+    #about_tabs
+      - tabs do
+        - tab "Credits", "credits_tab" do
+          %p{:style => "margin-bottom: 0px"} Open Source Rails uses the following freely available design components.
+          %ul
+            %li
+              Vector Icons by
+              = link_to "LiquidCity", "http://www.gosquared.com/liquidicity"
+            %li
+              Crystal Icons by
+              = link_to "Everaldo", "http://www.everaldo.com/crystal/"
+            %li
+              Initial Theme Template
+              = br+"by"
+              = link_to "Shabu Anower", "http://www.osdesigner.net/about/"          
+            %li
+              Javascript Lightbox Effect 
+              = br+"by"
+              = link_to "Nick Stakenburg", "http://www.nickstakenburg.com"
 
-      - tab "Plugins", "plugins_tab" do
-        %p{:style => "margin-bottom: 0px"} Open Source Rails proudly uses and abuses the following Rails plugins:
-        %ul
-          %li
-            = link_to "AttachmentFu", "http://svn.techno-weenie.net/projects/plugins/attachment_fu/"
-            by
-            = link_to "Rick Olson", "http://techno-weenie.net/"
-          %li
-            = link_to "Acts as Taggable on Steroids", "http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids/"
-            = br+"by"
-            = link_to "Jonathan Viney", "http://www.workingwithrails.com/person/4985-jonathan-viney"
-          %li
-            = link_to "Haml", "http://haml.hamptoncatlin.com/"
-            by
-            = link_to "Hampton Catlin", "http://www.workingwithrails.com/person/4737-hampton-catlin"
-            = br+"and"
-            = link_to "Nathan Weizenbaum", "http://nex-3.com/"
-          %li
-            = link_to "Will Paginate", "http://github.com/mislav/will_paginate/wikis"
-            by
-            = link_to "Err", "http://errtheblog.com/"
-            = br+"and"
-            = link_to "Mislav Marohnić", "http://mislav.caboo.se/"
-        %p Thanks!
-        
-    
-    .credits
-      %h2 Developed and Hosted by:
-      #ads
-        %ul
-          %li= link_to_image("yoda_dude.png", "http://www.railsjedi.com", :label => "RailsJedi")
-          = clear
+        - tab "Plugins", "plugins_tab" do
+          %p{:style => "margin-bottom: 0px"} Open Source Rails proudly uses and abuses the following Rails plugins:
+          %ul
+            %li
+              = link_to "AttachmentFu", "http://svn.techno-weenie.net/projects/plugins/attachment_fu/"
+              by
+              = link_to "Rick Olson", "http://techno-weenie.net/"
+            %li
+              = link_to "Acts as Taggable on Steroids", "http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids/"
+              = br+"by"
+              = link_to "Jonathan Viney", "http://www.workingwithrails.com/person/4985-jonathan-viney"
+            %li
+              = link_to "Haml", "http://haml.hamptoncatlin.com/"
+              by
+              = link_to "Hampton Catlin", "http://www.workingwithrails.com/person/4737-hampton-catlin"
+              = br+"and"
+              = link_to "Nathan Weizenbaum", "http://nex-3.com/"
+            %li
+              = link_to "Will Paginate", "http://github.com/mislav/will_paginate/wikis"
+              by
+              = link_to "Err", "http://errtheblog.com/"
+              = br+"and"
+              = link_to "Mislav Marohnić", "http://mislav.caboo.se/"
+          %p Thanks!
+            
+      .credits
+        %h2 Developed and Hosted by:
+        #ads
+          %ul
+            %li= link_to_image("yoda_dude.png", "http://www.railsjedi.com", :label => "RailsJedi")
+            = clear
 
 
   = clear

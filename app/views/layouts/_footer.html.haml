@@ -1,13 +1,19 @@
 #footer
   .links
     %strong LINKS:
-    = link_to "Home", root_url
-    |
-    = link_to "Projects", root_url
-    |
-    = link_to "Log In", new_session_url
+    = link_to "Gallery", root_url
+    - if logged_in?
+      |
+      = link_to "Edit Profile", edit_user_url(current_user)
     |
     = link_to "About", about_url
+    |
+    = link_to "Blog", blog_url
+    - unless logged_in?
+      |
+      = link_to "Login", new_session_url
+      |
+      = link_to "Sign Up", new_user_url
 
   
   .about
