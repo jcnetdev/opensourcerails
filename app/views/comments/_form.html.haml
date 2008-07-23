@@ -2,7 +2,7 @@
 - heading = "Share your thoughts about this application:" unless local_assigns[:heading]
 
 #app_form
-  %h2 
+  %h2= heading
   - build_form_for [@project, comment], :html => {:id => "comment_form"} do |f|
     %fieldset
       %ul
