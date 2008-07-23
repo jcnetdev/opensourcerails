@@ -7,9 +7,9 @@
     - else
       %p.empty No recent activity for this project.
   
-  - tab("View All (#{activities.size})", "all_activity") do
+  - tab("History (#{activities.size})", "all_activity") do
     - if activities.size > 0
-      = partial "projects/parts/activity_list", :activities => activities, :hide_project => true
+      = partial "projects/parts/activity_list", :activities => activities.reverse, :hide_project => true
     - else
       %p.empty No recent activity for this project.
   

@@ -1,0 +1,111 @@
+ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, body, html, p, blockquote, fieldset, input {
+  margin: 0;
+  padding: 0; }
+
+ul {
+  list-style: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; }
+
+a {
+  color: #626262;
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: underline; }
+
+a img, fieldset {
+  border: 0; }
+
+.clear {
+  clear: both; }
+
+.replace {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; }
+
+.replace span {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  background-color: #131313;
+  color: #626262; }
+
+.body-main {
+  background: #ffffff url(/images/template/bg.png) repeat-x;
+  min-height: 500px; }
+
+.body-bottom {
+  background: url(/images/body-bottom-bg.png) repeat-x;
+  padding-top: 51px; }
+
+.page-content {
+  width: 900px;
+  margin: 0 auto; }
+
+#body #body_left {
+  width: 584px;
+  float: left; }
+#body #body_left #left_pad {
+  width: 541px;
+  margin-left: 21px;
+  padding-top: 17px; }
+#body #body_right {
+  width: 316px;
+  padding-top: 17px;
+  float: right; }
+
+#search_box {
+  width: 303px;
+  height: 34px;
+  background: url(/images/template/search_box_bg.gif) no-repeat; }
+#search_box fieldset {
+  padding-left: 8px;
+  padding-top: 5px; }
+#search_box .search_input {
+  font-size: 11px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  border: 0;
+  background: none;
+  width: 262px;
+  float: left;
+  position: relative;
+  top: 6px;
+  margin-right: 5px; }
+#search_box .search_input.hint {
+  color: #666 !important; }
+#search_box .search_sub {
+  float: left;
+  margin-top: 3px; }
+
+#submit_app {
+  width: 303px;
+  height: 54px;
+  font-size: 0.2em;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin: 8px 0 7px 0; }
+#submit_app span {
+  background: url(/images/template/submit_app.gif) no-repeat;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer; }
+
+#go_back {
+  width: 303px;
+  margin: 0px 0px 10px 0px;
+  vertical-align: middle;
+  font-size: 1.5em; }
