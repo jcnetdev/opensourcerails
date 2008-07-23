@@ -16,7 +16,7 @@ class ProjectsController < ApplicationController
     end  
     
     if params[:ajax]
-      render :partial => "projects/v2_parts/grid", :locals => {:projects => @projects}, :layout => false
+      render :partial => "projects/parts/grid", :locals => {:projects => @projects}, :layout => false
     else
       render
     end
@@ -189,7 +189,7 @@ class ProjectsController < ApplicationController
         redirect_to @project
       end
       format.js do
-        render :partial => "projects/v2_parts/about_project.html.haml", :locals => {:project => @project, :hidden => true}, :layout => false
+        render :partial => "projects/parts/about_project.html.haml", :locals => {:project => @project, :hidden => true}, :layout => false
       end
     end
     

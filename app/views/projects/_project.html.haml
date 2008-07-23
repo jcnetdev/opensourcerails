@@ -7,7 +7,7 @@
     .screen= link_to image_tag(project.preview_url), project_url(project)
     
     -# show ratings
-    = partial "projects/v2_parts/ratings", :project => project, :rating_size => "small"
+    = partial "projects/parts/ratings", :project => project, :rating_size => "small"
     
     -# show links
-    = partial "projects/v2_parts/links", :project => project
+    = partial "projects/parts/links", :project => project

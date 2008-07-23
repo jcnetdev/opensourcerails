@@ -7,7 +7,7 @@
   #body_left
     #left_pad
       -# Display projects
-      = partial "projects/v2_parts/details", :project => @project
+      = partial "projects/parts/app_item", :project => @project
 
       - if @project.is_submitted?
         -# show comments list
@@ -24,7 +24,7 @@
       = link_to_image "back-arrow-sm.png", projects_url(:page => session[:page]), :label => "Back to Gallery..."
     #project_info
       - right_box do
-        = partial "projects/v2_parts/about_project", :project => @project
+        = partial "projects/parts/about_project", :project => @project
     
       = partial "projects/tabs/screenshots", :object => @project.screenshots
       = partial "projects/tabs/versions", :object => @project.versions

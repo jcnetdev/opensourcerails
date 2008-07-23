@@ -10,12 +10,12 @@
           %li.app_form_left
             .field
               %label Display Name:
-              %strong current_user.to_s
+              %strong= current_user.to_s
               = f.hidden_field :author_name, :value => current_user.to_s
           %li.app_form_right
             .field
               %label Email (not displayed):
-              %strong current_user.email
+              %strong= current_user.email
               = f.hidden_field :author_email, :value => current_user.email
               
         - else
