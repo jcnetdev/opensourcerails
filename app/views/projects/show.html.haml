@@ -1,4 +1,5 @@
 - title @project.title
+- active_tab :gallery
 - meta_keywords "#{h(@project.meta_keywords)} #{AppConfig.default_meta_keywords}"
 - meta_description "#{h(@project.short_description)}"
 
@@ -8,29 +9,28 @@
       -# Display projects
       = partial "projects/v2_parts/details", :project => @project
 
-      -# - if @project.is_submitted?
-      -#   -# show comments list
-      -#   = partial "comments/comments", :comments => @project.comments
-      -# 
-      -#   -# show comment form
-      -#   .details.rounded
-      -#     %h2= "Share your thoughts about this application: "
-      -#     = partial "comments/form", :comment => @comment
-      -# - else
-      -#   = partial "projects/parts/submit_panel", :project => @project
+      - if @project.is_submitted?
+        -# show comments list
+        = partial "comments/comments", :comments => @project.comments
+        
+        -# show comment form
+        = partial "comments/form", :comment => @comment
+
+      - else
+        = partial "projects/parts/submit_panel", :project => @project
       
-  #body_right  
+  #body_right
     #go_back
       = link_to_image "back-arrow-sm.png", projects_url(:page => session[:page]), :label => "Back to Gallery..."
-
-    - right_box "BLAH" do
-      = partial "projects/v2_parts/about", :project => @project
+    #project_info
+      - right_box do
+        = partial "projects/v2_parts/about_project", :project => @project
     
-    = partial "projects/tabs/screenshots", :object => @project.screenshots
-    = partial "projects/tabs/versions", :object => @project.versions
-    = partial "projects/tabs/hosted_applications", :object => @project.hosted_instances
-    - if @project.is_submitted?
-      = partial "projects/tabs/project_activity", :activities => @latest_activities
-    = approve_button(@project)
+      = partial "projects/tabs/screenshots", :object => @project.screenshots
+      = partial "projects/tabs/versions", :object => @project.versions
+      = partial "projects/tabs/hosted_applications", :object => @project.hosted_instances
+      - if @project.is_submitted?
+        = partial "projects/tabs/project_activity", :activities => @latest_activities
+      = approve_button(@project)
 
   = clear

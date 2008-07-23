@@ -1,20 +1,26 @@
-.main.details
-  %h2.form Create a User Account
-  - build_form_for @user, :url => users_url, :html => {:method => :post} do |f|
+#body
+  #body_left
+    #left_pad
+      .main.details
+        %h2.form Create a User Account
+        - build_form_for @user, :url => users_url, :html => {:method => :post} do |f|
   
-    -# = f.error_messages
+          -# = f.error_messages
     
-    -# - fieldset_tag "Required" do
-    = f.text_field :login
-    = f.text_field :email
-    = f.password_field :password
-    = f.password_field :password_confirmation
+          -# - fieldset_tag "Required" do
+          = f.text_field :login
+          = f.text_field :email
+          = f.password_field :password
+          = f.password_field :password_confirmation
     
-    -# - fieldset_tag "Optional" do
-    -#   = f.text_field :name
-    -#   = f.text_area :profile
+          -# - fieldset_tag "Optional" do
+          -#   = f.text_field :name
+          -#   = f.text_area :profile
     
-    .actions
-      = f.submit
-      or
-      = link_to "cancel", root_url
+          .actions
+            = f.submit
+            or
+            = link_to "cancel", root_url
+  #body_right
+    
+    asdkfjasdf

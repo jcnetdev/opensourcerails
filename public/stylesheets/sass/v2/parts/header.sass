@@ -2,10 +2,10 @@
 #header
   width: : 100%
   height: 105px
-
+  position: relative
   h1
     float: left
-
+    
   #logo
     width: 235px
     height: 100px
@@ -23,8 +23,24 @@
       width: 100%
       height: 100%
       cursor: pointer
-
+  
+  .login
+    position: absolute
+    right: -5px
+    text-align: right
+    top: 10px
+    font-size: 1.2em
+    a
+      color: #eee
+    .links
+      a
+        margin: 0 10px
+    .logout
+      a
+        font-size: 10px
+  
   #menu
+    clear: right
     float: right
     ul
       padding-top: 76px

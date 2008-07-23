@@ -1,4 +1,5 @@
 #header
+  = partial "sessions/login_panel"
   %h1
     %a.replace#logo{:href => root_url, :name => "logo", :title => AppConfig.site_name}
       %span &nbsp;
@@ -6,8 +7,10 @@
 
   #menu
     %ul
-      %li= menu_item("Home", root_url, current_page?(root_url))
-      %li= menu_item("About", about_url, current_page?(about_url))
-      %li= menu_item("Login", new_session_url, current_page?(new_session_url))
-      %li= menu_item("Create Account", new_user_url, current_page?(new_user_url))
+      %li= menu_item("Gallery", root_url, active_tab == :gallery)
+      %li= menu_item("About", about_url, active_tab == :about)
+      %li= menu_item("Blog", blog_url, active_tab == :blog)
+      - if logged_in?
+        %li= link_to menu_tag("Log Out"), session_url, :method => :delete, :confirm => "Are you sure you want to log out?"
+      
     = clear

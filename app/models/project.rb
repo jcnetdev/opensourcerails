@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
   belongs_to :author, :class_name => "User"
 
-  has_many :comments, :order => "created_at DESC", :dependent => :nullify
+  has_many :comments, :order => "created_at", :dependent => :nullify
   has_many :screenshots, :order => "created_at DESC", :dependent => :delete_all
 
   has_many :versions, :order => "updated_at DESC", :dependent => :delete_all

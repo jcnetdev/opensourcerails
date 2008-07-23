@@ -1,68 +1,80 @@
-- content_for :sidebar do
-  
-  - tabs do
-    - tab "Credits", "credits_tab" do
-      %p{:style => "margin-bottom: 0px"} Open Source Rails uses the following freely available design components.
-      %ul
-        %li
-          Vector Icons by
-          = link_to "LiquidCity", "http://www.gosquared.com/liquidicity"
-        %li
-          Crystal Icons by
-          = link_to "Everaldo", "http://www.everaldo.com/crystal/"
-        %li
-          Initial Theme Template
-          = br+"by"
-          = link_to "Shabu Anower", "http://www.osdesigner.net/about/"          
-        %li
-          Javascript Lightbox Effect 
-          = br+"by"
-          = link_to "Nick Stakenburg", "http://www.nickstakenburg.com"
-          
-    - tab "Plugins", "plugins_tab" do
-      %p{:style => "margin-bottom: 0px"} Open Source Rails proudly uses and abuses the following Rails plugins:
-      %ul
-        %li
-          = link_to "AttachmentFu", "http://svn.techno-weenie.net/projects/plugins/attachment_fu/"
-          by
-          = link_to "Rick Olson", "http://techno-weenie.net/"
-        %li
-          = link_to "Acts as Taggable on Steroids", "http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids/"
-          = br+"by"
-          = link_to "Jonathan Viney", "http://www.workingwithrails.com/person/4985-jonathan-viney"
-        %li
-          = link_to "Haml", "http://haml.hamptoncatlin.com/"
-          by
-          = link_to "Hampton Catlin", "http://www.workingwithrails.com/person/4737-hampton-catlin"
-          = br+"and"
-          = link_to "Nathan Weizenbaum", "http://nex-3.com/"
-        %li
-          = link_to "Will Paginate", "http://github.com/mislav/will_paginate/wikis"
-          by
-          = link_to "Err", "http://errtheblog.com/"
-          = br+"and"
-          = link_to "Mislav Marohnić", "http://mislav.caboo.se/"
-      %p Much thanks to them all!
-  
-  .credits
-    %h2 This Site Brought To You by:
-    #ads
-      %ul
-        %li= link_to_image("yoda_dude.png", "http://www.railsjedi.com", :label => "RailsJedi")
+- active_tab :about
+
+#body
+  #body_left
+    #left_pad
+      .details.main
+        %h2.right== Latest #{AppConfig.version}
+        %h2.left About OpenSourceRails.com
         = clear
-.details.main
-  %h2.right== Latest #{AppConfig.version}
-  %h2.left About OpenSourceRails.com
+        .entry{:style => "font-size: 20px;color:#666"}
+          %p Open Source Rails is dedicated to keeping track of the latest and greatest Ruby on Rails open source applications.
+          %p 
+            If you are the author of one of the projects listed on the site and want admin access over your project, 
+            register a user and then email us 
+            = mail_to "opensourcerails@gmail.com", "here", :encode => "javascript"
+            and we'll grant you project ownership access.    
+          %p 
+            Feature request and bug can be 
+            sent
+            = mail_to "opensourcerails@gmail.com", "here.", :encode => "javascript"
+          
+  #body_right
+    = partial "layouts/about_us", :force_show => true
+    
+    - tabs do
+      - tab "Credits", "credits_tab" do
+        %p{:style => "margin-bottom: 0px"} Open Source Rails uses the following freely available design components.
+        %ul
+          %li
+            Vector Icons by
+            = link_to "LiquidCity", "http://www.gosquared.com/liquidicity"
+          %li
+            Crystal Icons by
+            = link_to "Everaldo", "http://www.everaldo.com/crystal/"
+          %li
+            Initial Theme Template
+            = br+"by"
+            = link_to "Shabu Anower", "http://www.osdesigner.net/about/"          
+          %li
+            Javascript Lightbox Effect 
+            = br+"by"
+            = link_to "Nick Stakenburg", "http://www.nickstakenburg.com"
+
+      - tab "Plugins", "plugins_tab" do
+        %p{:style => "margin-bottom: 0px"} Open Source Rails proudly uses and abuses the following Rails plugins:
+        %ul
+          %li
+            = link_to "AttachmentFu", "http://svn.techno-weenie.net/projects/plugins/attachment_fu/"
+            by
+            = link_to "Rick Olson", "http://techno-weenie.net/"
+          %li
+            = link_to "Acts as Taggable on Steroids", "http://svn.viney.net.nz/things/rails/plugins/acts_as_taggable_on_steroids/"
+            = br+"by"
+            = link_to "Jonathan Viney", "http://www.workingwithrails.com/person/4985-jonathan-viney"
+          %li
+            = link_to "Haml", "http://haml.hamptoncatlin.com/"
+            by
+            = link_to "Hampton Catlin", "http://www.workingwithrails.com/person/4737-hampton-catlin"
+            = br+"and"
+            = link_to "Nathan Weizenbaum", "http://nex-3.com/"
+          %li
+            = link_to "Will Paginate", "http://github.com/mislav/will_paginate/wikis"
+            by
+            = link_to "Err", "http://errtheblog.com/"
+            = br+"and"
+            = link_to "Mislav Marohnić", "http://mislav.caboo.se/"
+        %p Thanks!
+        
+    
+    .credits
+      %h2 Developed and Hosted by:
+      #ads
+        %ul
+          %li= link_to_image("yoda_dude.png", "http://www.railsjedi.com", :label => "RailsJedi")
+          = clear
+
+
   = clear
-  .entry{:style => "font-size: 20px;color:#666"}
-    %p Open Source Rails is dedicated to keeping track of the latest and greatest Ruby on Rails open source applications.
-    %p 
-      If you are the author of one of the projects listed on the site and want admin access over your project, 
-      register a user and then email us 
-      = mail_to "opensourcerails@gmail.com", "here", :encode => "javascript"
-      and we'll grant you project ownership access.    
-    %p 
-      Feature request and bug can be 
-      sent
-      = mail_to "opensourcerails@gmail.com", "here.", :encode => "javascript"
-      = partial "layouts/promote"
+  
+  

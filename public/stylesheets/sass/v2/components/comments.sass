@@ -1,4 +1,5 @@
 .comments
+  font-family: Lucida Grande,Arial,Helvetica,sans-serif
   margin-top: 15px
   h2
     color: #474848
@@ -14,12 +15,26 @@
   
   .comment
     .details
+      padding: 10px 18px
       margin-top: 5px
+      margin-bottom: 15px
+      background: #ffffff
+      border: 1px solid #e5e5e5
+      p
+        font-size: 1.2em
+        line-height: 1.5em
+        
+      .actions
+        margin-top: 10px
+        a
+          font-weight: bold
+          color: darkblue
+      
     .comment-meta 
       margin: 0 0px 5px 0
       font-size: 11px
       strong 
-        font-size: 1.2em
+        font-size: .95em
       
     .trackback .comment-num 
       padding: 0 0 0 20px
@@ -38,20 +53,5 @@
         text-decoration: none
  
     .comment-time 
-      font-size: 1em
+      font-size: .8em
       color: #888
-
-#comment_form
-  padding: 10px
-  padding-left: 6px
-  .field.text_field
-    input
-      width: 207px
-    input.title 
-      width: 457px
-  .field.text_area
-    textarea
-      width: 448px
-      height: 150px
-  .actions
-    clear: both

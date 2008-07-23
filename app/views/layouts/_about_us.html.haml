@@ -1,10 +1,13 @@
-#about_us{hide_unless(current_or_anon_user.show_welcome!)}
+- force_show = false unless local_assigns[:force_show]
+#about_us{hide_unless(current_or_anon_user.show_welcome! || force_show)}
   - right_box "about" do
     %h3.about About Open Source Rails
     %p
       Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications. 
-    = link_to "Read More...", about_url, :class => "readmore"
-    |
-    = link_to "Close", "#", :class => "hide-click", :rel => ".right-box-top.about"
+
+    - unless force_show
+      = link_to "Read More...", about_url, :class => "readmore"
+      |
+      = link_to "Close", "#", :class => "hide-click", :rel => ".right-box-top.about"
   
   

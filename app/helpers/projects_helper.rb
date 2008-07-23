@@ -120,7 +120,7 @@ module ProjectsHelper
   def grid_title
     if @tag
       label = pluralize(@tag.taggings.size, 'project')
-      title = "Found #{label} tagged with \"<strong>#{@tag.name}</strong>\""
+      title = "#{label} tagged with \"<strong>#{@tag.name}</strong>\""
     elsif @search_term and @projects.respond_to?(:total_entries)
       label = pluralize(@projects.total_entries, "search result")
       title = "Found #{label} for \"<strong>#{@search_term}</strong>\""

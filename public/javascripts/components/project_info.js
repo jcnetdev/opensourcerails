@@ -1,5 +1,5 @@
 $j(document).ready(function() {
-  $j('#project_details .cancel').livequery("click", function(){
+  $j('#about_project .cancel').livequery("click", function(){
     $j(this).parents(".form-container").slideUp('slow');
     $j("#project_info .display").slideDown('slow');
     $j("#project_info .edit").fadeIn()
@@ -24,10 +24,10 @@ $j(document).ready(function() {
     $reload = $this.parents(".reload");
 
     var reload_url = $this.attr("href");
-    $reload.find("#project_details").slideUp('slow', function() {
+    $reload.find("#about_project").slideUp('slow', function() {
       $reload.empty();
       $reload.load(reload_url, null, function() {
-        $j("#project_details").slideDown('slow');        
+        $j("#about_project").slideDown('slow');        
       });
     })
     return false;

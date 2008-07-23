@@ -1,25 +1,37 @@
 - comment = Comment.initialize_from_user(current_or_anon_user) unless local_assigns[:comment]
-- build_form_for [@project, comment], :html => {:id => "comment_form"} do |f|
-  
-  - if logged_in?
-    .right
-      == Logged in as #{current_user.login}
-      = f.hidden_field :author_name, :value => current_user.to_s, :label => "Display Name"
-      = f.hidden_field :author_email, :value => current_user.email, :label => "Email (not displayed)"
+- heading = "Share your thoughts about this application:" unless local_assigns[:heading]
 
-  - else
-    .author
-      .span-6.first= f.text_field :author_name, :label => "Display Name"
-      .span-5= f.text_field :author_email, :label => "Email (not displayed)"
-      = clear
-  = f.text_area :body, :label => "Comment"
-
-  .actions.text-right
-    - if is_edit?
-      .left= link_to "Delete Comment", project_comment_url, :method => :delete, :confirm => "Are you sure you want to delete this comment?"
-
-    = submit_tag new_or_edit("Post Comment", "Edit Comment", "Post Comment")
-    or 
-    = link_to "cancel", project_comments_url(@project), :class => "switch-to-first"
-  
-  
+#app_form
+  %h2 
+  - build_form_for [@project, comment], :html => {:id => "comment_form"} do |f|
+    %fieldset
+      %ul
+        - if logged_in?
+          %li.app_form_left
+            .field
+              %label Display Name:
+              %strong current_user.to_s
+              = f.hidden_field :author_name, :value => current_user.to_s
+          %li.app_form_right
+            .field
+              %label Email (not displayed):
+              %strong current_user.email
+              = f.hidden_field :author_email, :value => current_user.email
+              
+        - else
+          %li.app_form_left
+            = f.text_field :author_name, :label => "Display Name"
+          %li.app_form_right
+            = f.text_field :author_email, :label => "Email (not displayed)"
+        
+        %li
+          = f.text_area :body, :label => "Comment"
+        %li.app_form_sub
+          - if is_edit?
+            .right
+              = link_to "Delete Comment", project_comment_url, :method => :delete, :confirm => "Are you sure you want to delete this comment?"
+          
+          = image_submit_tag new_or_edit("buttons/post_comment.png", "buttons/edit_comment.png", "buttons/post_comment.png")
+          or
+          = link_to "cancel", project_comments_url(@project), :class => "switch-to-first"
+      

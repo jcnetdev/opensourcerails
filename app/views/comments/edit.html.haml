@@ -1,6 +1,7 @@
 - title "Editing Comment for #{@project.title}"
+- active_tab :gallery
 
 .details.main
   %h2.form Editing Comment
   -# show comment form
-  = partial("comments/form", :comment => @comment)
+  = partial "comments/form", :comment => @comment, :heading => ""

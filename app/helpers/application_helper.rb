@@ -17,6 +17,14 @@ module ApplicationHelper
     "#{params[:controller]}/#{params[:action]}"
   end
   
+  def active_tab(set_tab = nil)
+    if set_tab
+      @active_tab = set_tab
+    end
+    
+    return @active_tab
+  end
+  
   # return the css class for the current controller and action
   def body_class
     classes = ""
