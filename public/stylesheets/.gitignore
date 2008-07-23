@@ -6,5 +6,6 @@ tabs.css
 util.css
 common/*.css
 components/*.css
+old/*.css
 v2/*.css
 v2/**/*.css
