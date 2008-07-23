@@ -1,0 +1,111 @@
+.tabs 
+  padding: 0
+  width: 303px
+  margin-bottom: 10px
+  background: url(/images/template/right_tab_bg.gif) repeat-y
+ 
+  .ui-tabs-hide 
+    display: none
+
+  .ui-tabs-panel 
+    padding: 0px 10px 0px 10px
+    margin: 10px
+    margin-left: 0px
+    max-height: 300px
+    overflow: auto
+    
+    h2 
+      display: none
+      color: #313062
+
+    h3 
+      display: none
+  
+    p
+      margin-top: 10px
+    
+    ul 
+      margin: 0px 0 5px 15px
+      padding: 0
+      list-style-type: none
+ 
+      li 
+        margin: 0
+        padding: 3px 0 3px 0
+        .stat
+          font-size: 9px
+          color: #666
+      li.first
+        padding-top: 0px
+
+  .tab-bottom
+    width: 303px
+    height: 8px
+    background:
+      image: url(/images/tab-bottom.png)
+      repeat: no-repeat
+  
+  ul.ui-tabs-nav 
+    margin: 0
+    background: #fff
+    padding: 0
+
+    li 
+      height: 37px
+      width: 151px
+      overflow: hidden
+      
+      list-style: none
+      margin: 0
+      float: left
+      text-align: center
+      background:
+        image: url(/images/tab-half.png)
+        repeat: no-repeat
+      a 
+        display: block
+        width: 100%
+        height: 100%
+        border-bottom: none
+        text-decoration: none
+        color: #333
+        line-height: 37px
+        font-size: 12px
+        text-transform: uppercase
+
+      a:link 
+        color: #313062
+
+      a:hover 
+        color: #CC0000
+
+    li.ui-tabs-selected 
+      background:
+        image: url(/images/tab-half-highlighted.png)
+      a 
+        // color: #474848
+        text-decoration: none
+        font-weight: bold
+
+      a:hover 
+        color: #474848
+      a:focus, a:active
+        outline: none
+  
+// tab navigation overrides
+.tabs.size-2
+  ul.ui-tabs-nav 
+    li
+      width: 151px
+      background-image: url(/images/tab-half.png)
+    li.ui-tabs-selected
+      background-image: url(/images/tab-half-highlighted.png)
+      
+.tabs.size-3
+  ul.ui-tabs-nav
+    li
+      width: 101px      
+      background-image: url(/images/tab-third.png)
+    li.ui-tabs-selected
+      background-image: url(/images/tab-third-highlighted.png)
+      

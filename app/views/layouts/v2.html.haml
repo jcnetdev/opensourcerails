@@ -13,22 +13,18 @@
     = auto_discovery_link_tag(:atom, AppConfig.rss_url || formatted_projects_url(:atom), :title => "Latest Projects")
     
   %body
-    #page_top
-      #page_end
-        .page
-          = partial "layouts/header"
-          
-          = yield
-          
-          #board
-            #board_left
-              aksdjfajsdf
-            #board_right
-              kasjdflkajdsfk
-            = clear
+    .page-content
+      = partial "layouts/header"
+  
+      = yield
 
-          #footer
-            #footer_copyrights
-            #footer_ask
-            = clear
-            
+    .body-bottom
+      .page-content
+        -# = partial "layouts/board"
+        = partial "layouts/footer"
+
+        #footer
+          #footer_copyrights
+          #footer_ask
+          = clear
+    

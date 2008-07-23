@@ -18,10 +18,12 @@ module TabsHelper
       inner_content = capture_haml(&block)
 
       # render navs first
-      puts content_tag(:ul, @__tabs_navhtml, nav_options)
+      puts content_tag(:ul, @__tabs_navhtml+clear, nav_options)
       
       # render inner content
       puts inner_content
+      
+      puts content_tag(:div, "", :class => "tab-bottom")
       
       # clear instance variable
       @__tabs_navhtml = nil
@@ -30,7 +32,6 @@ module TabsHelper
   
   # Give the tab a name and unique id
   def tab(name, tab_id , options={}, &block)
-    
     # append an element to our nav_html
     @__tabs_navhtml << content_tag(:li, link_to(name, "##{tab_id}", :title => name))
     

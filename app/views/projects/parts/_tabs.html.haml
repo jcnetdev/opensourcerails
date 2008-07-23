@@ -1,4 +1,4 @@
-- tabs do
+- tabs(:class => "size-2") do
   - tab "Upcoming", "upcoming_apps", :class => "scroll-250" do
     - if @upcoming.size > 0
       = partial "projects/parts/list", :projects => @upcoming
@@ -8,8 +8,8 @@
   - tab "Bookmarked", "projects_add", :class => "scroll-250" do
     #my_bookmarks= partial "bookmarks/bookmark_list", :projects => @my_projects
 
-- tabs do
-  - tab "Recent Activity", "recent_activity", :class => "scroll-200" do
+- tabs(:class => "size-3") do
+  - tab "Recent", "recent_activity", :class => "scroll-200" do
     = partial "projects/parts/activity_list", :activities => @latest_activities  
   
   - tab "Tag Cloud", "tagcould" do

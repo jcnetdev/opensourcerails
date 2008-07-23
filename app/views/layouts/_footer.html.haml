@@ -1,10 +1,32 @@
-= clear
 #footer
-  %p
-    == © #{current_year}
-    Open Source Rails by <a href="http://www.railsjedi.com">RailsJedi</a>. 
-    = link_to "View Credits", about_url
-    -# Source code available <a href="/projects/opensrcrails">here</a>.
+  .links
+    %strong LINKS:
+    = link_to "Home", root_url
+    |
+    = link_to "Projects", root_url
+    |
+    = link_to "Log In", new_session_url
+    |
+    = link_to "About", about_url
+
+    
   
+  .about
+    .copyrights
+      == © #{current_year}
+      Open Source Rails
+    .credits
+      Brought to you by:
+      = link_to "RailsJedi", "http://www.railsjedi.com"
+
+
   - unless production?
     = partial("layouts/debug")
+
+  -# = clear
+  -# #footer
+  -#   %p
+  -#     -# Source code available <a href="/projects/opensrcrails">here</a>.
+  -#   
+  -#   - unless production?
+  -#     = partial("layouts/debug")

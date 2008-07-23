@@ -2,9 +2,6 @@ module StylesheetHelper
   
   def v2_stylesheets(options = {})
     [
-      stylesheet("common/paging"),
-      stylesheet("tabs"),    
-      stylesheet("project-list"),
       stylesheet("util"),
 
       stylesheet(include_css("v2")),
