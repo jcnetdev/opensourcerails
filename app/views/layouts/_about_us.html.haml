@@ -1,8 +1,9 @@
-.right_box
-  .right_box_top
-    .right_box_end
-      .right_box_body
-        %h3 About Open Source Rails
-        %p
-          Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications. 
-        = link_to "Read More...", about_url, :class => "right_box_readmore"
+- right_box "about" do
+  %h3.about About Open Source Rails
+  %p
+    Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications. 
+  = link_to "Read More...", about_url, :class => "readmore"
+  |
+  = link_to "Close", "#", :class => "hide-click", :rel => ".right-box-top.about"
+  
+  

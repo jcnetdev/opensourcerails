@@ -81,6 +81,18 @@ module ApplicationHelper
     return {}
   end
   
+  def right_box(css_class="", &block)
+    haml_tag :div, :class => "right-box" do
+      haml_tag :div, :class => "right-box-top #{css_class}" do
+        haml_tag :div, :class => "right-box-end" do
+          haml_tag :div, :class => "right-box-body" do
+            puts capture_haml(&block)
+          end
+        end
+      end
+    end
+  end
+  
   def progress(img_path = nil)
     # set default progress image
     img_path ||= "progress.gif"

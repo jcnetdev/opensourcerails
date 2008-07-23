@@ -1,13 +1,16 @@
 -# default project
 - project = Project.new(:is_creator => true) unless local_assigns[:project]
 
-- build_form_for project do |f|
-  = f.text_field :title, :label => "Application Name"
-  = f.text_field :short_description, :label => "Short Description"
+#new_project_tab_form
+  - right_box "add" do
+    %h3.add Submit a New Application
+    - build_form_for project, :html => {:class => "mini-form"} do |f|
+      = f.text_field :title, :label => "Application Name"
+      = f.text_field :short_description, :label => "Short Description"
   
-  = f.check_box :is_creator, :label => "Is it yours?", :field => {:class => "left"}, :separator => ""
-  .actions.text-right
-    = f.submit "Next"
-    or 
-    = link_to "Cancel", "#", :class => "toggle", :rel => "#new_project_tab_form"
-    = progress
+      = f.check_box :is_creator, :label => "Is it yours?", :field => {:class => "left"}, :separator => ""
+      .actions.text-right
+        = image_submit_tag "buttons/next-sm.png"
+        or 
+        = link_to "Cancel", "#", :class => "toggle", :rel => "#new_project_tab_form"
+        = progress

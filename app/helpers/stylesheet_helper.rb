@@ -2,9 +2,13 @@ module StylesheetHelper
   
   def v2_stylesheets(options = {})
     [
+      stylesheet("blueprint"),
       stylesheet("util"),
+      stylesheet("forms"),
 
       stylesheet(include_css("v2")),
+
+      stylesheet("application"),
       page_stylesheets(options)
     ].join("\n")
     

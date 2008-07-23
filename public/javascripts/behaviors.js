@@ -20,6 +20,13 @@ $j(document).ready(function() {
     return false;
   });
   
+  // Allow any link with "toggle" to hide and show a particular element
+  $j("a.hide-click").livequery('click', function() {
+    $this = $j(this); 
+    $j($this.attr("rel")).slideUp();  
+    return false;
+  });
+  
   // Add example text
   $j('.example').livequery(function() {
     $this = $j(this);

@@ -11,7 +11,8 @@
                       :label => "Submit a New Application", |
                       :class => "submit toggle", :rel => "#new_project_tab_form" |
     
-    #new_project_tab_form.hidden= render :partial => "projects/parts/mini_form"
+    = render :partial => "projects/parts/mini_form"
+
     = partial "layouts/about_us"
     = partial "projects/parts/tabs"
     
