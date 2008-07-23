@@ -4,13 +4,8 @@
     %meta{"http-equiv" => "Content-type", "content" => "text/html; charset=utf-8"}
     = title :site => AppConfig.site_name
     = meta_tags
-
-    = stylesheet "template/style"
-    = stylesheet "common/paging"
-    = stylesheet "tabs"
     
-    = stylesheet "project-list"
-    = stylesheet "util"
+    = v2_stylesheets
 
     = javascripts
     = yield :head

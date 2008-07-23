@@ -1,4 +1,18 @@
 module StylesheetHelper
+  
+  def v2_stylesheets(options = {})
+    [
+      stylesheet("common/paging"),
+      stylesheet("tabs"),    
+      stylesheet("project-list"),
+      stylesheet("util"),
+
+      stylesheet(include_css("v2")),
+      page_stylesheets(options)
+    ].join("\n")
+    
+  end
+  
   # include stylesheets
   def stylesheets(options = {})
     [
@@ -14,22 +28,20 @@ module StylesheetHelper
     if AppConfig.minimize
       ["min/application", "min/common", "min/components"]
     else
-      ["application", include_sass("common"), include_sass("components")]
+      ["application", include_css("common"), include_css("components")]
     end
   end
-
-  # returns a list of *css file paths* for a sass directory
-  def include_sass(path)
-    # include common and component sass
-    sass_styles = Dir["#{RAILS_ROOT}/public/stylesheets/sass/#{path}/*.sass"]
-
-    # convert to css paths
-    css_styles = []
-    sass_styles.each do |sass_path|
-      css_path = sass_path.gsub("#{RAILS_ROOT}/public/stylesheets/sass/", "").gsub(".sass", ".css")
-      css_styles << css_path 
-    end
   
-    return css_styles
+  # returns a recursive list of *css file paths* for a sass directory
+  def include_css(path)
+    if use_cache? or browser_is? :ie
+      "min/#{path}.css"
+    else
+      result = []
+      Dir["#{RAILS_ROOT}/public/stylesheets/#{path}/**/*.css"].each do |css|
+        result << css.gsub("#{RAILS_ROOT}/public/stylesheets/", "")
+      end
+      return result
+    end
   end
 end

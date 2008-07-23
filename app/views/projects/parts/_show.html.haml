@@ -14,9 +14,9 @@
       = image_tag(project.screenshot_url, :id => "current_screenshot")
       = clear_tag(:br)
     
-    = ratings(project, :detailed => true)
+    = partial "projects/v2_parts/ratings", :project => project, :detailed => true
     
-    - unless throttled? or project.tag_list.empty?
+    - unless project.tag_list.empty?
       %p.tags
         %strong Tags:
         = project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")

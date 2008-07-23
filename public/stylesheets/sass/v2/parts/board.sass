@@ -1,0 +1,72 @@
+
+/* board */
+
+#board
+  width: 100%
+  height: 287px
+  background: url(/images/template/board_bg.gif) no-repeat
+
+  #board_left
+    float: left
+    width: 660px
+
+  #board_right
+    float: right
+    width: 240px
+    p
+      margin-left: 25px
+      margin-top: 12px
+      color: #8b8b8b
+      line-height: 16px
+    p.board_right_second
+      color: #5c5c5c
+
+  .board_item
+    float: left
+    width: 207px
+    padding-left: 10px
+    padding-top: 22px
+
+    h3
+      font-size: 18px
+      color: #06b0ef
+      font-weight: normal
+      border-bottom: 1px solid #5a5a5a
+      padding-bottom: 4px
+      span
+        display: block
+        background: url(/images/template/arrow5.gif) no-repeat
+        padding-left: 25px
+    ul
+      padding-top: 5px
+      li
+        background: url(/images/template/dotted_grey.gif) repeat-x left bottom
+        padding-bottom: 5px
+        padding-top: 5px
+        display: block
+        p
+          color: #818181
+          line-height: 16px
+          background: url(/images/template/arrow6.gif) no-repeat left 6px
+          padding-left: 9px
+          a
+            color: #818181
+
+      li.last
+        background: none
+        padding-bottom: 0
+
+  #smalllogo
+    width: 221px
+    height: 36px
+    font-size: 0.2em
+    position: relative
+    overflow: hidden
+    display: block
+    margin: 20px 0 0 9px
+    span
+      background: url(/images/template/smalllogo.gif) no-repeat
+      position: absolute
+      width: 100%
+      height: 100%
+      cursor: pointer

@@ -55,24 +55,6 @@ module ProjectsHelper
     
   end
   
-  
-  def ratings(project, options={})
-    
-    rating_size = options.delete(:rating_size) || ""
-    detailed = options.delete(:detailed) || false
-    
-    haml_tag :div, :class => "site_item_rate" do
-      voting(project, detailed)
-      ratings_control(project, rating_size)
-    end
-  end
-  
-  def ratings_control(project, size = "")
-    haml_tag :div, :class => "ratings-control #{size}", :title => rating_explain(project) do
-      puts link_to(project.rating_in_halves.to_s, rate_project_url(project), :class => "rate-init", :rel => project.id.to_s)
-    end
-  end
-  
   def bookmark_control(project)
     
     haml_tag :span, :class => "bookmark-control" do

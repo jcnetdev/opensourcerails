@@ -1,0 +1,10 @@
+- if local_assigns[:project]  
+  .site_item_links
+    %ul
+      %li= link_to_image("comments-mini.png", project_comments_url(project), :title => pluralize(project.comments.size, "comment"))
+      %li= bookmark_mini(project)
+      - unless project.download_url.blank?
+        %li= link_to_image("download-mini.png", download_project_url(project), :title => "Download Latest Version")
+      
+      
+      

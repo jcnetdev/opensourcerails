@@ -1,0 +1,26 @@
+#footer {
+  width: 100%;
+  height: 36px;
+  clear: both; }
+
+#footer_copyrights {
+  float: left;
+  padding-left: 24px;
+  padding-top: 10px;
+  color: #666666;
+  font-size: 13px; }
+
+#footer_ask {
+  float: right;
+  padding-right: 24px;
+  padding-top: 10px; }
+
+#footer_copyrights a {
+  font-weight: bold;
+  color: #666666; }
+
+#footer_copyrights a span {
+  color: #00aeef; }
+
+#footer_ask a {
+  color: #00aeef; }
