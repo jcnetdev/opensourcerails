@@ -1,5 +1,5 @@
 - title @project.title
-- active_tab :gallery
+- active_tab @project.title
 - meta_keywords "#{h(@project.meta_keywords)} #{AppConfig.default_meta_keywords}"
 - meta_description "#{h(@project.short_description)}"
 
@@ -20,8 +20,6 @@
         = partial "projects/parts/submit_panel", :project => @project
         
   #body_right
-    #go_back
-      = link_to_image "back-arrow-sm.png", projects_url(:page => session[:page]), :label => "Back to Gallery..."
     #project_info
       - right_box do
         = partial "projects/parts/about_project", :project => @project
