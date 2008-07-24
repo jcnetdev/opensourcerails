@@ -1,6 +1,9 @@
 - comment = Comment.initialize_from_user(current_or_anon_user) unless local_assigns[:comment]
 - heading = "Share your thoughts about this application:" unless local_assigns[:heading]
 
+#show_comment_link.text-right.hidden
+  %strong= link_to "Add Comment", "#", :class => "toggle", :rel => "#app_form", :onclick => "$j('#show_comment_link').fadeOut();"
+
 #app_form
   %h2= heading
   - build_form_for [@project, comment], :html => {:id => "comment_form"} do |f|
@@ -33,5 +36,5 @@
           
           = image_submit_tag new_or_edit("buttons/post_comment.png", "buttons/edit_comment.png", "buttons/post_comment.png")
           or
-          = link_to "cancel", project_comments_url(@project), :class => "switch-to-first"
+          = link_to "cancel", project_comments_url(@project), :class => "hide-click", :rel => "#app_form", :onclick => "$j('#show_comment_link').show();"
       

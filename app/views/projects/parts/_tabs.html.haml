@@ -19,7 +19,7 @@
       .tags
         - tag_cloud @tags, %w(level-1 level-2 level-3) do |tag, css_class|
           %span{:class => css_class, :title => "#{tag.count} projects"}
-            = link_to_if(tag.name != @tag, tag.name, projects_url(:tag => tag.name)) + ((@tags.last != tag) ? "," : "")
+            = display_tag(tag)
 
     - tab "Top Apps", "top_counts" do
       .counts.first
@@ -36,5 +36,5 @@
           - @top_bookmarked.each do |project|
             %li
               = link_to project.title, project
-              %span.stat== Bookmarked by #{pluralize(project.bookmarks_count, "person")}  
+              %span.stat== Bookmarked by #{pluralize(project.bookmarks_count, "person")}
 

@@ -25,6 +25,6 @@
   - if project.tag_list.size > 0
     #app_item_tags
       %strong Tags:
-      = project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")
+      = project_tags(project)
   - else
     = br

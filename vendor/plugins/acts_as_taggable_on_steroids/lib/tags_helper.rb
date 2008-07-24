@@ -10,4 +10,9 @@ module TagsHelper
       yield tag, classes[index]
     end
   end
+  
+  def project_tags(project)
+    project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")
+  end
+  
 end
