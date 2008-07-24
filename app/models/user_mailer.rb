@@ -14,6 +14,13 @@ class UserMailer < ActionMailer::Base
          :url => "#{AppConfig.site_url}"
   end
   
+  def send_password_reset(user)
+    setup_email(user)
+    
+    subject "#{AppConfig.site_name} Password Recovery"
+    body :user => user
+  end
+  
   protected
     def setup_email(user)
       recipients  "#{user.email}"

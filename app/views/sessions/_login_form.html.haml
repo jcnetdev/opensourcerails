@@ -1,0 +1,7 @@
+- build_form_for @login || Login.new, :url => session_url do |f|
+  = f.text_field :login, :label => "Username or Email"
+  = f.password_field :password
+  = f.check_box :remember_me
+
+  .actions
+    = f.submit "Log In"

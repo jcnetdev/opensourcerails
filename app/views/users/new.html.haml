@@ -21,4 +21,7 @@
             = link_to "cancel", root_url
 
   #body_right
-    
+    - right_box do
+      %h3 Already have an account?
+      .mini-form
+        = partial "sessions/login_form"

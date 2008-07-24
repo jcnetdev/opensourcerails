@@ -105,6 +105,28 @@ class User < ActiveRecord::Base
       end
     end
   end
+  
+  def send_forgot_password
+    self.forgot_password_hash = encrypt("#{self.id}--#{Time.now}")
+    self.forgot_password_expire = (AppConfig.forgot_password_expire||5).days.from_now
+    self.save!
+    
+    UserMailer.deliver_send_password_reset(self)
+  end
+  
+  
+  # finds an email and initiate the forgot password flow
+  def self.forgot_password(email)
+    return false if email.blank?
+    
+    # find matching user
+    u = User.find_by_email(email)
+    return false unless u
+    
+    u.send_forgot_password
+    return true
+  end
+
 
   # Encrypts some data with the salt.
   def self.encrypt(password, salt)

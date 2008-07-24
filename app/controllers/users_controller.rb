@@ -150,6 +150,42 @@ class UsersController < ApplicationController
     @user.destroy
     redirect_to users_path
   end
+  
+  def forgot_password
+    if request.post?
+      User.forgot_password(params[:email])
+      flash[:notice] = "An email has been sent to you that will allow you to reset your password. If you have any problems email us at opensourcerails@gmail.com"
+    end
+    redirect_to new_session_url
+  end
+  
+  
+  # handle resetting user passwords
+  def reset_password
+    # find user from auth code
+    @user = User.find_by_forgot_password_hash(params[:auth])
+    unless @user
+      flash[:error] = "Reset Password URL was invalid. It may have expired. Please email us at support@launchsplash.com if you are still unable to log in."
+      redirect_to new_session_url
+      return
+    end
+    
+    # set url to submit back
+    @submit_url = reset_password_users_url
+    @form_title = "Reset Password"
+    
+    # handle post
+    if request.put? and @user.update_attributes(params[:user])
+      @user.forgot_password_hash = nil
+      @user.forgot_password_expire = nil
+      @user.save
+      
+      flash[:notice] = "Your password has been reset. You may now log in with your new password."
+      redirect_to new_session_url
+    end
+  end
+  
+
 
 protected
   def find_user

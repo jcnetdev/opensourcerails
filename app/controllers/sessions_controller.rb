@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
 
   # render new.rhtml
   def new
-    @login = Login.new
   end
 
   def create

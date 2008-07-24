@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   
   map.resource :session
-  map.resources :users, :member => {:activate => :get, :spammer => :put, :edit_password => :get}
+  map.resources :users, :member => {:activate => :get, :spammer => :put, :edit_password => :get}, :collection => {:reset_password => :any}
     
   map.resources :projects, 
                   :member => {
@@ -26,6 +26,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.feed "/feed", :controller => "projects", :action => "feed", :format => "atom"
   map.connect "/feed.:format", :controller => "projects", :action => "feed"
+    
+  map.forgot_password "/forgot_password", :controller => "users", :action => "forgot_password"
     
   # add actions for next/previous project
   map.next_project "/projects/:id/next", :controller => "projects", :action => "find_next"

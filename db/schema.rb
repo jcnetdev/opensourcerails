@@ -163,6 +163,9 @@ ActiveRecord::Schema.define do
     t.boolean  "show_alert",                              :default => false
     t.boolean  "show_welcome",                            :default => true
     t.boolean  "spammer",                                 :default => false
+
+    t.string   "forgot_password_hash"
+    t.datetime "forgot_password_expire"
   end
 
   add_index "users", ["ip_address"], :name => "index_users_on_ip_address"
