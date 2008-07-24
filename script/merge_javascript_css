@@ -41,8 +41,7 @@ def merge_javascript
   puts "finished..."
   puts "========================="
   
-  package_css("COMMON", "common")
-  package_css("COMPONENTS", "components")
+  package_css("V2", "v2")
 
   # Clean Up CSS Min
   # puts "Cleaning up stylesheets/min"
