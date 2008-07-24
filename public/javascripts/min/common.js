@@ -1,0 +1,1 @@
+$j(document).ready(function(){$j("div.flash a.close-text").click(function(){Effect.Fade($(this).up());return false;});});$j(document).ready(function(){shortcut.add("ESC",function(){$j(".container.debug").toggleClass("showgrid");$j(".debug-info.container").toggle();});});
