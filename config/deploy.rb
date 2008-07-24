@@ -21,7 +21,7 @@ role :db,  server_name, :primary => true
 set :deploy_to, "/var/www/production/#{application}"
 set :nginx_conf, "/var/www/nginx"
 
-set :use_sudo, false
+set :use_sudo, true
 ssh_options[:paranoid] = false
 
 namespace :deploy do
