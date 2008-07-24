@@ -1,0 +1,32 @@
+- hidden = false unless local_assigns[:hidden]
+- if local_assigns[:user]
+  .reload
+    #about_user{hide_if(hidden)}
+      %h3 Your Profile
+      .display      
+        %p
+          %strong Name:
+          =h default(user.name, "[Not Entered]")
+
+          = br      
+          %strong Email:
+          =h default(user.email, "[Not Entered]")
+
+          - unless user.homepage.blank?
+            = br
+            %strong Homepage:
+            = link_to h(user.homepage), h(user.homepage)
+
+          - unless user.profile.blank?
+            = br
+            %strong About:
+            =h(user.profile)
+
+          = br*2
+          %strong
+            = link_to "Edit Profile", edit_user_url(user), :class => "edit"
+            |
+            = link_to "Change Password", edit_password_user_url(user), :class => "edit"
+
+      .form-container.hidden
+      = clear

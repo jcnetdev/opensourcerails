@@ -34,21 +34,82 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    @user = find_user
     @bookmarked_projects = @user.projects
     @submitted_projects = @user.submitted
     @activities = @user.activities.all(:limit => 101, :order => "created_at DESC")
     @rated_projects = @user.rated_projects
+    
+    respond_to do |format|
+      format.html
+      format.js do
+        render :partial => "users/parts/about_user", :locals => {:user => @user}, :layout => false
+      end
+    end
   end
   
   def edit
-    
+    @user = find_user
+    return unless verify_owner(@user)
+
+    respond_to do |format|
+      format.html
+      format.js do
+        render :partial => "users/form", :locals => {:user => @user, :ajax => true}, :layout => false
+      end
+    end
+  end
+  
+  def edit_password
+    @user = find_user
+    return unless verify_owner(@user)
+
+    respond_to do |format|
+      format.html
+      format.js do
+        render :partial => "users/parts/password_form", :locals => {:user => @user, :ajax => true}, :layout => false
+      end
+    end
   end
   
   def update
+    @user = find_user
+    return unless verify_owner(@user)
     
+    @user.attributes = params[:user]
+    @user.signed_up = true
+    @user.name = params[:user][:name]
+    @user.profile = params[:user][:profile]
+    
+    if @user.save
+      if @user.password.blank?
+        flash[:success] = "Your profile has been updated."
+      else
+        flash[:success] = "Your password has been changed."
+      end
+    else
+      error_msg = ""
+      error_msg << "<ul class='error'>"
+      @user.errors.each do |key, error|
+        error_msg << "<li>#{key.capitalize} Field: #{error}</li>"
+      end
+      error_msg << "</ul>"
+
+      flash[:error] = error_msg
+    end
+    
+    respond_to do |format|
+      format.js do
+        render :partial => "users/parts/ajax_result.html.haml", :locals => {:message => (flash[:error] || flash[:success])}
+        flash.discard
+      end
+      format.html do
+        redirect_to @user
+      end
+    end
   end
 
+  
   def spammer
     spammer = User.find(params[:id])
     if spammer
@@ -94,5 +155,25 @@ protected
   def find_user
     @user = User.find(params[:id])
   end
-
+  
+  # verify that the current user can edit this profile
+  def verify_owner(user)
+    if user and user == current_or_anon_user
+      return true
+    else      
+      # render an output
+      respond_to do |format|        
+        flash[:error] = "You don't have access to edit this profile."
+        format.js do
+          render :text => flash[:error], :layout => false
+          flash.discard
+        end
+        format.html do
+          redirect_to user
+        end
+      end
+      return false
+    end
+  end
+  
 end

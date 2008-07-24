@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
   validates_length_of       :login, :within => 3..40,                 :if => :signed_up?
   validates_length_of       :email, :within => 3..100,                :if => :signed_up?
   validates_uniqueness_of   :login, :email, :case_sensitive => false, :if => :signed_up?
+  validates_as_email_address :email,                                   :if => :signed_up?
 
   # password validations
   validates_presence_of     :password,                                :if => :password_required?

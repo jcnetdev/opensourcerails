@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   
   map.resource :session
-  map.resources :users, :member => {:activate => :get, :spammer => :put}
+  map.resources :users, :member => {:activate => :get, :spammer => :put, :edit_password => :get}
     
   map.resources :projects, 
                   :member => {

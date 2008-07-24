@@ -156,6 +156,7 @@ ActiveRecord::Schema.define do
     t.boolean  "admin",                                   :default => false
     t.string   "ip_address"
     t.string   "name"
+    t.string   "homepage"
     t.text     "profile"
     t.boolean  "signed_up",                               :default => false
     t.text     "bookmark_blob"
