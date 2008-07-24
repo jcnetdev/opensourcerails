@@ -4,7 +4,11 @@ class PagesController < ApplicationController
   end
   
   def blog
-    flash[:notice] = "Blog coming soon..."
-    redirect_to root_url
+    if AppConfig.blog_url
+      redirect_to AppConfig.blog_url
+    else
+      flash[:notice] = "Blog coming soon..."
+      redirect_to root_url
+    end
   end
 end

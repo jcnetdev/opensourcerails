@@ -1,8 +1,10 @@
 # Set Site Details
 site_name: "Open Source Rails"
 site_url: "http://www.opensourcerails.com"
-version: "v0.5"
+version: "v1.0"
 require_email_activation: true
+
+blog_url: http://blog.opensourcerails.com
 
 # SEO Stuff
 default_meta_keywords: "open source ruby on rails"
