@@ -78,8 +78,8 @@ class UsersController < ApplicationController
     
     @user.attributes = params[:user]
     @user.signed_up = true
-    @user.name = params[:user][:name]
-    @user.profile = params[:user][:profile]
+    @user.name = params[:user][:name] if params[:user][:name]
+    @user.profile = params[:user][:profile] if params[:user][:profile]
     
     if @user.save
       if @user.password.blank?
