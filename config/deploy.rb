@@ -1,8 +1,8 @@
 # ------------
 # APP SPECIFIC SETTINGS
 # ------------
-set :application, "opensrcrails2"
-set :repository, "ssh://git@railsmade.unfuddle.com/railsmade/opensourcerails.git"
+set :application, "opensrcrails"
+set :repository, "git@github.com:jcnetdev/opensourcerails.git"
 set :server_name, "www.opensourcerails.com"
 
 set :scm, "git"
@@ -70,15 +70,15 @@ end
 
 # SET UP EVENTS
 before "deploy:restart", "admin:migrate"
-after  "deploy", "debug:send_request"
+after  "deploy", "live:send_request"
 
 after "deploy:setup", "init:database_yml"
 after "deploy:setup", "init:setup_proxy"
 after "deploy:setup", "init:create_database"
 after "deploy:update_code", "localize:copy_shared_configurations"
 after "deploy:update_code", "localize:copy_nginx_conf"
+after "deploy:update_code", "localize:upload_folders"
 after "deploy:update_code", "localize:install_gems"
-
 
 namespace :localize do
   desc "copy shared configurations to current"
@@ -96,8 +96,19 @@ namespace :localize do
   
   desc "installs / upgrades gem dependencies "
   task :install_gems, :roles => [:app] do
-    sudo "cd #{release_path} && rake RAILS_ENV=production gems:install"
+    run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
   end
+  
+  task :upload_folders, :roles => [:app] do
+    # create symlink for screenshots
+    run "mkdir -p #{deploy_to}/shared/screenshots"
+    run "ln -s #{deploy_to}/shared/screenshots #{release_path}/public/screenshots"
+    
+    # create symlink for downloads
+    run "mkdir -p #{deploy_to}/shared/downloads"
+    run "ln -s #{deploy_to}/shared/downloads #{release_path}/public/downloads"
+  end
+  
 end
 
 namespace :init do
@@ -205,7 +216,7 @@ server {
   end
 end
 
-namespace :debug do
+namespace :live do
   desc "send request" 
   task :send_request do
     url = "http://#{server_name}"

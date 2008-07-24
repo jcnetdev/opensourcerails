@@ -2,8 +2,8 @@
 require File.dirname(__FILE__) + '/../config/environment'
 
 require 'fileutils'
-Screenshot.find(981).destroy
-Screenshot.find(:all, :conditions => "thumbnail IS NULL").each do |screen|
+Screenshot.find(981).destroy if Screenshot.find_by_id(981)
+Screenshot.find(:all, :conditions => "project_id IS NOT NULL").each do |screen|
   
   FileUtils.mkdir_p("#{RAILS_ROOT}/public/screenshots_new/#{screen.id}/original/")
   FileUtils.mkdir_p("#{RAILS_ROOT}/public/screenshots_new/#{screen.id}/medium/")
