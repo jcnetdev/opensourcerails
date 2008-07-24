@@ -10,10 +10,12 @@ $j(document).ready(function() {
   // wire up our ajax progress (just hides and shows .progress)
   $j.ajaxSetup({
     beforeSend: function() {
+      $j("#project_grid .note").hide();
       $j("#project_grid .loading").show();
     },
     complete: function() {
       $j("#project_grid .loading").hide();
+      $j("#project_grid .note").show();
     }
   });  
   

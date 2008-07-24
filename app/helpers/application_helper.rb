@@ -136,4 +136,8 @@ module ApplicationHelper
       return "#{user.name}'s"
     end
   end
+  
+  def paging?(list)
+    list.is_a? WillPaginate::Collection
+  end
 end

@@ -3,19 +3,6 @@ $j(document).ready(function() {
   
   $j(".tabs > ul").tabs();
   
-  
-  // Allow any link with "fade" to hide after being clicked
-
-  
-  if($j("#about_us").onPage() && !$j("#about_us").is(":visible"))
-  {
-    $j(".about a").click(function() {
-      $j(this).fadeOut();
-      $j("#about_us").slideDown();
-      return false;
-    });    
-  }
-  
   // Handle the hide about section
   $j("a.hide-about").click(function() {
     $j("#about_us").slideUp();  

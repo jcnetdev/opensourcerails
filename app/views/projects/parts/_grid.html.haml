@@ -21,4 +21,7 @@
     -# display paging
     = clear
     .loading.right{hidden}= image_tag("loading.gif", :alt => "Loading...")
-    = paging(projects)
+    - if paging?(projects)
+      .grid-paging
+        .note Use left / right keys<br />to cycle pages
+        = paging(projects)
