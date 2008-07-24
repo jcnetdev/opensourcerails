@@ -4,13 +4,15 @@
     #app_item_top_left
       %h2= project.title
       %h3= project.short_description
+      
+    -# slideshow link
     #app_item_top_right
-      = view_slideshow_link(project)
+      = link_to "<span>&nbsp;</span>View Slideshow", "#slideshow", :class => "replace", :id => "view_slideshow_link"
     = clear
   
   -# show default screenshot
   #app_item_image
-    = image_tag(project.screenshot_url, :id => "current_screenshot")
+    = link_to image_tag(project.screenshot_url), project.screenshot_url, :id => "main_screenshot"
   
   -# show ratings and bookmarks
   #app_item_links

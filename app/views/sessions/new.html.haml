@@ -7,7 +7,7 @@
       .main.details
         %h2.form Log In
         - build_form_for @login, :url => session_url do |f|
-          = f.text_field :username
+          = f.text_field :login, :label => "Username or Email"
           = f.password_field :password
           = f.check_box :remember_me
   

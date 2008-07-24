@@ -151,20 +151,6 @@ module ProjectsHelper
   end
 
 
-  def view_slideshow_link(project)
-    link_to "<span>&nbsp;</span>View Slideshow", project.screenshot_url,
-              :class => "replace lightview current-screenshot-action",
-              :rel => "gallery[screens]", 
-              :id => "view_slideshow_link"
-  end
-
-  def switch_screenshot_link(project)
-    link_to "<span>&nbsp;</span>Make Default", "#",
-                :class => "current-screenshot-action",
-                :confirm => "Do you want to make this the featured screenshot for the project?",
-                :method => :put
-    
-  end
 
   # Allow showing an article IF:
   # - the current user is a spammer. let the spammers eat their f*$&ing spam

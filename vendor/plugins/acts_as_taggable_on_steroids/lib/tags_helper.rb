@@ -9,10 +9,5 @@ module TagsHelper
       index = ((tag.count / max_count) * (classes.size - 1)).round
       yield tag, classes[index]
     end
-  end
-  
-  def project_tags(project)
-    project.tag_list.map{|tag| link_to(tag.capitalize, projects_url(:tag => tag), :rel => "tag")}.join(", ")
-  end
-  
+  end  
 end

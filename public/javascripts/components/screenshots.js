@@ -8,42 +8,37 @@ $j(document).ready(function() {
     $j(this).find(".delete").hide();
   });
 
-  // handle screenshot clicks
-  $j("#screenshots .screenshot a.show-screen").click(function() {
-    $this = $j(this);
-    
-    // start the progress indicator
-    $j(".image-loading").show();
-    
-    $j("#current_screenshot").fadeOut();
 
-    // replace the view photo link
-    $j("#view_slideshow_link").attr("href", $this.attr("href"));
-
-    // set up the switch screenshot action
-    $j("#current_screenshot_switch").show()
-      .find("a")
-      .attr("href", $this.parent().find("a.switch-default").attr("href"));
-    
-    var img = new Image();
-    $j(img)
-      .load(function() {
-        $j(this).hide();
-        $j("#current_screenshot").replaceWith(this);
-        
-        $j(this).attr("id", "current_screenshot");
-        
-        // start the progress indicator
-        $j(".image-loading").hide();
-        $j("#current_screenshot").fadeIn();
-        
-      })
-      .attr("src", $this.attr("href"));
-      
-    
+  $j("#view_slideshow_link").click(function() {
+    if($j(".lightview").onPage())
+    {
+      Lightview.show($j(".lightview").get(0));
+    }
     return false;
   });
   
+  $j("#main_screenshot").click(function(e) {
+    e.preventDefault();
+
+    $findScreen = $j(".lightview[href='"+$j(this).attr("href")+"']");
+    if($findScreen.onPage())
+    {
+      Lightview.show($findScreen.get(0));
+    }
+  });
+  
+  // observe lightview events
+  $('screenshots').observe('lightview:opened', function(event) {
+    $j(".lv_Data .lv_ChangeDefault").remove();
+    
+    $findScreen = $j(".lightview[href='"+$j(event.target).attr("href")+"']");
+    if($findScreen.onPage())
+    {
+      switchDefault = $findScreen.parents(".screenshot").find(".switch-default .lv_Button").get(0);
+      $j("<li class='lv_ChangeDefault'></li>").append(switchDefault).appendTo(".lv_Data");
+    }
+  });
+
 });
 
 // handle screenshot add form

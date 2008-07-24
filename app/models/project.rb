@@ -57,7 +57,7 @@ class Project < ActiveRecord::Base
     return unless screen
     
     self.thumb_url = screen.screenshot.url(:thumb)
-    self.preview_url = screen.screenshot.url(:list)
+    self.preview_url = screen.screenshot.url(:medium)
     self.screenshot_url = screen.screenshot.url
     self.save
   end

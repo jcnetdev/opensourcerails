@@ -66,13 +66,18 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = first :conditions => {:login => login}
+    if login.to_s.include?("@")
+      u = first(:conditions => {:email => login})
+    else
+      u = first(:conditions => {:login => login})
+    end
+    
     u && u.authenticated?(password) ? u : nil
   end
   
   def self.login_with(login)
     if login.valid?
-      u = self.authenticate(login.username, login.password)
+      u = self.authenticate(login.login, login.password)
       if u and u.active?
         return u
       else
