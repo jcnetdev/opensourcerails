@@ -16,6 +16,9 @@ class ApplicationController < ActionController::Base
   
   include Throttler
   
+  before_filter do
+    AppConfig.reload!
+  end
   
   def check_spam(val)
     if val == "4" or val == "four"

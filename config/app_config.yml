@@ -18,3 +18,5 @@ screenshot_sizes:
 
 # Set default avatar
 screenshot_default: "/images/default_screenshots/:style.png"
+
+show_morph: true

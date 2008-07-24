@@ -151,6 +151,12 @@ module ProjectsHelper
   end
 
 
+  def deploy_now(project)
+    content_tag(:div, :class => "deploy-now") do
+      link_to "Deploy your <strong>own</strong> version of<br />#{project.title.upcase} to mor.ph", "#"
+    end
+  end
+
 
   # Allow showing an article IF:
   # - the current user is a spammer. let the spammers eat their f*$&ing spam

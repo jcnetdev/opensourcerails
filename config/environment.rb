@@ -91,7 +91,7 @@ Rails::Initializer.run do |config|
   # ------
   # Allow application wide configuration settings via YML files
   # ------
-  config.github_gem 'jcnetdev-app_config', :version => '>= 1.0'
+  config.github_gem 'jcnetdev-app_config', :version => '>= 1.2'
   
   # auto_migrations
   # ------

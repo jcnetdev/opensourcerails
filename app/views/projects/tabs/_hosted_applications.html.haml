@@ -7,6 +7,8 @@
     - check_empty(hosted_applications, "hosted versions") do
       = br
       = link_to "Add One Now...", "#", :class => "switch-to-last"
+    
+    = deploy_now(@project) if AppConfig.show_morph
 
   - tab "add link...", "hosted_instances_add" do
     .tab-form= partial "hosted_instances/form"
