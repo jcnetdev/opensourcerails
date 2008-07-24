@@ -38,3 +38,9 @@
         
       .form-container.hidden
         
+  - if session[:newproj] == project.id
+    :javascript
+      $j(window).load(function() {
+        $j("#about_project .edit").click();
+      });
+    - session[:newproj] = nil

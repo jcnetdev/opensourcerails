@@ -96,6 +96,7 @@ namespace :localize do
   
   desc "installs / upgrades gem dependencies "
   task :install_gems, :roles => [:app] do
+    sudo "date" # fuck you capistrano
     run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
   end
   

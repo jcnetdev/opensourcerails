@@ -50,6 +50,8 @@ class ProjectsController < ApplicationController
     if @project.save      
       current_or_anon_user.add_bookmark(@project)
 
+      session[:newproj] = @project.id
+
       flash[:success] = "Project has been created but not submitted. Customize it now with screenshots, files, and links before submitting it to the gallery."
       redirect_to @project
     else
