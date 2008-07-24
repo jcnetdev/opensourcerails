@@ -1,7 +1,7 @@
 class Version < ActiveRecord::Base
   include Mixins::ProjectItem
   
-  has_attached_file :download, :storage => AppConfig.file_storage.to_s.intern
+  has_attached_file :download
   
   
   validates_presence_of :title
