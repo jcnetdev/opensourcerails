@@ -43,7 +43,12 @@ class VersionsController < Base::ProjectSubpage
     if @version.download.url == @project.download_url
       @project.increment_downloads
     end
-    redirect_to @version.download.url
+    
+    if @version.has_link?
+      redirect_to @version.link
+    else
+      redirect_to @version.download.url
+    end
   end
   
   def edit

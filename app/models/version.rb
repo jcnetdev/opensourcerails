@@ -4,11 +4,15 @@ class Version < ActiveRecord::Base
   has_attached_file :download
   
   validates_presence_of :title
-  validates_attachment_size :download, :less_than => 10.megabytes
-  validates_attachment_presence :download
+  validates_attachment_size :download, :less_than => 10.megabytes, :unless => :has_link?
+  validates_attachment_presence :download, :unless => :has_link?
   
   
   after_save :set_project_download_url
+  
+  def has_link?
+    !self.link.blank?
+  end
   
   # check if a version is the project's default
   def is_default?

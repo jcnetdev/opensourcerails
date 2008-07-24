@@ -172,6 +172,7 @@ ActiveRecord::Schema.define do
 
     t.string   "title"
     t.text     "notes"
+    t.string   "link"
 
     t.string   "download_file_name"
     t.string   "download_content_type"
