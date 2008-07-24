@@ -1,7 +1,7 @@
 # ------------
 # APP SPECIFIC SETTINGS
 # ------------
-set :application, "opensrcrails"
+set :application, "opensrcrails2"
 set :repository, "ssh://git@railsmade.unfuddle.com/railsmade/opensourcerails.git"
 set :server_name, "www.opensourcerails.com"
 

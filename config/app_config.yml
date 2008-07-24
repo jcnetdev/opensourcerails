@@ -6,6 +6,8 @@ require_email_activation: true
 
 blog_url: http://blog.opensourcerails.com
 
+file_storage: s3
+
 # SEO Stuff
 default_meta_keywords: "open source ruby on rails"
 default_meta_description: "Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications."

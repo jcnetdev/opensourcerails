@@ -1,12 +1,12 @@
 class Version < ActiveRecord::Base
   include Mixins::ProjectItem
   
-  has_attached_file :download
+  has_attached_file :download, :storage => AppConfig.file_storage.to_s.intern
+  
   
   validates_presence_of :title
   validates_attachment_size :download, :less_than => 10.megabytes, :unless => :has_link?
   validates_attachment_presence :download, :unless => :has_link?
-  
   
   after_save :set_project_download_url
   

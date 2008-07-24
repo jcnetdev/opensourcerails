@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   
   # notify of exceptions
-  include ExceptionNotifiable
+  include ExceptionNotifiable if defined? ExceptionNotifiable
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
