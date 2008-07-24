@@ -12,7 +12,7 @@ module StylesheetHelper
   
   # returns a recursive list of *css file paths* for a sass directory
   def include_css(path)
-    if use_cache? or browser_is? :ie
+    if !AppConfig.force_all_css and (use_cache? or browser_is? :ie)
       "min/#{path}.css"
     else
       result = []
