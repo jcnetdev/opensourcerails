@@ -7,7 +7,14 @@
         = link_to_image project.thumb_url, project
         = link_to(project.title, project)
         = br
-        - if project.last_changed
+        - if project.user_rating
+          Rated 
+          = project.user_rating.rating
+          Stars 
+          - if project.user_rating.created_at
+            = time_ago_in_words(project.user_rating.created_at)
+            ago.
+        - elsif project.last_changed
           Last modified 
           = time_ago_in_words(project.last_changed) 
           ago.

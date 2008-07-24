@@ -103,6 +103,7 @@ ActiveRecord::Schema.define do
     t.integer "rated_id",   :limit => 11
     t.string  "rated_type"
     t.integer "rating",     :limit => 10, :precision => 10, :scale => 0
+    t.datetime "created_at"
   end
 
   add_index "ratings", ["rater_id"], :name => "index_ratings_on_rater_id"

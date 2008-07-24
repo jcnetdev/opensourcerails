@@ -117,7 +117,7 @@ module ProjectsHelper
     end
   end
   
-  def grid_title
+  def search_or_tag_title
     if @tag
       label = pluralize(@tag.taggings.size, 'project')
       title = "#{label} tagged with \"<strong>#{@tag.name}</strong>\""

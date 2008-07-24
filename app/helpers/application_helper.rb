@@ -121,15 +121,19 @@ module ApplicationHelper
     super(name, {:id => "error_explanation", :class => "error"}.merge(options))
   end
   
-  def hide_if(condition)
-    if condition
-      {:style => "display:none"}
+  def default(val, default = "")
+    if val.blank?
+      return default
     else
-      {}
+      return val
     end
   end
   
-  def hide_unless(condition)
-    hide_if(!condition)
+  def name_display(user)
+    if current_or_anon_user == user
+      return "Your"
+    elsif user
+      return "#{user.name}'s"
+    end
   end
 end

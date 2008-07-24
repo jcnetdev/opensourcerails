@@ -1,7 +1,5 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
-  # Be sure to include AuthenticationSystem in Application Controller instead
-  include AuthenticatedSystem
   
   before_filter :check_login, :only => [:new, :create]
 
@@ -35,6 +33,11 @@ class SessionsController < ApplicationController
   end
   
   def show
+    if logged_in?
+      redirect_to user_url(current_user)
+    else
+      redirect_to root_url
+    end
   end
   
   def index

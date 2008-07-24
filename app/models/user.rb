@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   
   has_many :bookmarks
   has_many :projects, :through => :bookmarks, :order => "last_changed DESC"
+  has_many :submitted, :class_name => "Project", :foreign_key => "owner_id"
 
   # additional relationships
   has_many :activities
@@ -12,6 +13,19 @@ class User < ActiveRecord::Base
   has_many :hosted_instances, :class_name => "HostedInstance", :foreign_key => "owner_id"
   has_many :screenshots, :class_name => "Screenshot", :foreign_key => "owner_id"
   has_many :versions, :class_name => "Version", :foreign_key => "owner_id"
+  
+  # find user ratings
+  has_many :rated, :class_name => "ProjectRating", :foreign_key => "rater_id"
+  def rated_projects
+    project_list = []
+    rated.all(:include => [:project]).each do |r|
+      p = r.project
+      p.user_rating = r
+      project_list << p
+    end
+    
+    return project_list
+  end
   
   # Virtual attribute for the unencrypted password
   attr_accessor :password

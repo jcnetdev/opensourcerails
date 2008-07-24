@@ -1,0 +1,48 @@
+- title "#{name_display(@user)} Profile"
+- active_tab "Profile"
+
+#body
+  #body_left.swap
+    #left_pad
+      = partial "projects/parts/grid", :projects => @bookmarked_projects, |
+                :grid_title => pluralize(@bookmarked_projects.size, "Bookmarked Project"), |
+                :empty_message => "No applications have been bookmarked yet." |
+      
+      = clear
+      
+  #body_right
+    - if current_or_anon_user == @user
+      - right_box do
+        %h3 Your Profile
+        %p
+          %strong Name:
+          = default(@user.name, "[Not Entered]")
+          = br
+        
+          %strong Email:
+          = default(@user.email, "[Not Entered]")
+          = br*2
+          %strong
+            = link_to "Edit Profile"
+            |
+            = link_to "Change Password"
+    
+    - right_box do
+      %h3== #{name_display(@user)} Activities (#{@activities.size})
+      .scroll-300
+        = partial "projects/parts/activity_list", :activities => @activities
+
+    - right_box do
+      %h3== #{name_display(@user)} Ratings (#{@rated_projects.size})
+      .scroll-300
+        = partial "projects/parts/list", :projects => @rated_projects
+    
+    - right_box do
+      %h3== #{name_display(@user)} Submitted Projects (#{@submitted_projects.size})
+      - if @submitted_projects.empty?
+        %p
+          You have not yet submitted any projects.
+      - else
+        .scroll-300
+          = partial "projects/parts/list", :projects => @submitted_projects
+        

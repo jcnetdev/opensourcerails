@@ -1,7 +1,7 @@
 .login
   - if logged_in?
     Logged in as:
-    %strong= link_to current_user.login, edit_user_url(current_user)
+    %strong= link_to current_user.login, user_url(current_user)
   - else
     .links
       = link_to "Login", new_session_url

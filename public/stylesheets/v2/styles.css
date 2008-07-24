@@ -61,6 +61,8 @@ body {
   width: 541px;
   margin-left: 21px;
   padding-top: 17px; }
+#body #body_left.swap {
+  float: right; }
 #body #body_right {
   width: 316px;
   padding-top: 17px;

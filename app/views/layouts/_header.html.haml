@@ -7,6 +7,8 @@
 
   #menu
     %ul
+      - if active_tab.is_a? String
+        %li= menu_item(active_tab, url_for, true)
       %li= menu_item("Gallery", root_url, active_tab == :gallery)
       %li= menu_item("About", about_url, active_tab == :about)
       %li= menu_item("Blog", blog_url, active_tab == :blog)

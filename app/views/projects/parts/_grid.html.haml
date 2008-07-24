@@ -1,15 +1,21 @@
 #project_grid
   - if local_assigns[:projects]
-    %h2= grid_title
+
+    - unless local_assigns[:grid_title].blank?
+      %h3= local_assigns[:grid_title]
+    - else
+      = search_or_tag_title
+    
 
     -# Display projects
-    .projects= partial @projects
+    - reset_cycle
+    .projects= partial projects
   
-    - if @projects.empty?
+    - if projects.empty?
       %p.empty
         - if params[:q].blank?
-          No applications currently <br />
-          exist in the gallery
+          = local_assigns[:empty_message] || "No applications currently exist in the gallery"
+          = br*2
         
       
     -# display paging

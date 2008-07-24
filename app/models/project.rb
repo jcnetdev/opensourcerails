@@ -28,6 +28,9 @@ class Project < ActiveRecord::Base
   # allow projects to be rated
   acts_as_rated
   
+  # used to temporarily store user rating
+  attr_accessor :user_rating
+  
   # allow project to be tagged
   acts_as_taggable
   

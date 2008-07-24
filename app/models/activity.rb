@@ -59,7 +59,7 @@ class Activity < ActiveRecord::Base
     
     # skip activity records for spam
     if model.respond_to? :owner
-      if model.owner.spammer?
+      if model.owner and model.owner.spammer?
         return true
       end
     end
