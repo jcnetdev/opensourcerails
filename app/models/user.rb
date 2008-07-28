@@ -27,6 +27,9 @@ class User < ActiveRecord::Base
     return project_list
   end
   
+  named_scope :registered, :conditions => {:state => "active"}  
+  named_scope :nil_password, :conditions => {:crypted_password => nil}
+  
   # Virtual attribute for the unencrypted password
   attr_accessor :password
 

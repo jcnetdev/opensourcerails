@@ -1,0 +1,13 @@
+#body
+  #body_left
+    #left_pad
+      .details.main{:style => "border: 0px;margin-top: 20px"}
+        %h2 Subscribe to OpenSourceRails Mailing List
+        - form_tag "http://opensourcerails.cmail1.com/s/383588/", :method => "post" do
+          .field.text_field
+            = label_tag "l383588-383588", "Email:"
+            = text_field_tag "cm-383588-383588", params["cm-383588-383588"], :id => "l383588-383588"
+          .actions
+            = submit_tag "Submit"
+            or
+            = link_to "cancel", root_url

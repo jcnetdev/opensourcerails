@@ -27,6 +27,10 @@ ActionController::Routing::Routes.draw do |map|
   # map.blog "/blog", :controller => "blog", :action => "index"
   # map.blog_post "/blog/:id", :controller => "blog", :action => "show"
 
+  # email campaign routes
+  map.email_unsubscribed "/unsubscribed", :controller => "pages", :action => "unsubscribed"
+  map.email_subscribe "/subscribe", :controller => "pages", :action => "subscribe"
+
   map.feed "/feed", :controller => "projects", :action => "feed", :format => "atom"
   map.connect "/feed.:format", :controller => "projects", :action => "feed"
     
