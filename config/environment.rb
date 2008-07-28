@@ -63,12 +63,6 @@ Rails::Initializer.run do |config|
 
   config.gem "right_aws"
   
-  # exception_notification
-  # ------
-  # Allows unhandled exceptions to be emailed on production
-  # ------
-  config.github_gem 'jcnetdev-exception_notification', :version => '>= 1.1'
-  
   # active_record_without_table
   # ------
   # Allows creation of ActiveRecord models that work without any database backend

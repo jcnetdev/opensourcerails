@@ -36,7 +36,7 @@ test:
 production:
   adapter: mysql
   encoding: utf8
-  database: opensrcrails_production
+  database: opensrcrails_development
   username: root
   password: 
   host: localhost
