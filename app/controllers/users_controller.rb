@@ -165,7 +165,7 @@ class UsersController < ApplicationController
     # find user from auth code
     @user = User.find_by_forgot_password_hash(params[:auth])
     unless @user
-      flash[:error] = "Reset Password URL was invalid. It may have expired. Please email us at support@launchsplash.com if you are still unable to log in."
+      flash[:error] = "Reset Password URL was invalid. It may have expired. Please email us at opensourcerails@gmail.com if you are still unable to log in."
       redirect_to new_session_url
       return
     end

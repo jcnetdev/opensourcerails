@@ -1,4 +1,5 @@
 site_url: "http://127.0.0.1:3000"
+blog_url: "http://osrblog"
 
 sass_options:
   style: expanded

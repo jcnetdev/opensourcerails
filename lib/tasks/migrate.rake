@@ -2,17 +2,15 @@ require 'rubygems'
 require 'rake'
 
 class Rake::Task
-  def overwrite(&block)
-    @actions.clear
+  def add_task_after(&block)
     enhance(&block)
   end
 end
 
 # Overwrite migrate task
-Rake::Task["db:migrate"].overwrite do
-  puts "Running Auto Migration and DB Seed..."
+Rake::Task["db:migrate"].add_task_after do
+  puts "Running DB Seed..."
   
-  Rake::Task["db:auto:migrate"].invoke
   Rake::Task["db:seed"].invoke
 end
 # 

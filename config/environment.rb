@@ -87,12 +87,6 @@ Rails::Initializer.run do |config|
   # ------
   config.github_gem 'jcnetdev-app_config', :version => '>= 1.2'
   
-  # auto_migrations
-  # ------
-  # Allows migrations to be run automatically based on updating the schema.rb
-  # ------
-  config.github_gem 'jcnetdev-auto_migrations', :version => '>= 1.2'
-  
   # better_partials
   # ------
   # Adds a helper (partial) that wraps around render :partial. Pass local variables and blocks to your partials easily

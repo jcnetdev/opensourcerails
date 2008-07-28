@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define do
+ActiveRecord::Schema.define(:version => 20080728120230) do
 
   create_table "activities", :force => true do |t|
     t.datetime "created_at"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define do
     t.integer  "author_id",              :limit => 11
     t.string   "short_description"
     t.integer  "rating_count",           :limit => 11
-    t.integer  "rating_total",           :limit => 10, :precision => 10, :scale => 0
+    t.integer  "rating_total",           :limit => 10
     t.decimal  "rating_avg",                           :precision => 10, :scale => 2
     t.text     "cached_tag_list"
     t.integer  "downloads",              :limit => 11,                                :default => 0
@@ -99,10 +99,10 @@ ActiveRecord::Schema.define do
   end
 
   create_table "ratings", :force => true do |t|
-    t.integer "rater_id",   :limit => 11
-    t.integer "rated_id",   :limit => 11
-    t.string  "rated_type"
-    t.integer "rating",     :limit => 10, :precision => 10, :scale => 0
+    t.integer  "rater_id",   :limit => 11
+    t.integer  "rated_id",   :limit => 11
+    t.string   "rated_type"
+    t.integer  "rating",     :limit => 10
     t.datetime "created_at"
   end
 
@@ -110,18 +110,14 @@ ActiveRecord::Schema.define do
   add_index "ratings", ["rated_type", "rated_id"], :name => "index_ratings_on_rated_type_and_rated_id"
 
   create_table "screenshots", :force => true do |t|
-    t.integer  "project_id",   :limit => 11
-    t.integer  "owner_id",     :limit => 11
-
+    t.integer  "project_id",              :limit => 11
+    t.integer  "owner_id",                :limit => 11
     t.string   "screenshot_file_name"
     t.string   "screenshot_content_type"
-    t.integer  "screenshot_file_size"
-
-    # old junk
+    t.integer  "screenshot_file_size",    :limit => 11
     t.string   "filename"
     t.string   "content_type"
-    t.integer  "size"
-
+    t.integer  "size",                    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -163,7 +159,6 @@ ActiveRecord::Schema.define do
     t.boolean  "show_alert",                              :default => false
     t.boolean  "show_welcome",                            :default => true
     t.boolean  "spammer",                                 :default => false
-
     t.string   "forgot_password_hash"
     t.datetime "forgot_password_expire"
   end
@@ -172,25 +167,20 @@ ActiveRecord::Schema.define do
   add_index "users", ["login"], :name => "index_users_on_login"
 
   create_table "versions", :force => true do |t|
-    t.integer  "project_id",   :limit => 11
-    t.integer  "uploader_id",  :limit => 11
-
+    t.integer  "project_id",            :limit => 11
+    t.integer  "uploader_id",           :limit => 11
     t.string   "title"
     t.text     "notes"
     t.string   "link"
-
     t.string   "download_file_name"
     t.string   "download_content_type"
-    t.integer  "download_file_size"
-
-    # old
+    t.integer  "download_file_size",    :limit => 11
     t.string   "filename"
     t.string   "content_type"
-    t.integer  "size"
-
+    t.integer  "size",                  :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "owner_id",     :limit => 11
+    t.integer  "owner_id",              :limit => 11
   end
 
 end

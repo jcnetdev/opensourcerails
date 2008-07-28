@@ -109,6 +109,11 @@ class User < ActiveRecord::Base
   def send_forgot_password
     self.forgot_password_hash = encrypt("#{self.id}--#{Time.now}")
     self.forgot_password_expire = (AppConfig.forgot_password_expire||5).days.from_now
+    if self.crypted_password.blank?
+      self.password = "changeme"
+      self.password_confirmation = "changeme"
+    end
+    
     self.save!
     
     UserMailer.deliver_send_password_reset(self)

@@ -1,14 +1,5 @@
-.blog h1 {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 1em; }
-.blog .post {
-  padding-bottom: 15px; }
-.blog .post .entry {
-  line-height: 1.4em; }
-.blog .post .entry p {
-  color: #333;
-  font-size: 1.05em; }
-.blog .post .entry p img {
-  max-width: 100%;
-  margin: 10px 0px; }
+.blog h1 { font-size: 20px; font-weight: bold; margin-bottom: 1em; }
+.blog .post { padding-bottom: 15px; }
+.blog .post .entry { line-height: 1.4em; }
+.blog .post .entry p { color: #333; font-size: 1.05em; }
+.blog .post .entry p img { max-width: 100%; margin: 10px 0px; }
