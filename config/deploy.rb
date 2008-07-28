@@ -6,113 +6,91 @@ set :repository, "git@github.com:jcnetdev/opensourcerails.git"
 set :server_name, "www.opensourcerails.com"
 
 set :scm, "git"
+set :checkout, "export" 
+set :deploy_via, :remote_cache
 
-# Set the system username for deployment
-set :user, "deploy"
-set :runner, "deploy"
+set :base_path, "/var/www"
+set :deploy_to, "/var/www/production/#{application}"
+set :apache_site_folder, "/etc/apache2/sites-enabled"
 
-# ------------
-# REUSABLE CAPISTRANO TASKS
-# ------------
-role :app, server_name
+set :keep_releases, 3
+
+set :user, 'deploy'
+set :runner, 'deploy'
+
+# =============================================================================
+# You shouldn't have to modify the rest of these
+# =============================================================================
+
 role :web, server_name
+role :app, server_name
 role :db,  server_name, :primary => true
 
-set :deploy_to, "/var/www/production/#{application}"
-set :nginx_conf, "/var/www/nginx"
-
 set :use_sudo, true
+
+# saves space by only keeping last 3 when running cleanup
+set :keep_releases, 3 
+
 ssh_options[:paranoid] = false
 
+# =============================================================================
+# OVERRIDE TASKS
+# =============================================================================
 namespace :deploy do
-  desc "stop mongrel cluster"
-  task :stop do
-    run "cd #{current_path};mongrel_rails cluster::stop"
-  end
-  
-  desc "start mongrel cluster"
-  task :start do
-    run "cd #{current_path};mongrel_rails cluster::start"
-  end
-  
-  desc "restart app"
-  task :restart do
-    run "cd #{current_path};mongrel_rails cluster::restart"
+
+  desc "Restart Passenger" 
+  task :restart, :roles => :app do
+    run "touch #{current_path}/tmp/restart.txt" 
+    run "curl http://#{server_name}"
   end
 
-  desc "restart mongrel cluster"
-  task :restart_mongrel do
-    run "cd #{current_path};mongrel_rails cluster::restart"
-  end
-
-  desc "restart nginx cluster"
-  task :restart_nginx do
-    sudo "/etc/init.d/nginx stop"
-    sudo "/etc/init.d/nginx start"
-  end
-
-  desc "start nginx cluster"
-  task :start_nginx do
-    sudo "/etc/init.d/nginx start"
-  end
-
-  desc "stop nginx cluster"
-  task :stop_nginx do
-    sudo "/etc/init.d/nginx stop"
+  desc <<-DESC
+    Deploy and run pending migrations. This will work similarly to the \
+    `deploy' task, but will also run any pending migrations (via the \
+    `deploy:migrate' task) prior to updating the symlink. Note that the \
+    update in this case it is not atomic, and transactions are not used, \
+    because migrations are not guaranteed to be reversible.
+  DESC
+  task :migrations do
+    set :migrate_target, :latest
+    update_code
+    migrate
+    symlink
+    restart
   end
   
-  task :merge_statics do
-    sudo "date"
-    run "cd #{current_path} && sudo ./script/merge_javascript_css"
+  desc "restart apache"
+  task :restart_apache do
+    sudo "/etc/init.d/apache2 stop"
+    sudo "/etc/init.d/apache2 start"
   end
-  
+
+  desc "start apache cluster"
+  task :start_apache do
+    sudo "/etc/init.d/apache2 start"
+  end
+
+  desc "stop apache cluster"
+  task :stop_apache do
+    sudo "/etc/init.d/apache2 stop"
+  end
 end
 
-# SET UP EVENTS
 before "deploy:restart", "admin:migrate"
 after  "deploy", "live:send_request"
 
+after "deploy:setup", "init:set_permissions"
 after "deploy:setup", "init:database_yml"
-after "deploy:setup", "init:setup_proxy"
 after "deploy:setup", "init:create_database"
-after "deploy:update_code", "localize:copy_shared_configurations"
-after "deploy:update_code", "localize:copy_nginx_conf"
-after "deploy:update_code", "localize:upload_folders"
-after "deploy:update_code", "localize:install_gems"
-
-namespace :localize do
-  desc "copy shared configurations to current"
-  task :copy_shared_configurations, :roles => [:app] do
-    %w[mongrel_cluster.yml database.yml amazon_s3.yml].each do |f|
-      run "ln -nsf #{shared_path}/config/#{f} #{release_path}/config/#{f}"
-    end
-  end
-    
-  desc "copy nginx configuration over"
-  task :copy_nginx_conf, :roles => [:app] do
-    run "mkdir -p #{nginx_conf}"
-    run "ln -nsf #{shared_path}/config/nginx.conf #{nginx_conf}/#{application}-nginx.conf"
-  end 
-  
-  desc "installs / upgrades gem dependencies "
-  task :install_gems, :roles => [:app] do
-    sudo "date" # fuck you capistrano
-    run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
-  end
-  
-  task :upload_folders, :roles => [:app] do
-    # create symlink for screenshots
-    run "mkdir -p #{deploy_to}/shared/screenshots"
-    run "ln -s #{deploy_to}/shared/screenshots #{release_path}/public/screenshots"
-    
-    # create symlink for downloads
-    run "mkdir -p #{deploy_to}/shared/downloads"
-    run "ln -s #{deploy_to}/shared/downloads #{release_path}/public/downloads"
-  end
-  
-end
-
+after "deploy:setup", "init:create_vhost"
+after "deploy:setup", "init:enable_site"
 namespace :init do
+  
+  desc "setting proper permissions for deploy user"
+  task :set_permissions do
+    sudo "chown -R deploy /var/www/production"
+  end
+
   desc "create mysql db"
   task :create_database do
     #create the database on setup
@@ -120,6 +98,13 @@ namespace :init do
     set :db_pass, Capistrano::CLI.password_prompt("database password: ") unless defined?(:db_pass)
     run "echo \"CREATE DATABASE #{application}_production\" | mysql -u #{db_user} --password=#{db_pass}"
   end
+  
+  desc "enable site"
+  task :enable_site do 
+    sudo "ln -nsf #{shared_path}/config/apache_site.conf #{apache_site_folder}/#{application}"
+    
+  end
+  
   
   desc "create database.yml"
   task :database_yml do
@@ -141,80 +126,50 @@ production:
     put database_configuration, "#{shared_path}/config/database.yml"
   end
   
-  desc "Setups up Web Proxy (nginx and mongrel)"
-  task :setup_proxy do
-    set :server_domains, Capistrano::CLI.ui.ask("your domain(s): ")
-    set :mongrel_port, Capistrano::CLI.ui.ask("mongrel port: ").to_i
-    set :mongrel_count, Capistrano::CLI.ui.ask("mongrel count: ").to_i
+  desc "create vhost file"
+  task :create_vhost do
     
-    # BUILD MONGREL CONFIG
-    mongrel_cluster_configuration = %(
---- 
-user: deploy
-group: deploy
-cwd: #{current_path}
-log_file: #{current_path}/log/mongrel.log
-environment: production
-address: 127.0.0.1
-pid_file: #{current_path}/tmp/pids/mongrel.pid
-port: "#{mongrel_port}"
-servers: #{mongrel_count}
+    vhost_configuration = %(
+<VirtualHost *>
+  ServerName #{server_name}
+  DocumentRoot /var/www/production/#{application}/current/public
+</VirtualHost>
 )
-    run "mkdir -p #{shared_path}/config"
-    put mongrel_cluster_configuration, "#{shared_path}/config/mongrel_cluster.yml"
     
-    servers = ""
-    mongrel_count.times do |i|
-      servers << "server 127.0.0.1:#{mongrel_port+i};\n"
-    end
+    put vhost_configuration, "#{shared_path}/config/apache_site.conf"
     
-    # BUILD NGINX CONFIG
-    nginx_configuration = %%
-upstream #{application}_cluster {
-  #{servers}
-}
-
-server {
-  listen 80;
-  client_max_body_size 100M;
-  server_name #{server_domains};
-  root /var/www/production/#{application}/current/public;
-  access_log /var/log/nginx/#{application}.access.log main;
-
-  if (-f $document_root/system/maintenance.html) {
-    rewrite  ^(.*)$  /system/maintenance.html last;
-    break;
-  }
-
-  location / {
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header Host $http_host;
-    proxy_redirect false;
-    proxy_max_temp_file_size 0;
-    if (-f $request_filename) {
-      break;
-    }
-    if (-f $request_filename/index.html) {
-      rewrite (.*) $1/index.html break;
-    }
-    if (-f $request_filename.html) {
-      rewrite (.*) $1.html break;
-    }
-    if (!-f $request_filename) {
-      proxy_pass http://#{application}_cluster;
-      break;
-    }
-  }
-
-  error_page 500 502 503 504 /500.html;
-  location = /500.html {
-    root /var/www/production/#{application}/current/public;
-  }
-}    
-%
-    put nginx_configuration, "#{shared_path}/config/nginx.conf"
   end
+  
+end
+
+after "deploy:update_code", "localize:install_gems"
+after "deploy:update_code", "localize:copy_shared_configurations"
+after "deploy:update_code", "localize:upload_folders"
+
+namespace :localize do
+  desc "copy shared configurations to current"
+  task :copy_shared_configurations, :roles => [:app] do
+    %w[database.yml].each do |f|
+      run "ln -nsf #{shared_path}/config/#{f} #{release_path}/config/#{f}"
+    end
+  end
+  
+  desc "installs / upgrades gem dependencies "
+  task :install_gems, :roles => [:app] do
+    sudo "date" # fuck you capistrano
+    run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
+  end
+  
+  task :upload_folders, :roles => [:app] do
+    # create symlink for screenshots
+    run "mkdir -p #{deploy_to}/shared/screenshots"
+    run "ln -s #{deploy_to}/shared/screenshots #{release_path}/public/screenshots"
+    
+    # create symlink for downloads
+    run "mkdir -p #{deploy_to}/shared/downloads"
+    run "ln -s #{deploy_to}/shared/downloads #{release_path}/public/downloads"
+  end
+  
 end
 
 namespace :live do
@@ -283,11 +238,11 @@ namespace :admin do
   end
   
   task :migrate do
-    run "cd #{current_path} && RAILS_ENV=production rake db:migrate"
+    run "cd #{current_path} && sudo rake RAILS_ENV=production db:migrate"
   end
   
   task :remote_rake do
     rake_command = Capistrano::CLI.ui.ask "Rake Command to run: "
-    run "cd #{current_path} && sudo RAILS_ENV=production rake #{rake_command}"
+    run "cd #{current_path} && sudo rake RAILS_ENV=production #{rake_command}"
   end
 end

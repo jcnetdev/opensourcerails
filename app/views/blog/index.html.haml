@@ -1,0 +1,14 @@
+- active_tab :blog
+
+#body.blog
+  #body_left
+    #left_pad
+      %h1 OpenSourceRails Blog
+      - @posts.each do |post|
+        .post
+          %h2= post.post_title
+          .entry
+            = simple_format(post.post_content)
+        = hr
+  #body_right
+  
