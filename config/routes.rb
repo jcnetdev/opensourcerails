@@ -24,8 +24,8 @@ ActionController::Routing::Routes.draw do |map|
   map.about "/about", :controller => "pages", :action => "about"
 
   # blog
-  map.blog "/blog", :controller => "blog", :action => "index"
-  map.blog_post "/blog/:id", :controller => "blog", :action => "show"
+  # map.blog "/blog", :controller => "blog", :action => "index"
+  # map.blog_post "/blog/:id", :controller => "blog", :action => "show"
 
   map.feed "/feed", :controller => "projects", :action => "feed", :format => "atom"
   map.connect "/feed.:format", :controller => "projects", :action => "feed"
