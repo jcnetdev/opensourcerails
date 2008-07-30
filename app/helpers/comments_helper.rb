@@ -5,7 +5,7 @@ module CommentsHelper
       link_actions = [link_to("Edit Comment", edit_project_comment_url(@project, comment)), 
                       link_to("Delete Comment", project_comment_url(@project, comment), :method => :delete, :confirm => "Are you sure you want to delete this?")]
 
-      if admin?
+      if admin? and comment.owner
         link_actions << link_to("Spam!", spammer_user_url(comment.owner), :method => :put, :confirm => "Are you sure you want to mark this person as a spammer?")
       end
       
