@@ -184,7 +184,6 @@ class User < ActiveRecord::Base
   def update_from_comment(comment)
     unless self.signed_up?
       self.name = comment.author_name if self.name.blank?
-      self.email = comment.author_email if self.email.blank?
       self.save
     end
   end
