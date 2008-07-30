@@ -30,7 +30,7 @@ class VersionsController < Base::ProjectSubpage
       flash[:success] = "New Application Version was uploaded."
       redirect_to @project
     else
-      flash[:error] = "Unable to Save Version."
+      flash[:error] = "Unable to Save Version. " + @version.errors.map{|error| "#{error.first.capitalize} #{error.last}"}.join(",")
       redirect_to project_url(@project)+"#versions_add"
     end
   end  
@@ -38,7 +38,7 @@ class VersionsController < Base::ProjectSubpage
   def show
     @version = get_version
     return unless version_exists?(@version)
-    
+      
     # increment download count if its the default url
     if @version.download.url == @project.download_url
       @project.increment_downloads
