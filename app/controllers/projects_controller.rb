@@ -67,14 +67,13 @@ class ProjectsController < ApplicationController
   
   def show
     @project = Project.find_by_id(params[:id], :include => :comments)
-    @latest_activities = Activity.latest_for(@project)
-    
     unless @project
       flash[:error] = "Unable to find project with the id: #{params[:id]}"
       redirect_to root_url
       return false
     end 
     
+    @latest_activities = Activity.latest_for(@project)
     # verify that the project is submitted or that the currnet person is at least the owner
     unless @project.is_submitted? or @project.owned_by?(current_or_anon_user)
       flash[:error] = "That project is not yet accessible or your session may have expired."
