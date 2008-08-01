@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   end
   
   def check_spam(val)
-    if val == "4" or val == "four"
+    if [AppConfig.spam_answer].flatten.include? val.to_s.strip
       return true
     else
       return false

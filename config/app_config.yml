@@ -23,4 +23,9 @@ screenshot_sizes:
 # Set default avatar
 screenshot_default: "/images/default_screenshots/:style.png"
 
+spam_question: What is 3 plus 2?
+spam_answer: 
+  - "5"
+  - "five"
+
 show_morph: false

@@ -14,7 +14,17 @@ class CommentsController < Base::ProjectSubpage
     # setup comment
     @comment = @project.comments.build(params[:comment])
     @comment.owner = @user
-    if @comment.save
+    
+    if @comment.valid?
+    
+      unless check_spam(params[:comment][:antispam])
+        @project.comments(true)
+        flash[:error] = "You're either a spammer or bad at math. Either way... no link for you!"
+        render :template => "projects/show"
+        return
+      end
+      
+      @comment.save
       @user.update_from_comment(@comment)
       flash[:success] = "Comment has been added."
       redirect_to project_comment_url(@project, @comment)

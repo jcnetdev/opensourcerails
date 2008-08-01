@@ -11,7 +11,7 @@
 
   = f.text_field :title, :label => "Version Name"
   = f.text_area :notes, :label => "Update Notes (optional)"
-  = f.text_field :antispam, :label => "What is 1 plus 3?", :separator => ""
+  = f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
   
   .actions
     - if version.new_record?
