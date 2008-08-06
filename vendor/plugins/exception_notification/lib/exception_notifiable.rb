@@ -7,7 +7,8 @@ module ExceptionNotifiable
     ActionController::UnknownController,
     ActionController::UnknownAction,
     ActionController::RoutingError,
-    ActionController::MethodNotAllowed
+    ActionController::MethodNotAllowed,
+    WillPaginate::InvalidPage
   ]
 
   def self.included(base)
