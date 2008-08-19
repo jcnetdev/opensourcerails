@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
     @top_downloaded = Project.top_downloaded
     @top_bookmarked = Project.top_bookmarked
     
-    if throttled?
+    if AppConfig.enable_throttle? and throttled? #throttled?
       @tags = []
     else
       @tags = Project.tag_counts(:conditions => Project.in_gallery_conditions, :order => "name")

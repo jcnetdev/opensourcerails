@@ -3,6 +3,7 @@ site_name: "Open Source Rails"
 site_url: "http://www.opensourcerails.com"
 version: "v1.0"
 require_email_activation: true
+enable_throttle: false
 
 blog_url: http://blog.opensourcerails.com
 
