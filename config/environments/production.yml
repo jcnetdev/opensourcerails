@@ -1,2 +1,3 @@
 rss_url: "http://feeds.feedburner.com/OpenSourceRails"
 force_all_css: true
+enable_throttler: true

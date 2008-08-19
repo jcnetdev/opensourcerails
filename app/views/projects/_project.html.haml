@@ -4,7 +4,7 @@
     %p= project.short_description
     
     -# show default screenshot
-    .screen= link_to image_tag(project.preview_url), project_url(project)
+    .screen= link_to image_tag(project.screenshot_url), project_url(project)
     
     -# show ratings
     = partial "projects/parts/ratings", :project => project, :rating_size => "small"
