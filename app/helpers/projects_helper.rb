@@ -1,36 +1,7 @@
 module ProjectsHelper
 
   def activity_display(activity, options = {})
-    
-    haml_tag :span, :class => "activity #{activity.target_type}".downcase do
-      
-      puts activity.user_name
-      puts " "
-      puts activity.action_name
-      puts " "
-      
-      puts activity.midsentence
-      puts " "          
-
-      
-      puts activity_target_link(activity)
-      puts " "
-      puts activity.endconnector
-    
-      if activity.project_id
-        puts " "
-        puts link_to(activity.project_name.to_s+".", project_url(:id => activity.project_id))
-      else
-        puts "."
-      end
-      
-      # display time
-      haml_tag :span, :class => "when" do
-        puts time_ago_in_words(activity.happened_at)
-        puts " ago"
-      end
-      
-    end
+    partial "activities/activity", options.merge(:activity => activity)
   end
   
   def activity_target_link(activity)    
