@@ -22,10 +22,10 @@ $j(document).ready(function() {
   // Allow ESC to show debug information
   shortcut.add("LEFT",function() {
     $j("#project_grid .pagination *:first-child").click();
-  });
+  }, {disable_in_input: true});
   shortcut.add("RIGHT",function() {
     $j("#project_grid .pagination *:last-child").click();
-  });
+  }, {disable_in_input: true});
 
   // Set tooltips
   $j("#project_grid .pagination *:first-child").attr("title", "Shortcut: LEFT ARROW");

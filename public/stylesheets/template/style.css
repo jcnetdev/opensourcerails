@@ -86,7 +86,7 @@ body{
 }
 
 #logo span{
-  background: url(/images/template/logo.png) no-repeat;
+  background: url(/images/logo.png) no-repeat;
   position: absolute;
   width: 100%;
   height: 100%;
