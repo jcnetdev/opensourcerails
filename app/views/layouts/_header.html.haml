@@ -12,8 +12,8 @@
       - if active_tab.is_a? String
         %li= menu_item(active_tab, url_for, true)
       %li= menu_item("Gallery", gallery_url, active_tab == :gallery)
+      %li= menu_item("Upcoming", gallery_url, active_tab == :upcoming)
       %li= menu_item("About", about_url, active_tab == :about)
-      %li= menu_item("Blog", blog_url, active_tab == :blog)
       - if logged_in?
         %li= link_to menu_tag("Log Out"), session_url, :method => :delete, :confirm => "Are you sure you want to log out?"
       

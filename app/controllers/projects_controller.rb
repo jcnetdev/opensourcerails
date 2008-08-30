@@ -15,6 +15,8 @@ class ProjectsController < ApplicationController
   end
   
   def upcoming
+    @active_tab = :upcoming
+    
     build_gallery(upcoming_projects)    
     respond_to do |format|
       format.html do

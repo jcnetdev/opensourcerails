@@ -19,7 +19,7 @@ module ApplicationHelper
   
   def active_tab(set_tab = nil)
     if set_tab
-      @active_tab = set_tab
+      @active_tab ||= set_tab
     end
     
     return @active_tab
