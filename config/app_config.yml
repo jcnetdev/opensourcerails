@@ -7,10 +7,12 @@ admin_email_address: "opensourcerails@gmail.com"
 version: "v1.0"
 
 # Options
+ajax_paging: true
 show_social_media: true
 require_email_activation: true
 enable_throttler: false
 show_morph: false
+
 
 # About Page
 site_description: "Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications."

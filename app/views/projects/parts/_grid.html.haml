@@ -25,6 +25,9 @@
     = clear
     .loading.right{hidden}= image_tag("loading.gif", :alt => "Loading...")
     - if paging?(projects)
+      - unless AppConfig.ajax_paging
+        #disable_ajax_paging.hidden &nbsp;
+    
       .grid-paging
-        .note Use left / right keys<br />to cycle pages
+        .note.hidden Use left / right keys<br />to cycle pages
         = paging(projects)

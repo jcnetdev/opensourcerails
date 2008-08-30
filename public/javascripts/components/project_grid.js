@@ -2,6 +2,9 @@ $j(document).ready(function() {
   if($j("#project_grid").notOnPage()){return;}
   if($j("#disable_ajax_paging").onPage()){return;}
   
+  
+  $j("#project_grid .note").show();
+
   // hook up ajax paging
   $j("#project_grid .pagination a").livequery('click', function() {
     $j("#project_grid").load($j(this).attr("href")+"&ajax=true");    
