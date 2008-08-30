@@ -10,3 +10,4 @@ public/downloads
 public/screenshots
 public/images/screenshots
 db/restore.sql
+config/sites/*.rb

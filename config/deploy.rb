@@ -1,10 +1,10 @@
 # ------------
 # APP SPECIFIC SETTINGS
 # ------------
-set :application, "opensourcerails"
-set :repository, "git@github.com:jcnetdev/opensourcerails.git"
-set :server_name, "www.opensourcerails.com"
+set :application, "[YOUR APP NAME]"
+set :server_name, "[YOUR APP DOMAIN NAME, e.g. www.opensourcerails.com]"
 
+set :repository, "git@github.com:jcnetdev/opensourcerails.git"
 set :scm, "git"
 set :checkout, "export" 
 set :deploy_via, :remote_cache
@@ -19,6 +19,9 @@ set :linked_files, [
 
 # set the list of folders to symlink on deployment
 set :linked_folders, %w[public/screenshots public/downloads]
+set(:app, "srcrails") unless respond_to?(:app)
+
+load File.dirname(__FILE__)+"/sites/#{app}" 
 
 set :base_path, "/var/www"
 set :deploy_to, "/var/www/production/#{application}"
@@ -96,19 +99,23 @@ after  "deploy", "live:send_request"
 # LOCALIZE TASKS
 # ===================
 after "deploy:update_code", "localize:install_gems"
+after "deploy:update_code", "localize:set_permissions"
 after "deploy:update_code", "localize:link_files"
 after "deploy:update_code", "localize:link_folders"
 after "deploy:update_code", "localize:merge_assets"
-after "deploy:update_code", "localize:set_permissions"
 
 namespace :localize do
-  
   desc "installs / upgrades gem dependencies "
   task :install_gems, :roles => [:app] do
     sudo "date"
     run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
   end
-  
+
+  desc "setting proper permissions for deploy user"
+  task :set_permissions do
+    sudo "chown -R deploy /var/www/production/#{application}"
+  end
+    
   desc "create symlinks for files specified in the linked_files array"
   task :link_files, :roles => [:app] do
     if defined? :linked_files
@@ -143,10 +150,7 @@ namespace :localize do
     end
   end
 
-  desc "setting proper permissions for deploy user"
-  task :set_permissions do
-    sudo "chown -R deploy /var/www/production/#{application}"
-  end
+
 end
 
 # ===================
