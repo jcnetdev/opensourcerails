@@ -12,13 +12,14 @@
       
   #body_right
     - if current_or_anon_user == @user
-      - if @user.active?
-        - right_box do
-          = partial "users/parts/about_user", :user => @user
-      - else
+      - if @user.anonymous?
         - right_box do
           = br
-          %h2= link_to "Make an Account!", new_user_url
+          %h2= link_to "Create an Account!", new_user_url
+          %p In order to save your bookmarks, and share your profile with others, sign up now!
+      - else
+        - right_box do
+          = partial "users/parts/about_user", :user => @user
     - else
       - right_box do
         %h3== #{name_display(@user)} Profile
