@@ -1,7 +1,7 @@
 # ------------
 # APP SPECIFIC SETTINGS
 # ------------
-set :application, "opensrcrails"
+set :application, "opensourcerails"
 set :repository, "git@github.com:jcnetdev/opensourcerails.git"
 set :server_name, "www.opensourcerails.com"
 
@@ -10,10 +10,15 @@ set :checkout, "export"
 set :deploy_via, :remote_cache
 
 # set the list of config files to symlink on deployment
-set :config_files, %w[database.yml app_config.yml environments/production.yml]
+set :linked_files, [
+                  "config/database.yml",
+                  "config/app_config.yml",
+                  "config/environments/production.yml",
+                  "app/views/pages/about.html.haml"
+                 ]
 
 # set the list of folders to symlink on deployment
-set :upload_folders, %w[screenshots downloads]
+set :linked_folders, %w[public/screenshots public/downloads]
 
 set :base_path, "/var/www"
 set :deploy_to, "/var/www/production/#{application}"
@@ -39,15 +44,16 @@ set :keep_releases, 3
 
 ssh_options[:paranoid] = false
 
-# =============================================================================
-# OVERRIDE TASKS
-# =============================================================================
+
+# ===================
+# DEPLOYMENT TASKS
+# ===================
 namespace :deploy do
 
   desc "Restart Passenger" 
   task :restart, :roles => :app do
     run "touch #{current_path}/tmp/restart.txt" 
-    run "curl http://#{server_name}"
+    run "curl http://#{server_name} -g"
   end
 
   desc <<-DESC
@@ -85,17 +91,78 @@ end
 before "deploy:restart", "admin:migrate"
 after  "deploy", "live:send_request"
 
+
+# ===================
+# LOCALIZE TASKS
+# ===================
+after "deploy:update_code", "localize:install_gems"
+after "deploy:update_code", "localize:link_files"
+after "deploy:update_code", "localize:link_folders"
+after "deploy:update_code", "localize:merge_assets"
+after "deploy:update_code", "localize:set_permissions"
+
+namespace :localize do
+  
+  desc "installs / upgrades gem dependencies "
+  task :install_gems, :roles => [:app] do
+    sudo "date"
+    run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
+  end
+  
+  desc "create symlinks for files specified in the linked_files array"
+  task :link_files, :roles => [:app] do
+    if defined? :linked_files
+      linked_files.each do |f|
+        run "ln -nsf #{shared_path}/#{f} #{release_path}/#{f}"
+      end
+    end
+  end
+  
+  desc "create symlinks for folders specified in the linked_folders array"
+  task :link_folders, :roles => [:app] do
+    if defined? :linked_folders
+      linked_folders.each do |f|
+        run "mkdir -p #{shared_path}/#{f}"
+        run "ln -nsf #{shared_path}/#{f} #{release_path}/#{f}"
+      end
+    end
+  end
+  
+  desc "merge asset files"
+  task :merge_assets, :roles => [:app] do
+    if File.exists?(File.join(File.dirname(__FILE__), "..", "script", "merge_assets"))
+      sudo "date" 
+      run "cd #{release_path} && sudo script/merge_assets"
+    end
+  end
+
+  task :merge_current_assets, :roles => [:app] do
+    if File.exists?(File.join(File.dirname(__FILE__), "..", "script", "merge_assets"))
+      sudo "date" 
+      run "cd #{current_path} && sudo script/merge_assets"
+    end
+  end
+
+  desc "setting proper permissions for deploy user"
+  task :set_permissions do
+    sudo "chown -R deploy /var/www/production/#{application}"
+  end
+end
+
+# ===================
+# SETUP TASKS
+# ===================
 after "deploy:setup", "init:set_permissions"
+after "deploy:setup", "init:create_vhost"
+after "deploy:setup", "init:upload_linked_files"
 after "deploy:setup", "init:database_yml"
 after "deploy:setup", "init:create_database"
-after "deploy:setup", "init:create_vhost"
-after "deploy:setup", "init:create_app_config"
 after "deploy:setup", "init:enable_site"
 namespace :init do
   
   desc "setting proper permissions for deploy user"
   task :set_permissions do
-    sudo "chown -R deploy /var/www/production"
+    sudo "chown -R deploy /var/www/production/"
   end
 
   desc "create mysql db"
@@ -103,13 +170,16 @@ namespace :init do
     #create the database on setup
     set :db_user, Capistrano::CLI.ui.ask("database user: ") unless defined?(:db_user)
     set :db_pass, Capistrano::CLI.password_prompt("database password: ") unless defined?(:db_pass)
-    run "echo \"CREATE DATABASE #{application}_production\" | mysql -u #{db_user} --password=#{db_pass}"
+    begin
+      run "echo \"CREATE DATABASE #{application}_production\" | mysql -u #{db_user} --password=#{db_pass}"
+    rescue
+      puts "DATABASE #{application}_production already exists"
+    end
   end
   
   desc "enable site"
   task :enable_site do 
     sudo "ln -nsf #{shared_path}/config/apache_site.conf #{apache_site_folder}/#{application}"
-    
   end
   
   
@@ -142,68 +212,44 @@ production:
   DocumentRoot /var/www/production/#{application}/current/public
 </VirtualHost>
 )
-    
+    run "mkdir -p #{shared_path}/config"
     put vhost_configuration, "#{shared_path}/config/apache_site.conf"
-    
   end
   
-  desc "create app config"
-  task :create_app_config do
-    app_config_yml = File.open(File.join(File.dirname(__FILE__), "app_config.yml"), "r").read
-    put app_config_yml, "#{shared_path}/config/app_config.yml"
-    
-    run "mkdir -p #{shared_path}/config/environments/"
-    
-    production_yml = File.open(File.join(File.dirname(__FILE__), "environments", "production.yml"), "r").read
-    put production_yml, "#{shared_path}/config/environments/production.yml"
-  end
-  
-end
-
-after "deploy:update_code", "localize:install_gems"
-after "deploy:update_code", "localize:copy_shared_configurations"
-after "deploy:update_code", "localize:link_upload_folders"
-after "deploy:update_code", "localize:merge_assets"
-
-namespace :localize do
-  desc "copy shared configurations to current"
-  task :copy_shared_configurations, :roles => [:app] do
-    if defined? :config_files
-      config_files.each do |f|
-        run "ln -nsf #{shared_path}/config/#{f} #{release_path}/config/#{f}"
+  desc "upload link files"
+  task :upload_linked_files do
+    if defined? :linked_files
+      linked_files.each do |f|
+        local_path = File.join(File.dirname(__FILE__), "..", f)
+        run "mkdir -p #{shared_path}/#{File.dirname(f)}"
+        upload local_path,"#{shared_path}/#{f}"
       end
     end
   end
-  
-  desc "installs / upgrades gem dependencies "
-  task :install_gems, :roles => [:app] do
-    sudo "date"
-    run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
-  end
-  
-  desc "linking upload folders"
-  task :link_upload_folders, :roles => [:app] do
-    if defined? :upload_folders
-      upload_folders.each do |f|
-        run "mkdir -p #{shared_path}/uploads/#{f}"
-        run "ln -nsf #{shared_path}/uploads/#{f} #{release_path}/public/#{f}"
-      end
-    end
-  end
-  
-  desc "merge asset files"
-  task :merge_assets, :roles => [:app] do
-    sudo "date" 
-    run "cd #{release_path} && sudo script/merge_assets"
-  end
-
-  task :merge_current_assets, :roles => [:app] do
-    sudo "date" 
-    run "cd #{current_path} && sudo script/merge_assets"
-  end
-  
 end
 
+# ===================
+# ADMIN TASKS
+# ===================
+namespace :admin do    
+  task :set_schema_info do    
+    new_schema_version = Capistrano::CLI.ui.ask "New Schema Info Version: "
+    run "cd #{current_path} && ./script/runner --environment=production 'ActiveRecord::Base.connection.execute(\"UPDATE schema_info SET version=#{new_schema_version}\")'"
+  end
+  
+  task :migrate do
+    run "cd #{current_path} && sudo rake RAILS_ENV=production db:migrate"
+  end
+  
+  task :remote_rake do
+    rake_command = Capistrano::CLI.ui.ask "Rake Command to run: "
+    run "cd #{current_path} && sudo rake RAILS_ENV=production #{rake_command}"
+  end
+end
+
+# ===================
+# LIVE TOOLS
+# ===================
 namespace :live do
   desc "send request" 
   task :send_request do
@@ -260,21 +306,5 @@ namespace :live do
       puts "#{channel[:host]}: #{data}" 
       break if stream == :err    
     end
-  end
-end
-
-namespace :admin do    
-  task :set_schema_info do    
-    new_schema_version = Capistrano::CLI.ui.ask "New Schema Info Version: "
-    run "cd #{current_path} && ./script/runner --environment=production 'ActiveRecord::Base.connection.execute(\"UPDATE schema_info SET version=#{new_schema_version}\")'"
-  end
-  
-  task :migrate do
-    run "cd #{current_path} && sudo rake RAILS_ENV=production db:migrate"
-  end
-  
-  task :remote_rake do
-    rake_command = Capistrano::CLI.ui.ask "Rake Command to run: "
-    run "cd #{current_path} && sudo rake RAILS_ENV=production #{rake_command}"
   end
 end
