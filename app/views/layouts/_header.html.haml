@@ -5,17 +5,15 @@
       = AppConfig.site_name
 
   .address
-    = link_to image_tag("slogan.png"), AppConfig.site_url
+    = link_to image_tag("slogan.png"), "#", :class => "toggle", :rel => "#about_us"
     
   #menu
     %ul
       - if active_tab.is_a? String
         %li= menu_item(active_tab, url_for, true)
-      %li= menu_item("Gallery", gallery_url, active_tab == :gallery)
-      %li= menu_item("Upcoming", upcoming_projects_url, active_tab == :upcoming)
-      %li= menu_item("About", about_url, active_tab == :about)
-      - if logged_in?
-        %li= link_to menu_tag("Log Out"), session_url, :method => :delete, :confirm => "Are you sure you want to log out?"
+      %li= menu_item("Gallery (#{Project.gallery.count})", gallery_url, active_tab == :gallery)
+      %li= menu_item("Upcoming (#{Project.upcoming.count})", upcoming_projects_url, active_tab == :upcoming)
+      %li= menu_item("Profile", user_url(current_or_anon_user), active_tab == :profile)
       
     = clear
   = partial "sessions/login_panel"
