@@ -27,6 +27,7 @@ tellafriend_body_intro: "OpenSourceRails.com is a gallery of the latest and grea
 tellafriend_body_message: "It features an easy to use browse gallery with screenshots plus community driven comments, ratings, and bookmarking."
 
 # Paging Sizes
+project_list_max: 25
 projects_per_page: 6
 bookmarks_per_page: 8
 

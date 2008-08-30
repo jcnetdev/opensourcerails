@@ -14,6 +14,10 @@ class Project < ActiveRecord::Base
   has_many :bookmarks, :dependent => :destroy
   has_many :activities, :order => "updated_at DESC", :dependent => :delete_all
   
+  named_scope :upcoming, :conditions => {:in_gallery => false, :is_submitted => true}, :order => "last_changed DESC"
+  named_scope :gallery, :conditions => {:in_gallery => true, :is_submitted => true}, :order => "promoted_at DESC"
+  named_scope :top, :limit => AppConfig.project_list_max, :order => "last_changed DESC"
+  
   validates_uniqueness_of :title, :on => :create, :message => "must be unique"
 
   attr_accessible :title, :description, :author_name, :author_contact, :requirements,
@@ -97,15 +101,6 @@ class Project < ActiveRecord::Base
     # TODO: find the previous project (via promoted_at col)
     self
   end
-  
-  # Finds the upcoming projects
-  def self.upcoming(limit = 25)
-    find(:all, :conditions => {:in_gallery => false, :is_submitted => true}, :limit => limit, :order => "last_changed DESC")
-  end
-    
-  def self.gallery(limit = 25)
-    find(:all, :conditions => {:in_gallery => true, :is_submitted => true}, :limit => limit, :order => "last_changed DESC")
-  end
     
   # Search projects with a given search string
   def self.search(search_term, options = {})
@@ -130,20 +125,10 @@ class Project < ActiveRecord::Base
     end
   end
   
-  def self.latest(limit=20)
-    find(:all, :conditions => in_gallery_conditions, :order => "promoted_at DESC", :limit => limit)
+  def self.gallery_tags
+    tag_counts(:conditions => {:in_gallery => true, :is_submitted => true}, :order => "name")
   end
   
-  # I'll convert this to named_scope when Rails 2.1 comes out
-  def self.in_gallery_conditions
-    {:in_gallery => true, :is_submitted => true}
-  end
-
-  # I'll convert this to named_scope when Rails 2.1 comes out
-  def self.upcoming_conditions
-    {:in_gallery => false, :is_submitted => true}
-  end
-
   # Top Downloaded
   def self.top_downloaded(limit = 5)
     find(:all, :limit => limit, :conditions => {:is_submitted => true}, :order => "downloads DESC")

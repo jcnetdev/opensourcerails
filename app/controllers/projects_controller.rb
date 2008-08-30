@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   def index  
     build_gallery(gallery_projects)
-    @upcoming = Project.upcoming
+    @upcoming = Project.upcoming(:limit => AppConfig.project_list_max)
     respond_to do |format|
       format.html do
         if params[:ajax]
@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
   end
   
   def feed
-    @projects = Project.latest
+    @projects = Project.gallery.top
     respond_to do |format|
       format.atom do
         render :action => "index.atom.builder"
@@ -247,7 +247,7 @@ class ProjectsController < ApplicationController
     if throttled?
       @tags = []
     else
-      @tags = Project.tag_counts(:conditions => Project.in_gallery_conditions, :order => "name")
+      @tags = Project.gallery_tags
     end  
     
     if params[:q].blank? and params[:tag].blank?
@@ -276,13 +276,13 @@ class ProjectsController < ApplicationController
     elsif @search_term
       @projects = Project.search(@search_term, :page => params[:page], :per_page => AppConfig.projects_per_page)
     else
-      @projects = Project.paginate(:conditions => Project.in_gallery_conditions, :order => "promoted_at DESC", :page => params[:page], :per_page => AppConfig.projects_per_page)
+      @projects = Project.gallery.paginate(:page => params[:page], :per_page => AppConfig.projects_per_page)
     end
   end
     
   # list the upcoming projects
   def upcoming_projects
-    @projects = Project.paginate(:conditions => Project.upcoming_conditions, :order => "updated_at DESC", :page => params[:page], :per_page => AppConfig.projects_per_page)
+    @projects = Project.upcoming.paginate(:page => params[:page], :per_page => AppConfig.projects_per_page)
   end
 
   # verify that the current user owns a project
