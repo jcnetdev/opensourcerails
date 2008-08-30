@@ -19,7 +19,8 @@
   
     .credits
       == &copy; #{AppConfig.site_name}
-
+      by
+      = link_to "RailsJedi", "http://www.railsjedi.com"
   .about
     = partial("layouts/social_media") if AppConfig.show_social_media
       

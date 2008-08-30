@@ -21,7 +21,7 @@ default_meta_description: "Open Source Rails is a community site dedicated to tr
 
 # Tell a Friend
 tellafriend_subject: "Check out OpenSourceRails.com"
-tellafriend_body_intro: "OpenSourceRails.com is features the latest and greatest open source Ruby on Rails projects. Check it out: http://www.opensourcerails.com"
+tellafriend_body_intro: "OpenSourceRails.com is a gallery of the latest and greatest open source Ruby on Rails projects. Check it out: http://www.opensourcerails.com"
 tellafriend_body_message: "It features an easy to use browse gallery with screenshots plus community driven comments, ratings, and bookmarking."
 
 # Paging Sizes
