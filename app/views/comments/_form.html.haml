@@ -28,7 +28,8 @@
             = f.text_field :author_email, :label => "Email (not displayed)"
         
         %li= f.text_area :body, :label => "Comment"
-        %li= f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
+        - if comment.new_record?
+          %li= f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
         %li.app_form_sub
           - if is_edit?
             .right

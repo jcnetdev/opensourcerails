@@ -1,5 +1,5 @@
 - if local_assigns[:activity]
-  %span.activity{:class => activity.target_type.downcase}
+  %span.activity{:class => activity.target_type.to_s.downcase}
   
     = activity.user_name
     = activity.action_name
@@ -8,7 +8,8 @@
     = activity.endconnector
 
     - if activity.project_id
-      = activity.endconnector+link_to(activity.project_name.to_s+".", project_url(:id => activity.project_id))
+      = activity.endconnector
+      = link_to("#{activity.project_name}.", project_url(:id => activity.project_id))
     - else
       == #{activity.endconnector}.
     

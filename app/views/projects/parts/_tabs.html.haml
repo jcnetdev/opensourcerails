@@ -1,14 +1,23 @@
-- if @upcoming and @my_projects
-  - tabs(:class => "size-2") do
+- tabs(:class => "size-2") do
+  - if @hide_upcoming
+    - tab "Gallery", "gallery_apps", :class => "scroll-250" do
+      - if Project.gallery.size > 0
+        = partial "projects/parts/list", :projects => Project.gallery, :action => ["View All Gallery Projects", projects_url]
+      - else
+        %p No gallery applications. Submit one now!
+
+  - else
     - tab "Upcoming", "upcoming_apps", :class => "scroll-250" do
-      - if @upcoming.size > 0
-        = partial "projects/parts/list", :projects => @upcoming
+      - if Project.upcoming.size > 0
+        = partial "projects/parts/list", :projects => Project.upcoming, :action => ["View All Upcoming Projects", upcoming_projects_url]
       - else
         %p No upcoming applications. Submit one now!
 
+  - if @my_projects
     - tab "Bookmarked", "projects_add", :class => "scroll-250" do
-      #my_bookmarks= partial "bookmarks/bookmark_list", :projects => @my_projects
-
+      #my_bookmarks= partial "bookmarks/bookmark_list", :projects => @my_projects, :action => ["View All Bookmarks", user_url(current_or_anon_user)]
+  - else
+    - blank_tab
 
 - if @latest_activities and @tags and @top_downloaded
   - tabs(:class => "size-3") do

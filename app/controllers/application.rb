@@ -27,4 +27,8 @@ class ApplicationController < ActionController::Base
       return false
     end
   end
+  
+  def helpers
+    self.class.helpers
+  end
 end

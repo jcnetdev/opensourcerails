@@ -1,5 +1,5 @@
 atom_feed do |feed|
-  feed.title "Open Source Rails"
+  feed.title AppConfig.site_name
   
   feed.updated((@projects.first.promoted_at)) unless @projects.empty?
 

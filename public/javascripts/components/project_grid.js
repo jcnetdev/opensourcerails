@@ -1,5 +1,6 @@
 $j(document).ready(function() {
   if($j("#project_grid").notOnPage()){return;}
+  if($j("#disable_ajax_paging").onPage()){return;}
   
   // hook up ajax paging
   $j("#project_grid .pagination a").livequery('click', function() {

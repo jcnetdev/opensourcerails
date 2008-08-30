@@ -2,29 +2,26 @@
   .links
     %strong LINKS:
     = link_to "Gallery", root_url
-    - if logged_in?
-      |
-      = link_to "Profile", user_url(current_user)
+    |
+    = link_to "Profile", user_url(current_or_anon_user)
     |
     = link_to "About", about_url
     |
     = link_to "Blog", blog_url
+    - if AppConfig.feedback_link
+      |
+      = link_to "Feedback", AppConfig.feedback_link
     - unless logged_in?
       |
       = link_to "Login", new_session_url
       |
       = link_to "Sign Up", new_user_url
   
+    .credits
+      == &copy; #{AppConfig.site_name}
+
   .about
-    .credits
-      &copy; Open Source Rails
-      |
-      Developed by
-      = link_to "RailsJedi", "http://www.railsjedi.com"
-    .credits
-      Logo by
-      = link_to("VivaLogo", "http://www.vivalogo.com")+","
-      Source Code 
-      = link_to "Available", "http://www.github.com/jcnetdev/opensourcerails"
+    = partial("layouts/social_media") if AppConfig.show_social_media
       
-  = clear
+  = clear  
+  

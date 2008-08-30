@@ -5,7 +5,7 @@ $j(document).ready(function() {
   shortcut.add("ESC",function() {
     $j(".container.debug").toggleClass("showgrid");
     $j(".debug-info.container").toggle();
-  }, {disable_in_input: true});
+  });
   
 
 });

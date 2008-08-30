@@ -1,2 +1,0 @@
-class CompsController < ApplicationController
-end

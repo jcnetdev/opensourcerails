@@ -8,8 +8,8 @@ module ExceptionNotifiable
     ActionController::UnknownAction,
     ActionController::RoutingError,
     ActionController::MethodNotAllowed,
-    WillPaginate::InvalidPage
-  ]
+    defined?(WillPaginate) ? WillPaginate::InvalidPage : nil
+  ].compact
 
   def self.included(base)
     base.extend ClassMethods

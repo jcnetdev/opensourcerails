@@ -114,7 +114,7 @@ module ApplicationHelper
   
   def paging(page_data, style = :sabros)
     return unless page_data.class == WillPaginate::Collection    
-    will_paginate(page_data, :class => "pagination #{style}", :inner_window => 3)
+    will_paginate(page_data, :class => "pagination #{style}", :outer_window => 1, :inner_window => 1)
   end
   
   def error_messages_for(name, options = {})
@@ -132,12 +132,36 @@ module ApplicationHelper
   def name_display(user)
     if current_or_anon_user == user
       return "Your"
-    elsif user
+    elsif !user.name.blank?
       return "#{user.name}'s"
+    elsif !user.login.blank?
+      return "#{user.login}'s"
+    else
+      return "User's"
     end
   end
   
   def paging?(list)
     list.is_a? WillPaginate::Collection
+  end
+  
+  def hide_login_panel?
+    @hide_login_panel
+  end
+  
+  def hide_login_panel
+    @hide_login_panel = true
+  end
+
+  def projects_rss
+    AppConfig.rss_url || formatted_projects_url(:atom)
+  end
+
+  def upcoming_rss
+    AppConfig.upcoming_rss_url || formatted_upcoming_projects_url(:atom)
+  end
+
+  def activity_rss
+    AppConfig.upcoming_activity_url || formatted_activity_projects_url(:atom)
   end
 end

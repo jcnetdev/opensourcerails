@@ -1,7 +1,7 @@
 - if local_assigns[:project]  
   - div_for(project, :class => cycle("start-row", "")) do
     %h2= link_to h(project.title), project_url(project), :rel => "bookmark", :title => h(project.short_description)
-    %p= project.short_description
+    %p.tagline= project.short_description
     
     -# show default screenshot
     .screen= link_to image_tag(project.screenshot_url), project_url(project)

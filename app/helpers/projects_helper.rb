@@ -1,5 +1,13 @@
 module ProjectsHelper
 
+  def gallery_url
+    if session[:page].blank?
+      root_url
+    else
+      root_url :page => session[:page]
+    end
+  end
+  
   def activity_display(activity, options = {})
     partial "activities/activity", options.merge(:activity => activity)
   end
@@ -117,6 +125,19 @@ module ProjectsHelper
                         approve_project_url(@project), 
                         :method => :put,
                         :confirm => "This will promote the application to the gallery.")
+      end
+    end
+  end
+
+  # Display an approve button for a project (if permissions allow)
+  def delete_button(project)
+    if admin?
+      haml_tag :div, :class => "actions text-center" do
+        puts br
+        puts link_to("Delete Project",
+                        project_url(@project), 
+                        :method => :delete,
+                        :confirm => "This delete this project and all related information. There is no UNDO. Continue?")
       end
     end
   end

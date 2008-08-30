@@ -4,5 +4,5 @@
   %p You haven't bookmarked any applications.
 - else
   -# list my projects
-  = partial "projects/parts/list", :projects => @my_projects
+  = partial "projects/parts/list", :projects => @my_projects, :action => local_assigns[:action]
   

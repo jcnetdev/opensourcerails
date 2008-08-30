@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   has_many :rated, :class_name => "ProjectRating", :foreign_key => "rater_id"
   def rated_projects
     project_list = []
-    rated.all(:include => [:project]).each do |r|
+    rated.all(:order => "created_at DESC", :include => [:project]).each do |r|
       p = r.project
       p.user_rating = r
       project_list << p
@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
 
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation, :signup
+  attr_accessible :login, :email, :password, :password_confirmation, :signup, :homepage, :name, :about
 
   acts_as_state_machine :initial => :anonymous
   state :anonymous
@@ -122,6 +122,14 @@ class User < ActiveRecord::Base
     UserMailer.deliver_send_password_reset(self)
   end
   
+  def login
+    if self[:login].blank?
+      "anon_#{self.id}"
+    else
+      self[:login]
+    end
+  end
+    
   
   # finds an email and initiate the forgot password flow
   def self.forgot_password(email)
@@ -179,6 +187,10 @@ class User < ActiveRecord::Base
     return self.name unless self.name.blank?    
     return self.login unless self.login.blank?
     return "Anonymous"
+  end
+  
+  def to_param
+    return self.login
   end
   
   def update_from_comment(comment)

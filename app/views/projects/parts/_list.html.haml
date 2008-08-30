@@ -20,3 +20,6 @@
           ago.
 
         = clear
+  - if local_assigns[:action]
+    %li.action
+      = link_to action.first, action.last

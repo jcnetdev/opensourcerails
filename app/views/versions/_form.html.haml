@@ -2,16 +2,18 @@
 
 - build_form_for [@project, version], :html => {:multipart => true} do |f|
   
-  .attach-download
-    - f.file_field :download, :label => "Upload Tarball", :size => "25" do
-      .text-right= link_to "Set Download Link", "#", :class => "set-link"
-  .attach-link{hidden}
+  .attach-link
     - f.text_field :link, :label => "Download Link" do
       .text-right= link_to "Upload Version", "#", :class => "set-upload"
+  
+  .attach-download{hidden}
+    - f.file_field :download, :label => "Upload Tarball", :size => "25" do
+      .text-right= link_to "Set Download Link", "#", :class => "set-link"
 
   = f.text_field :title, :label => "Version Name"
   = f.text_area :notes, :label => "Update Notes (optional)"
-  = f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
+  - if version.new_record?
+    = f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
   
   .actions
     - if version.new_record?

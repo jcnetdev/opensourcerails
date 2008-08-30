@@ -1,0 +1,11 @@
+- build_form_for @tell_friend, :url => url_for do |f|
+  = f.text_field :from, :label => "Your Email"
+  = f.text_field :to, :label => "Friend's Email"
+  = f.text_area :message
+  .actions
+    = f.submit "Preview Message...", :id => "tell_friend_preview", :name => "preview"
+    or
+    = link_to "cancel", about_url
+    .hidden
+      = f.submit "Send!", :id => "tell_friend_submit", :name => "send"
+      = f.submit "Cancel", :id => "tell_friend_cancel", :name => "sancel"

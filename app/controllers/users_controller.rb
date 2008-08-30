@@ -35,13 +35,20 @@ class UsersController < ApplicationController
 
   def show
     @user = find_user
-    @bookmarked_projects = @user.projects
+    @bookmarked_projects = @user.projects.paginate(:page => params[:page], :per_page => AppConfig.bookmarks_per_page)
     @submitted_projects = @user.submitted
     @activities = @user.activities.all(:limit => 101, :order => "created_at DESC")
     @rated_projects = @user.rated_projects
     
     respond_to do |format|
-      format.html
+      format.html do
+        @grid_title = helpers.pluralize(@user.projects.count, "Bookmarked Project")
+        if params[:ajax]
+          render :partial => "projects/parts/grid", :locals => {:projects => @bookmarked_projects}, :layout => false
+        else
+          render
+        end
+      end
       format.js do
         render :partial => "users/parts/about_user", :locals => {:user => @user}, :layout => false
       end
@@ -154,7 +161,7 @@ class UsersController < ApplicationController
   def forgot_password
     if request.post?
       User.forgot_password(params[:email])
-      flash[:notice] = "An email has been sent to you that will allow you to reset your password. If you have any problems email us at opensourcerails@gmail.com"
+      flash[:notice] = "An email has been sent to you that will allow you to reset your password. If you have any problems email us at #{AppConfig.admin_email_address}"
     end
     redirect_to new_session_url
   end
@@ -165,7 +172,7 @@ class UsersController < ApplicationController
     # find user from auth code
     @user = User.find_by_forgot_password_hash(params[:auth])
     unless @user
-      flash[:error] = "Reset Password URL was invalid. It may have expired. Please email us at opensourcerails@gmail.com if you are still unable to log in."
+      flash[:error] = "Reset Password URL was invalid. It may have expired. Please email us at #{AppConfig.admin_email_address} if you are still unable to log in."
       redirect_to new_session_url
       return
     end
@@ -189,7 +196,12 @@ class UsersController < ApplicationController
 
 protected
   def find_user
-    @user = User.find(params[:id])
+    if(params[:id].to_s.include? "anon_")
+      user_id = params[:id].gsub("anon_","").to_i
+      @user = User.find_by_id(user_id)
+    else
+      @user = User.find_by_login(params[:id])
+    end
   end
   
   # verify that the current user can edit this profile

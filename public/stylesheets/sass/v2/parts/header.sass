@@ -3,8 +3,11 @@
   width: : 100%
   height: 105px
   position: relative
+  overflow: hidden
   h1
-    float: left
+    position: absolute
+    left: 0
+    top: 0
     
   #logo
     width: 235px
@@ -24,11 +27,20 @@
       height: 100%
       cursor: pointer
   
-  .login
+  .address
     position: absolute
-    right: -5px
+    right: 0px
     text-align: right
-    top: 10px
+    top: 23px
+  
+  .login.current
+    padding-right: 10px
+    
+  .login
+    padding-top: 79px
+    padding-right: 8px
+    text-align: right
+    float: right
     font-size: 1.2em
     a
       color: #eee

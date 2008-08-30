@@ -10,6 +10,10 @@ ActionController::Routing::Routes.draw do |map|
                     :details => :get, 
                     :rate => :post,
                     :download => :get
+                  },
+                  :collection => {
+                    :upcoming => :get,
+                    :activity => :get
                   } do |project|    
 
     project.resources :comments

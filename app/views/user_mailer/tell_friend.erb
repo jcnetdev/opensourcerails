@@ -1,0 +1,11 @@
+<%= AppConfig.tellafriend_body_intro %>
+
+<% if @tell_friend.message.blank? -%>
+<%= AppConfig.tellafriend_body_message %>
+<% else -%>
+<%= @tell_friend.message %>
+<% end -%>
+
+<% if @current_user.is_a?(User) and @current_user.active? -%>
+You can view my profile here: <%= AppConfig.site_url %>/users/<%= @current_user.login %>
+<% end -%>

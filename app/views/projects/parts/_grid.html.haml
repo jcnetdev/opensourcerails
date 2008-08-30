@@ -1,8 +1,11 @@
 #project_grid
   - if local_assigns[:projects]
 
-    - unless local_assigns[:grid_title].blank?
-      %h3= local_assigns[:grid_title]
+    - if !@grid_title.blank?
+      %h3
+        - if @grid_rss
+          .rss= link_to image_tag("rss-reflection-sm.png", :size => "20x20"), @grid_rss
+        = @grid_title
     - else
       = search_or_tag_title
     

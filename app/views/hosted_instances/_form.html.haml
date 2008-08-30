@@ -4,7 +4,8 @@
   = f.text_field :title, :label => "Link Name"
   = f.text_field :url, :label => "Link URL"
   = f.text_area :description, :label => "Notes, demo logins, etc.. (optional)", :separator => ""
-  = f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
+  - if hosted_instance.new_record?
+    = f.text_field :antispam, :label => AppConfig.spam_question, :separator => ""
   
   .actions
     - if hosted_instance.new_record?

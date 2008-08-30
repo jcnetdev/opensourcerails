@@ -1,0 +1,34 @@
+.details.main.preview
+  %h2 Previewing Tell a Friend Message
+  = clear
+
+  .entry
+    = br
+    %p
+      %strong From: 
+      = @tell_friend.from
+    %p
+      %strong To: 
+      = @tell_friend.to
+    %p 
+      %strong Subject:
+      = AppConfig.tellafriend_subject
+
+    %p= AppConfig.tellafriend_body_intro
+    - if @tell_friend.message.blank?
+      %p= AppConfig.tellafriend_body_message
+    - else
+      = simple_format h(@tell_friend.message)
+  
+    - if current_user.is_a?(User) and current_user.active?
+      %p
+        You can view my profile here: 
+        = br
+        = link_to user_url(current_user), user_url(current_user), :target => "_blank"
+    
+    .actions
+      = button_to_function "Send Message!", :disabled => !@tell_friend.valid? do |page|
+        - page[:tell_friend_submit].click      
+      = button_to_function "Go Back" do |page|
+        - page[:tell_friend_cancel].click
+      

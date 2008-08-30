@@ -12,10 +12,11 @@ class Project < ActiveRecord::Base
   has_many :instructions, :order => "updated_at DESC", :dependent => :delete_all
   
   has_many :bookmarks, :dependent => :destroy
+  has_many :activities, :order => "updated_at DESC", :dependent => :delete_all
   
   validates_uniqueness_of :title, :on => :create, :message => "must be unique"
 
-  attr_accessible :title, :description, :author_name, :author_contact,
+  attr_accessible :title, :description, :author_name, :author_contact, :requirements,
                   :homepage_url, :source_url, :license, :short_description, :tag_list
 
   # checkbox used to auto assign author from current_user
@@ -102,6 +103,10 @@ class Project < ActiveRecord::Base
     find(:all, :conditions => {:in_gallery => false, :is_submitted => true}, :limit => limit, :order => "last_changed DESC")
   end
     
+  def self.gallery(limit = 25)
+    find(:all, :conditions => {:in_gallery => true, :is_submitted => true}, :limit => limit, :order => "last_changed DESC")
+  end
+    
   # Search projects with a given search string
   def self.search(search_term, options = {})
     
@@ -132,6 +137,11 @@ class Project < ActiveRecord::Base
   # I'll convert this to named_scope when Rails 2.1 comes out
   def self.in_gallery_conditions
     {:in_gallery => true, :is_submitted => true}
+  end
+
+  # I'll convert this to named_scope when Rails 2.1 comes out
+  def self.upcoming_conditions
+    {:in_gallery => false, :is_submitted => true}
   end
 
   # Top Downloaded

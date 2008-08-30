@@ -8,9 +8,10 @@
     = stylesheets
     = javascripts
 
-    = yield :head
-        
-    = auto_discovery_link_tag(:atom, AppConfig.rss_url || formatted_projects_url(:atom), :title => "Latest Projects")
+    = auto_discovery_link_tag(:atom, projects_rss, :title => "Latest Apps")
+    = auto_discovery_link_tag(:atom, upcoming_rss, :title => "Upcoming Apps")
+    - if AppConfig.blog_rss
+      = auto_discovery_link_tag(:atom, AppConfig.blog_rss, :title => "Latest Blog Posts")
     
   %body
     .body-main

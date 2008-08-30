@@ -2,7 +2,7 @@
   padding: 0
   width: 303px
   margin-bottom: 10px
-  background: url(/images/template/right_tab_bg.gif) repeat-y
+  background: url(/images/right_tab_bg.png) repeat-y
  
   .ui-tabs-hide 
     display: none
@@ -95,6 +95,14 @@
         color: #474848
       a:focus, a:active
         outline: none
+  
+    li.ui-tabs-selected.last
+      background-position: right
+
+    li.blank
+      background:
+        image: url(/images/tab-blank-bg.png) !important
+        repeat: repeat-x !important
   
 // tab navigation overrides
 .tabs.size-2

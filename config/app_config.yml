@@ -1,20 +1,32 @@
 # Set Site Details
 site_name: "Open Source Rails"
 site_url: "http://www.opensourcerails.com"
+blog_url: "http://blog.opensourcerails.com"
+admin_email_name: "OpenSourceRails"
+admin_email_address: "opensourcerails@gmail.com"
 version: "v1.0"
+
+# Options
+show_social_media: true
 require_email_activation: true
 enable_throttler: false
+show_morph: true
 
-blog_url: http://blog.opensourcerails.com
-
-file_storage: s3
+# About Page
+site_description: "Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications."
 
 # SEO Stuff
 default_meta_keywords: "open source ruby on rails"
 default_meta_description: "Open Source Rails is a community site dedicated to tracking the best open source Ruby on Rails applications."
 
+# Tell a Friend
+tellafriend_subject: "Check out OpenSourceRails.com"
+tellafriend_body_intro: "OpenSourceRails.com is features the latest and greatest open source Ruby on Rails projects. Check it out: http://www.opensourcerails.com"
+tellafriend_body_message: "It features an easy to use browse gallery with screenshots plus community driven comments, ratings, and bookmarking."
+
 # Paging Sizes
 projects_per_page: 6
+bookmarks_per_page: 8
 
 # Set Avatar Sizes
 screenshot_sizes: 
@@ -24,9 +36,9 @@ screenshot_sizes:
 # Set default avatar
 screenshot_default: "/images/default_screenshots/:style.png"
 
+# Retarded Spam Question
 spam_question: What is 3 plus 2?
 spam_answer: 
   - "5"
   - "five"
 
-show_morph: false

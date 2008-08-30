@@ -33,12 +33,17 @@ module TabsHelper
   # Give the tab a name and unique id
   def tab(name, tab_id , options={}, &block)
     # append an element to our nav_html
-    @__tabs_navhtml << content_tag(:li, link_to(name, "##{tab_id}", :title => name))
+    @__tabs_navhtml << content_tag(:li, link_to(name, "##{tab_id}", :title => name), :class => options[:tab_class])
     
     # build our tab
     haml_tag :div, options.merge(:id => tab_id) do
       puts capture_haml(&block)
       puts content_tag(:div, "", :style => "clear: both")
     end
+  end
+  
+  def blank_tab
+    @__tabs_navhtml << content_tag(:li, "&nbsp;", :class => "blank")
+    return ""
   end
 end

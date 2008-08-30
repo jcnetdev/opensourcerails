@@ -9,6 +9,12 @@ set :scm, "git"
 set :checkout, "export" 
 set :deploy_via, :remote_cache
 
+# set the list of config files to symlink on deployment
+set :config_files, %w[database.yml app_config.yml environments/production.yml]
+
+# set the list of folders to symlink on deployment
+set :upload_folders, %w[screenshots downloads]
+
 set :base_path, "/var/www"
 set :deploy_to, "/var/www/production/#{application}"
 set :apache_site_folder, "/etc/apache2/sites-enabled"
@@ -83,6 +89,7 @@ after "deploy:setup", "init:set_permissions"
 after "deploy:setup", "init:database_yml"
 after "deploy:setup", "init:create_database"
 after "deploy:setup", "init:create_vhost"
+after "deploy:setup", "init:create_app_config"
 after "deploy:setup", "init:enable_site"
 namespace :init do
   
@@ -140,34 +147,59 @@ production:
     
   end
   
+  desc "create app config"
+  task :create_app_config do
+    app_config_yml = File.open(File.join(File.dirname(__FILE__), "app_config.yml"), "r").read
+    put app_config_yml, "#{shared_path}/config/app_config.yml"
+    
+    run "mkdir -p #{shared_path}/config/environments/"
+    
+    production_yml = File.open(File.join(File.dirname(__FILE__), "environments", "production.yml"), "r").read
+    put production_yml, "#{shared_path}/config/environments/production.yml"
+  end
+  
 end
 
 after "deploy:update_code", "localize:install_gems"
 after "deploy:update_code", "localize:copy_shared_configurations"
-after "deploy:update_code", "localize:upload_folders"
+after "deploy:update_code", "localize:link_upload_folders"
+after "deploy:update_code", "localize:merge_assets"
 
 namespace :localize do
   desc "copy shared configurations to current"
   task :copy_shared_configurations, :roles => [:app] do
-    %w[database.yml].each do |f|
-      run "ln -nsf #{shared_path}/config/#{f} #{release_path}/config/#{f}"
+    if defined? :config_files
+      config_files.each do |f|
+        run "ln -nsf #{shared_path}/config/#{f} #{release_path}/config/#{f}"
+      end
     end
   end
   
   desc "installs / upgrades gem dependencies "
   task :install_gems, :roles => [:app] do
-    sudo "date" # fuck you capistrano
+    sudo "date"
     run "cd #{release_path} && sudo rake RAILS_ENV=production gems:install"
   end
   
-  task :upload_folders, :roles => [:app] do
-    # create symlink for screenshots
-    run "mkdir -p #{deploy_to}/shared/screenshots"
-    run "ln -s #{deploy_to}/shared/screenshots #{release_path}/public/screenshots"
-    
-    # create symlink for downloads
-    run "mkdir -p #{deploy_to}/shared/downloads"
-    run "ln -s #{deploy_to}/shared/downloads #{release_path}/public/downloads"
+  desc "linking upload folders"
+  task :link_upload_folders, :roles => [:app] do
+    if defined? :upload_folders
+      upload_folders.each do |f|
+        run "mkdir -p #{shared_path}/uploads/#{f}"
+        run "ln -nsf #{shared_path}/uploads/#{f} #{release_path}/public/#{f}"
+      end
+    end
+  end
+  
+  desc "merge asset files"
+  task :merge_assets, :roles => [:app] do
+    sudo "date" 
+    run "cd #{release_path} && sudo script/merge_assets"
+  end
+
+  task :merge_current_assets, :roles => [:app] do
+    sudo "date" 
+    run "cd #{current_path} && sudo script/merge_assets"
   end
   
 end

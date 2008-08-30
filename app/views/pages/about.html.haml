@@ -1,28 +1,49 @@
 - active_tab :about
 
-#body
+#body.about
   #body_left
     #left_pad
-      .details.main
-        %h2.right== Latest #{AppConfig.version}
-        %h2.left About OpenSourceRails.com
-        = clear
-        .entry{:style => "font-size: 20px;color:#666"}
-          %p Open Source Rails is dedicated to keeping track of the latest and greatest Ruby on Rails open source applications.
-          %p 
-            If you are the author of one of the projects listed on the site and want admin access over your project, 
-            register a user and then email us 
-            = mail_to "opensourcerails@gmail.com", "here", :encode => "javascript"
-            and we'll grant you project ownership access.    
-          %p 
-            Feature request and bug can be 
-            sent
-            = mail_to "opensourcerails@gmail.com", "here.", :encode => "javascript"
+      - if @preview
+        = partial "pages/tell_friend_preview"
+      - else
+        .details.main
+          %h2.right== Latest #{AppConfig.version}
+          %h2.left== About #{AppConfig.site_name}
+          = clear
+          .entry{:style => "color:#666"}
+            %p
+              = br
+              Open Source Rails features an easy to browse gallery of the best open source / freely available rails projects.
+              
+            %p
+              Each project features screenshots plus community driven comments, ratings, and bookmarking. 
+            
+            %p
+              If you have a Rails project that you're considering to release to the community, please let us know
+              and we'll help you get featured, and hopefully build up a community to help build and extend your project.
+          
+            %p{:style => "margin-bottom: 0"}
+              Keep up to date with OpenSourceRails.com:
+          
+            %ul{:style => "margin-bottom: 20px"}
+              %li= link_to "Featured Projects RSS Feed", projects_rss
+              %li= link_to "Upcoming Projects RSS Feed", upcoming_rss
+              - if AppConfig.blog_rss
+                %li= link_to "Latest Blog RSS Feed", AppConfig.blog_rss
+          
+            %p 
+              Got a feature idea? Find a bug? 
+              = mail_to AppConfig.admin_email_address, "Email", :encode => "javascript"
+              us.
           
   #body_right
     = partial "layouts/about_us", :force_show => true
     #about_tabs
-      - tabs do
+      - tabs(:class => "size-3") do
+        - tab "Promote", "spread_tab" do
+          %p{:style => "margin-top: 0px;margin-bottom: 10px"} Let a friend know about Open Source Rails!
+          = partial "pages/tell_friend_form"
+          
         - tab "Credits", "credits_tab" do
           %p{:style => "margin-bottom: 0px"} Open Source Rails uses the following freely available design components.
           %ul
@@ -32,10 +53,6 @@
             %li
               Crystal Icons by
               = link_to "Everaldo", "http://www.everaldo.com/crystal/"
-            %li
-              Initial Theme Template
-              = br+"by"
-              = link_to "Shabu Anower", "http://www.osdesigner.net/about/"          
             %li
               Javascript Lightbox Effect 
               = br+"by"

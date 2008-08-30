@@ -1,32 +1,39 @@
 class ProjectsController < ApplicationController
   def index  
-    @projects = find_projects
+    build_gallery(gallery_projects)
     @upcoming = Project.upcoming
-    @my_projects = current_or_anon_user.projects
-    
-    @latest_activities = Activity.latest
-    
-    @top_downloaded = Project.top_downloaded
-    @top_bookmarked = Project.top_bookmarked
-    
-    if AppConfig.enable_throttler and throttled?
-      @tags = []
-    else
-      @tags = Project.tag_counts(:conditions => Project.in_gallery_conditions, :order => "name")
-    end  
-    
-    if params[:ajax]
-      render :partial => "projects/parts/grid", :locals => {:projects => @projects}, :layout => false
-    else
-      render
+    respond_to do |format|
+      format.html do
+        if params[:ajax]
+          render :partial => "projects/parts/grid", :locals => {:projects => @projects}, :layout => false
+        else
+          render
+        end
+      end
+      format.atom
     end
-    
-    session[:page] = params[:page]
+  end
+  
+  def upcoming
+    build_gallery(upcoming_projects)    
+    respond_to do |format|
+      format.html do
+        @grid_title = "Upcoming Projects"
+        @grid_rss = formatted_upcoming_projects_url(:atom)
+
+        @hide_upcoming = true
+        if params[:ajax]
+          render :partial => "projects/parts/grid", :locals => {:projects => @projects}, :layout => false
+        else
+          render :action => "index"
+        end
+      end
+      format.atom
+    end
   end
   
   def feed
     @projects = Project.latest
-    
     respond_to do |format|
       format.atom do
         render :action => "index.atom.builder"
@@ -226,6 +233,26 @@ class ProjectsController < ApplicationController
   end
   
   protected
+  def build_gallery(projects)
+    @projects = projects
+    @my_projects = current_or_anon_user.projects
+    
+    @latest_activities = Activity.latest
+    
+    @top_downloaded = Project.top_downloaded
+    @top_bookmarked = Project.top_bookmarked
+    
+    if throttled?
+      @tags = []
+    else
+      @tags = Project.tag_counts(:conditions => Project.in_gallery_conditions, :order => "name")
+    end  
+    
+    if params[:q].blank? and params[:tag].blank?
+      session[:page] = params[:page]
+    end
+  end
+  
   # retrieves the current project from params[:id]
   def get_project
     @current_project ||= Project.find(params[:id])
@@ -237,7 +264,7 @@ class ProjectsController < ApplicationController
   end
   
   # find the projects to display based on the querystring
-  def find_projects
+  def gallery_projects
     # try to find an associated tag
     @tag = get_tag  
     @search_term = params[:q].strip unless params[:q].blank?
@@ -249,7 +276,11 @@ class ProjectsController < ApplicationController
     else
       @projects = Project.paginate(:conditions => Project.in_gallery_conditions, :order => "promoted_at DESC", :page => params[:page], :per_page => AppConfig.projects_per_page)
     end
+  end
     
+  # list the upcoming projects
+  def upcoming_projects
+    @projects = Project.paginate(:conditions => Project.upcoming_conditions, :order => "updated_at DESC", :page => params[:page], :per_page => AppConfig.projects_per_page)
   end
 
   # verify that the current user owns a project

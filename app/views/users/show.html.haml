@@ -12,8 +12,29 @@
       
   #body_right
     - if current_or_anon_user == @user
+      - if @user.active?
+        - right_box do
+          = partial "users/parts/about_user", :user => @user
+      - else
+        - right_box do
+          = br
+          %h2= link_to "Make an Account!", new_user_url
+    - else
       - right_box do
-        = partial "users/parts/about_user", :user => @user
+        %h3== #{name_display(@user)} Profile
+        .display      
+          %p
+            %strong Name:
+            =h default(@user.name, "[Not Entered]")
+            - unless @user.homepage.blank?
+              = br
+              %strong Homepage:
+              = link_to h(@user.homepage), h(@user.homepage)
+
+            - unless @user.profile.blank?
+              = br
+              %strong About:
+              =h(@user.profile)
     
     - right_box do
       %h3== #{name_display(@user)} Activities (#{@activities.size})

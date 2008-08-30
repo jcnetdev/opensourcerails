@@ -21,7 +21,7 @@
         
   #body_right
     #go_back
-      = link_to_image "back-arrow-sm.png", projects_url(:page => session[:page]), :label => "Back to Gallery..."
+      = link_to_image "back-arrow-sm.png", gallery_url, :label => "Back to Gallery..."
     #project_info
       - right_box do
         = partial "projects/parts/about_project", :project => @project
@@ -32,5 +32,6 @@
       - if @project.is_submitted?
         = partial "projects/tabs/project_activity", :activities => @latest_activities
       = approve_button(@project)
+      = delete_button(@project)
 
   = clear
