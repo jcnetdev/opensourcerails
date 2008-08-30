@@ -2,7 +2,10 @@
 - if local_assigns[:user]
   .reload
     #about_user{hide_if(hidden)}
-      %h3 Your Profile
+      %h3
+        Your Profile:
+        = br
+        = link_to user_url(user), user_url(user)
       .display      
         %p
           %strong Name:

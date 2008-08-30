@@ -22,7 +22,11 @@
           = partial "users/parts/about_user", :user => @user
     - else
       - right_box do
-        %h3== #{name_display(@user)} Profile
+        %h3
+          == #{name_display(@user)} Profile
+          = br
+          = link_to user_url(user), user_url(user)
+          
         .display      
           %p
             %strong Name:
