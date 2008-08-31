@@ -150,11 +150,14 @@ module OpenIdAuthentication
     def open_id_redirect_url(open_id_request, return_to = nil, method = nil)
       open_id_request.return_to_args['_method'] = (method || request.method).to_s
       open_id_request.return_to_args['open_id_complete'] = '1'
+      if (method || request.method).to_s != 'get'
+        open_id_request.return_to_args[request_forgery_protection_token.to_s] = form_authenticity_token
+      end
       open_id_request.redirect_url(root_url, return_to || requested_url)
     end
 
     def requested_url
-      "#{request.protocol + request.host_with_port + self.class.relative_url_root.to_s + request.path}"
+      "#{request.protocol + request.host_with_port + request.relative_url_root.to_s + request.path}"
     end
 
     def timeout_protection_from_identity_server

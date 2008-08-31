@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if params["use_openid"] == "true"
+    if using_open_id? or params["use_openid"] == "true"
       open_id_authentication(params[:openid_url])
     else
       password_authentication
