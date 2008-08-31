@@ -74,6 +74,7 @@ class SessionsController < ApplicationController
             @openid_user.password = @openid_user.password_confirmation = rand_passwd
           end
           @openid_user.signed_up = true
+          @openid_user.skip_email = true
           @openid_user.save!
           
           @openid_user.register!
