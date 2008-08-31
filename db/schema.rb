@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080831011932) do
+ActiveRecord::Schema.define(:version => 20080831140530) do
 
   create_table "activities", :force => true do |t|
     t.string   "user_name"
@@ -131,15 +131,14 @@ ActiveRecord::Schema.define(:version => 20080831011932) do
 
   create_table "screenshots", :force => true do |t|
     t.integer  "project_id",              :limit => 11
-    t.string   "content_type"
-    t.string   "filename"
-    t.integer  "size",                    :limit => 11
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "owner_id",                :limit => 11
     t.string   "screenshot_content_type"
     t.string   "screenshot_file_name"
     t.integer  "screenshot_file_size",    :limit => 11
+    t.datetime "screenshot_updated_at"
+    t.string   "screenshot_s3path"
   end
 
   create_table "taggings", :force => true do |t|
@@ -204,6 +203,7 @@ ActiveRecord::Schema.define(:version => 20080831011932) do
     t.string   "download_file_name"
     t.integer  "download_file_size",    :limit => 11
     t.string   "link"
+    t.datetime "download_updated_at"
   end
 
 end
