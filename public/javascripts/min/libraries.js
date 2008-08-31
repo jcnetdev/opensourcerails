@@ -234,7 +234,7 @@ if (!("console" in window) || !("firebug" in console))
 /* ---- Compressing ./public/javascripts/libraries/keyboard_shortcut.js ----- */
 /**
  * http://www.openjs.com/scripts/events/keyboard_shortcuts/
- * Version : 2.01.A
+ * Version : 2.01.B
  * By Binny V A
  * License : BSD
  */
@@ -277,11 +277,11 @@ shortcut = {
 			//Find Which key is pressed
 			if (e.keyCode) code = e.keyCode;
 			else if (e.which) code = e.which;
-			var character = String.fromCharCode(code).toLowerCase();
+			var character = String.fromCharCode(code);
 			
 			if(code == 188) character=","; //If the user presses , when the type is onkeydown
 			if(code == 190) character="."; //If the user presses , when the type is onkeydown
-	
+
 			var keys = shortcut_combination.split("+");
 			//Key Pressed - counts the number of valid keypresses - if it is same as the number of keys, the shortcut function is invoked
 			var kp = 0;
@@ -407,7 +407,7 @@ shortcut = {
 					}
 				}
 			}
-
+			
 			if(kp == keys.length && 
 						modifiers.ctrl.pressed == modifiers.ctrl.wanted &&
 						modifiers.shift.pressed == modifiers.shift.wanted &&

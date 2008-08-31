@@ -122,7 +122,11 @@ $j(document).ready(function() {
 /* ---- Compressing ./public/javascripts/components/project_grid.js ----- */
 $j(document).ready(function() {
   if($j("#project_grid").notOnPage()){return;}
+  if($j("#disable_ajax_paging").onPage()){return;}
   
+  
+  $j("#project_grid .note").show();
+
   // hook up ajax paging
   $j("#project_grid .pagination a").livequery('click', function() {
     $j("#project_grid").load($j(this).attr("href")+"&ajax=true");    
@@ -144,10 +148,10 @@ $j(document).ready(function() {
   // Allow ESC to show debug information
   shortcut.add("LEFT",function() {
     $j("#project_grid .pagination *:first-child").click();
-  });
+  }, {disable_in_input: true});
   shortcut.add("RIGHT",function() {
     $j("#project_grid .pagination *:last-child").click();
-  });
+  }, {disable_in_input: true});
 
   // Set tooltips
   $j("#project_grid .pagination *:first-child").attr("title", "Shortcut: LEFT ARROW");

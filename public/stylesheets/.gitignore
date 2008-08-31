@@ -1,4 +1,5 @@
 application.css
+*-cache.css
 blueprint.css
 forms.css
 project-list.css
@@ -6,5 +7,6 @@ tabs.css
 util.css
 common/*.css
 components/*.css
+min/*.css
 old/**/*.css
 v2/**/*.css
