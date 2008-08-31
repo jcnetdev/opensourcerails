@@ -23,7 +23,7 @@ class UserMailer < ActionMailer::Base
   
   def tell_friend(user, friend)
     setup_email(friend.to)
-    reply_to friend.from
+    reply_to friend.from unless friend.from.blank?
     
     subject AppConfig.tellafriend_subject
     body :tell_friend => friend, :current_user => user

@@ -60,18 +60,25 @@ class SessionsController < ApplicationController
   end
 
   def open_id_authentication(openid_url)
-    authenticate_with_open_id(openid_url, :required => [:email]) do |result, identity_url, registration|
+    authenticate_with_open_id(openid_url, :required => [:nickname, :email]) do |result, identity_url, registration|
       if result.successful?
-        @openid_user = User.find_or_initialize_by_identity_url(identity_url)
-        if @openid_user.new_record?
-          @openid_user.login = registration['nickname']
-          @openid_user.login = "anon_" + rand(99999).to_s if @openid_user.login.blank?
+        @openid_user = User.find_by_identity_url(identity_url)
+        unless @openid_user
+          @openid_user = current_or_anon_user
+          @openid_user.identity_url = identity_url
+          @openid_user.login = registration['nickname'] if @openid_user[:login].blank?
+          @openid_user.login = "user_" + rand(99999).to_s if @openid_user[:login].blank?
           @openid_user.email = registration['email']
-          passwd = rand_passwd
-          @openid_user.password = passwd
-          @openid_user.password_confirmation = passwd
           @openid_user.ip_address = request.remote_ip
+          if @openid_user.password.blank?
+            @openid_user.password = @openid_user.password_confirmation = rand_passwd
+          end
+          @openid_user.signed_up = true
           @openid_user.save!
+          
+          @openid_user.register!
+          @openid_user.activate!
+          
         end
         self.current_user = @openid_user
         successful_login

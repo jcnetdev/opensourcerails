@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080831003704) do
+ActiveRecord::Schema.define(:version => 20080831011932) do
 
   create_table "activities", :force => true do |t|
     t.string   "user_name"
@@ -183,6 +183,7 @@ ActiveRecord::Schema.define(:version => 20080831003704) do
     t.string   "homepage"
     t.integer  "tell_friend_count",         :limit => 11, :default => 0
     t.datetime "tell_friend_last_sent"
+    t.string   "identity_url"
   end
 
   add_index "users", ["ip_address"], :name => "index_users_on_ip_address"

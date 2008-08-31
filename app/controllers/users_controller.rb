@@ -12,6 +12,7 @@ class UsersController < ApplicationController
       @user = anon_user
     end
   end
+  
   def create
     cookies.delete :auth_token
     # protects against session fixation attacks, wreaks havoc with 
@@ -23,7 +24,7 @@ class UsersController < ApplicationController
     @user.signed_up = true
     @user.save!
     
-    # register user
+    # register
     @user.register!
         
     self.current_user = @user
@@ -34,7 +35,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = find_user
+    @user = find_user    
     @bookmarked_projects = @user.projects.paginate(:page => params[:page], :per_page => AppConfig.bookmarks_per_page)
     @submitted_projects = @user.submitted
     @activities = @user.activities.all(:limit => 101, :order => "created_at DESC")
@@ -58,7 +59,7 @@ class UsersController < ApplicationController
   def edit
     @user = find_user
     return unless verify_owner(@user)
-
+    
     respond_to do |format|
       format.html
       format.js do
@@ -192,15 +193,19 @@ class UsersController < ApplicationController
     end
   end
   
-
-
-protected
+  protected
   def find_user
-    if(params[:id].to_s.include? "anon_")
+    if params[:id].to_s.include? "anon_"
       user_id = params[:id].gsub("anon_","").to_i
       @user = User.find_by_id(user_id)
     else
       @user = User.find_by_login(params[:id])
+    end
+    
+    if @user
+      return @user
+    else
+      raise ActiveRecord::RecordNotFound
     end
   end
   

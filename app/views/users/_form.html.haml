@@ -8,6 +8,9 @@
 
 - build_form_for user, :html => html_options do |f|
   = f.error_messages
+  - if user.login_editable?
+    = f.text_field :login, :label => "Set your username"
+
   = f.text_field :name
   = f.text_field :email, :label => "Email (not displayed)"
   = f.text_field :homepage, :label => "Homepage"

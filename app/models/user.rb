@@ -32,21 +32,26 @@ class User < ActiveRecord::Base
   
   # Virtual attribute for the unencrypted password
   attr_accessor :password
+  attr_accessor :skip_email
 
   # basic info validations
-  validates_presence_of     :ip_address,                              :unless => :signed_up?
-  validates_presence_of     :login,                                   :if => :signed_up?
-  validates_presence_of     :email,                                   :if => :signed_up?
-  validates_length_of       :login, :within => 3..40,                 :if => :signed_up?
-  validates_length_of       :email, :within => 3..100,                :if => :signed_up?
-  validates_uniqueness_of   :login, :email, :case_sensitive => false, :if => :signed_up?
-  validates_as_email_address :email,                                   :if => :signed_up?
-
+  validates_presence_of       :login,                               :if => :signed_up?
+  validates_length_of         :login, :within => 3..40,             :if => :signed_up?,               :allow_blank => true
+  validates_uniqueness_of     :login, :case_sensitive => false,     :if => :signed_up?,               :allow_blank => true
+  validates_format_of :login, :with => /^\w+$/i, :message => "must only contain letters and numbers", :allow_blank => true
+  
+  # set up email
+  validates_presence_of       :email,                               :if => :email_required?
+  validates_length_of         :email, :within => 3..100,            :if => :email_required?
+  validates_uniqueness_of     :email, :case_sensitive => false,     :if => :email_required?
+  validates_as_email_address  :email,                               :if => :email_required?
+    
   # password validations
-  validates_presence_of     :password,                                :if => :password_required?
-  validates_presence_of     :password_confirmation,                   :if => :password_required?
-  validates_length_of       :password, :within => 4..40,              :if => :password_required?
-  validates_confirmation_of :password,                                :if => :password_required?
+  validates_presence_of     :password,                     :if => :password_required?
+  validates_presence_of     :password_confirmation,        :if => :password_required?
+  validates_length_of       :password, :within => 4..40,   :if => :password_required?
+  validates_confirmation_of :password,                     :if => :password_required?
+
   before_save               :encrypt_password
 
   # prevents a user from submitting a crafted form that bypasses activation
@@ -184,8 +189,8 @@ class User < ActiveRecord::Base
   end
   
   def to_s
+    return self.login unless self[:login].blank?
     return self.name unless self.name.blank?    
-    return self.login unless self.login.blank?
     return "Anonymous"
   end
   
@@ -268,6 +273,18 @@ class User < ActiveRecord::Base
     self.activities.each{|r| r.destroy}
   end
   
+  def open_id?
+    !self.identity_url.blank?
+  end
+  
+  def login_editable?
+    self.open_id? and self.login.include?("user_")
+  end
+  
+  def email_required?
+    signed_up? and !open_id?
+  end
+  
   def self.clear_spam
     User.find(:all, :conditions => {:spammer => true}).each do |user|
       user.is_spammer!
@@ -296,7 +313,7 @@ class User < ActiveRecord::Base
     def do_register
       logger.debug("REGISTERING!")
 
-      if AppConfig.require_email_activation
+      if AppConfig.require_email_activation and !self.skip_email
         send_activation_code
       else
         self.activate!
@@ -313,7 +330,7 @@ class User < ActiveRecord::Base
       self.activated_at = Time.now.utc
       self.deleted_at = self.activation_code = nil
       
-      if AppConfig.require_email_activation
+      if AppConfig.require_email_activation and !self.skip_email
         UserMailer.deliver_activation_success(self)
       else
         UserMailer.deliver_signup_notification(self)
