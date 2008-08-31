@@ -1,7 +1,12 @@
 - build_form_for @login || Login.new, :url => session_url do |f|
   = f.text_field :login, :label => "Username or Email"
   = f.password_field :password
-  = f.check_box :remember_me
 
-  .actions
+  .actions{:style => "text-align: right; width: 310px"}
+    %label.left
+      = f.check_box_input :remember_me
+      Remember me
+      
     = f.submit "Log In"
+    = clear
+    

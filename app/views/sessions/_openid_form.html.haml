@@ -1,0 +1,15 @@
+- form_tag open_id_complete_path do 
+  .field.text_field{:class => (openid_error? ? "withErrors" : "")}
+    = text_field_tag "openid_url", ""
+    = hidden_field_tag "use_openid", "true"
+    - if openid_error?
+      .error-message= @openid_error
+  
+  .actions{:style => "text-align: right; width: 310px"}
+    %label.left
+      = check_box_tag :remember_me
+      Remember me
+      
+    = submit_tag "Log In"
+    = clear
+  

@@ -11,18 +11,22 @@
       - unless @login.error_message.blank?
         .error= @login.error_message
 
-      .main.details
-        %h2.form Log In
+      .details.novmargin
+        %h2.form Log In with an Account
         = partial "sessions/login_form"
-        
+      .details
+        %h2.form Log In with OpenID
+        = partial "sessions/openid_form"
+      
   #body_right
     - right_box do
-      %h3 Need an account?
-      %h2= link_to "Sign Up Now"
+      = clear
+      %h2= link_to "Sign Up Now", new_user_url
       %p
         It's fast and free. Regardless, all functionality works on the site even if you're unregistered.
       %p
         But if you want a more permanent solution, and prefer to get your name out there, signing up with an account can't hurt.
+    
 
     #forgot_password
       - right_box do

@@ -60,6 +60,7 @@ Rails::Initializer.run do |config|
   
   config.gem "haml", :version => ">= 2.0.0"
   config.gem "mime-types", :lib => "mime/types", :version => ">= 1.15"
+  config.gem "ruby-openid", :lib => "openid"
 
   config.gem "right_aws"
   
