@@ -2,7 +2,6 @@
 class SessionsController < ApplicationController
   
   before_filter :check_login, :only => [:new, :create]
-  helper_method :openid_error?
   
   # render new.rhtml
   def new
@@ -61,7 +60,7 @@ class SessionsController < ApplicationController
   end
 
   def open_id_authentication(openid_url)
-    authenticate_with_open_id(openid_url, :required => [:nickname, :email]) do |result, identity_url, registration|
+    authenticate_with_open_id(openid_url, :required => [:email]) do |result, identity_url, registration|
       if result.successful?
         @openid_user = User.find_or_initialize_by_identity_url(identity_url)
         if @openid_user.new_record?
@@ -82,10 +81,6 @@ class SessionsController < ApplicationController
     end
   end
   
-  def openid_error?
-    !@openid_error.blank?
-  end
-    
   private
   def successful_login
     session[:user_id] = self.current_user.id

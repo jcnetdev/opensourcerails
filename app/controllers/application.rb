@@ -31,4 +31,9 @@ class ApplicationController < ActionController::Base
   def helpers
     self.class.helpers
   end
+  
+  helper_method :openid_error?
+  def openid_error?
+    !@openid_error.blank?
+  end
 end
