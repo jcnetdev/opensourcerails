@@ -3,7 +3,7 @@
 #body.blog
   #body_left
     #left_pad
-      %h1 OpenSourceRails Blog
+      %h1== #{AppConfig.site_name} Blog
       - @posts.each do |post|
         .post
           %h2= post.post_title

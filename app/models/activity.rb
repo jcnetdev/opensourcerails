@@ -64,7 +64,6 @@ class Activity < ActiveRecord::Base
       end
     end
     
-    
     # initialize the model states
     # its either new, updated, or deleted
     is_new, is_updated, is_deleted = false, false, false
