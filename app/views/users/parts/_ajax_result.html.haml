@@ -1,2 +1,2 @@
 = local_assigns[:message]
-= link_to "Continue...", formatted_user_url(@user, :js), :class => "restore"
+= link_to "Continue...", user_url(:id => @user, :show => "about", :format => :ajax), :class => "restore"

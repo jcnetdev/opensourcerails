@@ -7,7 +7,7 @@ $j(document).ready(function() {
 
   // hook up ajax paging
   $j("#project_grid .pagination a").livequery('click', function() {
-    $j("#project_grid").load($j(this).attr("href")+"&ajax=true");    
+    $j("#project_grid").load($j(this).attr("href")+"&format=ajax");
     return false;
   });
   

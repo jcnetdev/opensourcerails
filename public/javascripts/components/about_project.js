@@ -11,7 +11,7 @@ $j(document).ready(function() {
     $this = $j(this);
 
     $j("#project_info .display").slideUp('slow')
-    $j("#project_info .form-container").load($this.attr("href")+"?format=js", null, function() {
+    $j("#project_info .form-container").load($this.attr("href"), null, function() {
       $j(this).slideDown('slow');
     });
     $this.fadeOut();

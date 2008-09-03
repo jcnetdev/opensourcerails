@@ -3,12 +3,9 @@ class ProjectsController < ApplicationController
     build_gallery(gallery_projects)
     @upcoming = Project.upcoming(:limit => AppConfig.project_list_max)
     respond_to do |format|
-      format.html do
-        if params[:ajax]
-          render :partial => "projects/parts/grid", :locals => {:projects => @projects}, :layout => false
-        else
-          render
-        end
+      format.html
+      format.ajax do
+        render :partial => "projects/parts/grid.html.haml", :locals => {:projects => @projects}, :layout => false
       end
       format.atom
     end
@@ -22,13 +19,11 @@ class ProjectsController < ApplicationController
       format.html do
         @grid_title = "Upcoming Projects"
         @grid_rss = formatted_upcoming_projects_url(:atom)
-
         @hide_upcoming = true
-        if params[:ajax]
-          render :partial => "projects/parts/grid", :locals => {:projects => @projects}, :layout => false
-        else
-          render :action => "index"
-        end
+        render :action => "index"
+      end
+      format.ajax do
+        render :partial => "projects/parts/grid.html.haml", :locals => {:projects => @projects}, :layout => false
       end
       format.atom
     end
@@ -95,7 +90,7 @@ class ProjectsController < ApplicationController
     return unless verify_owner(@project)
     
     respond_to do |format|
-      format.js do
+      format.ajax do
         render :partial => "projects/form.html.haml", :layout => false, :locals => {:ajax => true}
       end
       format.html
@@ -111,7 +106,7 @@ class ProjectsController < ApplicationController
     flash[:success] = %("#{@project.title}" has been updated. )
     
     respond_to do |format|
-      format.js do
+      format.ajax do
         render :partial => "projects/parts/ajax_result.html.haml", :locals => {:message => flash[:success]}
         flash.discard
       end
@@ -176,7 +171,7 @@ class ProjectsController < ApplicationController
       format.html do
         redirect_to @project
       end
-      format.js do 
+      format.ajax do 
         render :text => "", :layout => false
       end
     end
@@ -198,7 +193,7 @@ class ProjectsController < ApplicationController
         flash.keep
         redirect_to @project
       end
-      format.js do
+      format.ajax do
         render :partial => "projects/parts/about_project.html.haml", :locals => {:project => @project, :hidden => true}, :layout => false
       end
     end
@@ -213,7 +208,7 @@ class ProjectsController < ApplicationController
       format.html do
         redirect_to root_url
       end
-      format.js do
+      format.ajax do
         render :partial => "bookmarks/bookmark_list.html.haml", :layout => false, :locals => {:projects => @my_projects}        
       end
     end    
@@ -294,7 +289,7 @@ class ProjectsController < ApplicationController
       # render an output
       respond_to do |format|        
         flash[:error] = "You don't have access to edit this application."
-        format.js do
+        format.ajax do
           render :text => flash[:error], :layout => false
           flash.discard
         end

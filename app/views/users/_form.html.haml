@@ -19,5 +19,5 @@
   .actions
     = f.submit "Update Information"
     or
-    = link_to "cancel", formatted_user_url(user, local_assigns[:ajax] ? :js : :html), :class => "restore"
+    = link_to "cancel", user_url(:id => user, :show => "about", :format => local_assigns[:ajax] ? :ajax : :html), :class => "restore"
     = progress

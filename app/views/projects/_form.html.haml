@@ -22,5 +22,5 @@
   .actions
     = f.submit "Update Information"
     or
-    = link_to "cancel", @project, :class => "cancel"
+    = link_to "cancel", formatted_project_url(@project, :ajax), :class => "cancel"
     = progress

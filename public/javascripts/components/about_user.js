@@ -12,7 +12,7 @@ $j(document).ready(function() {
     $this = $j(this);
 
     $j("#about_user .display").slideUp('slow')
-    $j("#about_user .form-container").load($this.attr("href")+"?format=js", null, function() {
+    $j("#about_user .form-container").load($this.attr("href"), function() {
       $j(this).slideDown('slow');
     });
     $this.fadeOut();
@@ -27,7 +27,7 @@ $j(document).ready(function() {
     var reload_url = $this.attr("href");
     $reload.find("#about_user").slideUp('slow', function() {
       $reload.empty();
-      $reload.load(reload_url, null, function() {
+      $reload.load(reload_url, function() {
         $j("#about_user").slideDown('slow');        
       });
     })

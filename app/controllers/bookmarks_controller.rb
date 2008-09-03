@@ -7,7 +7,7 @@ class BookmarksController < Base::ProjectSubpage
         flash[:success] = "#{@project.title} is now bookmarked."
         redirect_to @project 
       end
-      format.js { render_bookmark_control }
+      format.ajax { render_bookmark_control }
     end
   end
   
@@ -19,7 +19,7 @@ class BookmarksController < Base::ProjectSubpage
         flash[:success] = "#{@project.title} is no longer bookmarked."
         redirect_to @project         
       end
-      format.js { render_bookmark_control }
+      format.ajax { render_bookmark_control }
     end
   end
   

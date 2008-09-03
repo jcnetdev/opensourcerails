@@ -67,7 +67,7 @@ $j(document).ready(function() {
   
   // wire up ajax-forms
   $j('form.ajax-form').livequery(function(){
-    $j(this).ajaxForm({target: $j(this).parents(".form-container")});
+    $j(this).ajaxForm({data: {format: "ajax"}, target: $j(this).parents(".form-container")});
   }, function(){ });
 
   $j('form.ajax-form').livequery("submit", function(){
@@ -87,7 +87,7 @@ $j(document).ready(function() {
 
   // update bookmarks
   function updateBookmarkPanel() {
-    $j("#my_bookmarks").load("/bookmarks?format=js");
+    $j("#my_bookmarks").load("/bookmarks?format=ajax");
   };
   
   // hook up bookmarking minipanel
@@ -101,7 +101,7 @@ $j(document).ready(function() {
       if($button.is(".add"))
       {
         // handle add bookmark ajax call
-        $j.post($button.attr("href"), "format=js", function(data) {
+        $j.post($button.attr("href"), "format=ajax", function(data) {
           $button.parents(".bookmark-mini").replaceWith($j(data));
           updateBookmarkPanel();
         });
@@ -109,7 +109,7 @@ $j(document).ready(function() {
       else
       {
         // handle remvoe ajax call
-        $j.post($button.attr("href"), "format=js&_method=delete", function(data) {
+        $j.post($button.attr("href"), "format=ajax&_method=delete", function(data) {
           $button.parents(".bookmark-mini").replaceWith($j(data));
           updateBookmarkPanel();
         });        

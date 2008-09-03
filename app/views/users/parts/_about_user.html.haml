@@ -11,7 +11,6 @@
           %strong Name:
           =h default(user.name, "[Not Entered]")
           
-          
           = br      
           %strong Email:
           =h default(user.email, "[Not Entered]")
@@ -32,9 +31,9 @@
             = br
           
           %strong
-            = link_to "Edit Profile", edit_user_url(user), :class => "edit"
+            = link_to "Edit Profile", formatted_edit_user_url(user, :ajax), :class => "edit"
             |
-            = link_to "Change Password", edit_password_user_url(user), :class => "edit"
+            = link_to "Change Password", formatted_edit_password_user_url(user, :ajax), :class => "edit"
 
       .form-container.hidden
       = clear

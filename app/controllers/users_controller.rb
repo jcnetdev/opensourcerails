@@ -44,14 +44,13 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html do
         @grid_title = helpers.pluralize(@user.projects.count, "Bookmarked Project")
-        if params[:ajax]
-          render :partial => "projects/parts/grid", :locals => {:projects => @bookmarked_projects}, :layout => false
-        else
-          render
-        end
       end
-      format.js do
-        render :partial => "users/parts/about_user", :locals => {:user => @user}, :layout => false
+      format.ajax do
+        if params[:show] == "about"
+          render :partial => "users/parts/about_user.html.haml", :locals => {:user => @user}, :layout => false
+        else
+          render :partial => "projects/parts/grid.html.haml", :locals => {:projects => @bookmarked_projects}, :layout => false
+        end
       end
     end
   end
@@ -60,24 +59,14 @@ class UsersController < ApplicationController
     @user = find_user
     return unless verify_owner(@user)
     
-    respond_to do |format|
-      format.html
-      format.js do
-        render :partial => "users/form", :locals => {:user => @user, :ajax => true}, :layout => false
-      end
-    end
+    render :partial => "users/form.html.haml", :locals => {:user => @user, :ajax => true}, :layout => false
   end
   
   def edit_password
     @user = find_user
     return unless verify_owner(@user)
 
-    respond_to do |format|
-      format.html
-      format.js do
-        render :partial => "users/parts/password_form", :locals => {:user => @user, :ajax => true}, :layout => false
-      end
-    end
+    render :partial => "users/parts/password_form.html.haml", :locals => {:user => @user, :ajax => true}, :layout => false
   end
   
   def update
@@ -106,15 +95,8 @@ class UsersController < ApplicationController
       flash[:error] = error_msg
     end
     
-    respond_to do |format|
-      format.js do
-        render :partial => "users/parts/ajax_result.html.haml", :locals => {:message => (flash[:error] || flash[:success])}
-        flash.discard
-      end
-      format.html do
-        redirect_to @user
-      end
-    end
+    render :partial => "users/parts/ajax_result.html.haml", :locals => {:message => (flash[:error] || flash[:success])}
+    flash.discard
   end
 
   
@@ -217,7 +199,7 @@ class UsersController < ApplicationController
       # render an output
       respond_to do |format|        
         flash[:error] = "You don't have access to edit this profile."
-        format.js do
+        format.ajax do
           render :text => flash[:error], :layout => false
           flash.discard
         end
