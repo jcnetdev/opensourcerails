@@ -11,11 +11,11 @@ set :deploy_via, :remote_cache
 
 # set the list of config files to symlink on deployment
 set :linked_files, [
-                  "config/database.yml",
-                  "config/app_config.yml",
-                  "config/environments/production.yml",
-                  "app/views/pages/about.html.haml"
-                 ]
+                     "config/database.yml",
+                     "config/app_config.yml",
+                     "config/environments/production.yml",
+                     "app/views/pages/about.html.haml"
+                   ]
 
 # set the list of folders to symlink on deployment
 set :linked_folders, %w[public/screenshots public/downloads]

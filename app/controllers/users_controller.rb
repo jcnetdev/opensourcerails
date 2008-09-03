@@ -85,8 +85,7 @@ class UsersController < ApplicationController
         flash[:success] = "Your password has been changed."
       end
     else
-      error_msg = ""
-      error_msg << "<ul class='error'>"
+      error_msg = "<ul class='error'>"
       @user.errors.each do |key, error|
         error_msg << "<li>#{key.capitalize} Field: #{error}</li>"
       end
@@ -98,7 +97,6 @@ class UsersController < ApplicationController
     render :partial => "users/parts/ajax_result.html.haml", :locals => {:message => (flash[:error] || flash[:success])}
     flash.discard
   end
-
   
   def spammer
     spammer = User.find(params[:id])
