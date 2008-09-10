@@ -8,6 +8,6 @@ class Base::ProjectSubpage < ApplicationController
   end
   
   def get_project
-    @project ||= Project.find_by_id(params[:project_id])
+    @project ||= Project.find(params[:project_id])
   end
 end
