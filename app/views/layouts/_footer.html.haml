@@ -20,7 +20,11 @@
     .credits
       == &copy; #{AppConfig.site_name}
       by
-      = link_to "RailsJedi", "http://www.railsjedi.com"
+      = link_to("RailsJedi", "http://www.railsjedi.com")+","
+      = br
+      Logo by
+      = link_to("VivaLogo", "http://www.vivalogo.com/")
+      
   .about
     = partial("layouts/social_media") if AppConfig.show_social_media
       
