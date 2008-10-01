@@ -43,7 +43,6 @@ class ScreenshotsController < Base::ProjectSubpage
       @invalid_screenshots.each{|screenshot| set_flash(screenshot) }
       redirect_to project_url(@project)+"#screenshots_add"
     end
-    
   end
   
   def destroy

@@ -1,9 +1,15 @@
 module AuthenticatedSystem
   protected
+    # Inclusion hook to make #current_user and #logged_in?
+    # available as ActionView helper methods.
+    def self.included(base)
+      base.send :helper_method, :current_user, :logged_in?, :anon_user, :current_or_anon_user, :admin?
+    end
+
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
-      current_user != :false
+      current_user.is_a? User
     end
     
     def current_or_anon_user
@@ -102,12 +108,6 @@ module AuthenticatedSystem
     def redirect_back_or_default(default)
       redirect_to(session[:return_to] || default)
       session[:return_to] = nil
-    end
-
-    # Inclusion hook to make #current_user and #logged_in?
-    # available as ActionView helper methods.
-    def self.included(base)
-      base.send :helper_method, :current_user, :logged_in?, :anon_user, :current_or_anon_user, :admin?
     end
 
     # Called from #current_user.  First attempt to login by the user id stored in the session.
