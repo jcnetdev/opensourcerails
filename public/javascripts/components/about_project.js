@@ -6,7 +6,7 @@ $j(document).ready(function() {
     return false;
   });
   
-  // wire up ajax links
+  // wire up ajax edit functionality
   $j('#project_info .edit').livequery("click", function(){
     $this = $j(this);
 
@@ -18,7 +18,7 @@ $j(document).ready(function() {
     return false;
   });
 
-  // wire up ajax links
+  // wire up ajax submit functionality
   $j('#project_info .restore').livequery("click", function(){
     $this = $j(this);
     $reload = $this.parents(".reload");
