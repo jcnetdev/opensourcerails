@@ -192,11 +192,7 @@ ActiveRecord::Schema.define(:version => 20080831140530) do
     t.integer  "project_id",            :limit => 11
     t.integer  "uploader_id",           :limit => 11
     t.text     "notes"
-    t.string   "content_type"
-    t.string   "filename"
-    t.integer  "size",                  :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
+
     t.string   "title"
     t.integer  "owner_id",              :limit => 11
     t.string   "download_content_type"
@@ -204,6 +200,9 @@ ActiveRecord::Schema.define(:version => 20080831140530) do
     t.integer  "download_file_size",    :limit => 11
     t.string   "link"
     t.datetime "download_updated_at"
+    
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

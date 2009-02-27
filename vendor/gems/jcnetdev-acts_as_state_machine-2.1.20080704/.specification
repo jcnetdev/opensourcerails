@@ -1,0 +1,76 @@
+--- !ruby/object:Gem::Specification 
+name: jcnetdev-acts_as_state_machine
+version: !ruby/object:Gem::Version 
+  version: 2.1.20080704
+platform: ruby
+authors: 
+- Jacques Crocker
+- Scott Barron
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2008-07-04 00:00:00 -07:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: activerecord
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "2.0"
+    version: 
+description: This act gives an Active Record model the ability to act as a finite state machine (FSM).
+email: railsjedi@gmail.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: []
+
+files: 
+- CHANGELOG
+- MIT-LICENSE
+- README
+- Rakefile
+- TODO
+- acts_as_state_machine.gemspec
+- init.rb
+- lib/acts_as_state_machine.rb
+- rails/init.rb
+- test/fixtures
+- test/fixtures/conversations.yml
+- test/test_acts_as_state_machine.rb
+has_rdoc: false
+homepage: http://github.com/jcnetdev/acts_as_state_machine
+post_install_message: 
+rdoc_options: []
+
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.1
+signing_key: 
+specification_version: 2
+summary: Allows ActiveRecord models to define states and transition actions between them
+test_files: 
+- test/fixtures
+- test/fixtures/conversations.yml
+- test/test_acts_as_state_machine.rb

@@ -38,10 +38,6 @@ ActionController::Routing::Routes.draw do |map|
     
   map.forgot_password "/forgot_password", :controller => "users", :action => "forgot_password"
     
-  # add actions for next/previous project
-  map.next_project "/projects/:id/next", :controller => "projects", :action => "find_next"
-  map.prevous_project "/projects/:id/previous", :controller => "projects", :action => "find_previous"
-
   # set the root to project index
   map.root :controller => "projects"
 

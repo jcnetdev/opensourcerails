@@ -1,0 +1,76 @@
+--- !ruby/object:Gem::Specification 
+name: jcnetdev-active_record_without_table
+version: !ruby/object:Gem::Version 
+  version: "1.1"
+platform: ruby
+authors: 
+- Jacques Crocker
+- Jonathan Viney
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2008-07-05 00:00:00 -07:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: activerecord
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "2.0"
+    version: 
+description: Get the power of ActiveRecord models, including validation, without having a table in the database.
+email: railsjedi@gmail.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: []
+
+files: 
+- CHANGELOG
+- MIT-LICENSE
+- README
+- Rakefile
+- init.rb
+- rails/init.rb
+- active_record_without_table.gemspec
+- lib/active_record_without_table.rb
+- lib/active_record/base_without_table.rb
+- test/abstract_unit.rb
+- test/active_record_base_without_table_test.rb
+- test/database.yml
+has_rdoc: false
+homepage: http://github.com/jcnetdev/active_record_without_table
+post_install_message: 
+rdoc_options: []
+
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.1
+signing_key: 
+specification_version: 2
+summary: Allows creation of ActiveRecord models that work without any database backend
+test_files: 
+- test/abstract_unit.rb
+- test/active_record_base_without_table_test.rb
+- test/database.yml

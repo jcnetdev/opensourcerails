@@ -1,0 +1,69 @@
+--- !ruby/object:Gem::Specification 
+name: jcnetdev-acts_as_list
+version: !ruby/object:Gem::Version 
+  version: 1.0.20080704
+platform: ruby
+authors: 
+- RailsJedi
+- David Heinemeier Hansson
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2008-07-04 00:00:00 -07:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: rails
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "2.1"
+    version: 
+description: ""
+email: railsjedi@gmail.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- README
+files: 
+- README
+- acts_as_list.gemspec
+- init.rb
+- lib/acts_as_list.rb
+- rails/init.rb
+- test/list_test.rb
+has_rdoc: true
+homepage: http://github.com/jcnetdev/acts_as_list
+post_install_message: 
+rdoc_options: 
+- --main
+- README
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.1
+signing_key: 
+specification_version: 2
+summary: Allows ActiveRecord Models to be easily ordered via position attributes
+test_files: 
+- test/list_test.rb

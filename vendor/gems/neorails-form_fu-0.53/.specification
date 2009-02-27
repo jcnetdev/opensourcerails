@@ -1,0 +1,71 @@
+--- !ruby/object:Gem::Specification 
+name: neorails-form_fu
+version: !ruby/object:Gem::Version 
+  version: "0.53"
+platform: ruby
+authors: 
+- Tyler Crocker
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2008-09-17 00:00:00 -07:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: rails
+  type: :runtime
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "2.1"
+    version: 
+description: FormFu is a Rails plugin that enables you to easily build nice, tableless forms
+email: neorails@gmail.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- README
+files: 
+- LICENSE
+- README
+- form_fu.gemspec
+- init.rb
+- lib/form_fu/form_builder.rb
+- lib/form_fu/helpers.rb
+- lib/form_fu.rb
+- rails/init.rb
+- test/form_fu_test.rb
+has_rdoc: true
+homepage: http://github.com/neorails/form_fu
+post_install_message: 
+rdoc_options: 
+- --main
+- README
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.1
+signing_key: 
+specification_version: 2
+summary: Build Nice DRY Rails Forms
+test_files: 
+- test/form_fu_test.rb

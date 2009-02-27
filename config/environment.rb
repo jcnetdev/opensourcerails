@@ -82,12 +82,6 @@ Rails::Initializer.run do |config|
   # ------
   config.github_gem 'jcnetdev-acts_as_state_machine', :version => '>= 2.1.0'
   
-  # app_config
-  # ------
-  # Allow application wide configuration settings via YML files
-  # ------
-  config.github_gem 'jcnetdev-app_config', :version => '>= 1.2'
-  
   # better_partials
   # ------
   # Adds a helper (partial) that wraps around render :partial. Pass local variables and blocks to your partials easily

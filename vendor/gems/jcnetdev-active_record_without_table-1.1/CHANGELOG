@@ -1,0 +1,8 @@
+[03 July 2008]
+
+* Updated to work as a RubyGem
+
+
+[27 April 2007]
+
+* Correctly cache class instance variables containing column information [Reported by Nils Jonsson]
